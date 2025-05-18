@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class binhluan {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     String idBinhLuan;
 
     @ManyToOne

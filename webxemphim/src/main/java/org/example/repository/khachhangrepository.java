@@ -12,6 +12,6 @@ public interface khachhangrepository extends JpaRepository<khachhang, String> {
     boolean existsBysdt(String sdt);
 
     boolean existsBymatkhau(String matkhau);
-    @Query(value = "SELECT TOP 1 makhachhang FROM khachhang ORDER BY MaVeTour DESC", nativeQuery = true)
+    @Query(value = "SELECT TOP 1 idUser FROM khachhang ORDER BY idUser DESC", nativeQuery = true)
     String findLastMaDatVe();
 }

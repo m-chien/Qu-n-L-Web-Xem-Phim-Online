@@ -24,26 +24,31 @@ public class khachangController {
         return khachhangservice.getallkhachang();
     }
     @GetMapping("/{userId}")
-    public khachhang getkhachhang(@PathVariable String userId)
+    public ApiResponse<khachhang> getkhachhang(@PathVariable String userId)
     {
-        return khachhangservice.getonekhachhang(userId);
+        ApiResponse<khachhang> api = new ApiResponse<>();
+        api.setMessage("lấy thành công rồi nha!!");
+        api.setResult(khachhangservice.getonekhachhang(userId));
+        return api;
     }
     @PostMapping("/add")
     public ApiResponse<khachhang> createKhachhang(@RequestBody khachhangCreationRequest khachhangCreationRequest) {
         ApiResponse<khachhang> apiResponse = new ApiResponse<>();
-        khachhang newKhachhang = khachhangservice.adduser(khachhangCreationRequest);
-        apiResponse.setResult(newKhachhang);
+        apiResponse.setResult(khachhangservice.adduser(khachhangCreationRequest));
         return apiResponse;
     }
     @PutMapping("/{userId}")
-    public khachhang updatekhachhang(@PathVariable String userId, @RequestBody khachhangUpdateRequest khachhangUpdateRequest)
+    public ApiResponse<khachhang>  updatekhachhang(@PathVariable String userId, @RequestBody khachhangUpdateRequest khachhangUpdateRequest)
     {
-        return khachhangservice.update(userId,khachhangUpdateRequest);
+        ApiResponse<khachhang> update = new ApiResponse<>();
+        update.setMessage("cập nhật thành công rồi nha bạn");
+        update.setResult(khachhangservice.update(userId,khachhangUpdateRequest));
+        return update;
     }
     @DeleteMapping("/{userid}")
-    public void xoakhachhang(@PathVariable String userid)
+    public ApiResponse<String> xoakhachhang(@PathVariable String userid)
     {
         khachhangservice.delete(userid);
-        System.out.println("xóa thành công rồi nha!!!");
+        return new ApiResponse<>(1000,"thành công!!!!","xóa thành công id "+ userid);
     }
 }

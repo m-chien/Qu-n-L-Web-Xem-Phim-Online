@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class dienvien {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String idDienVien;
     private String tenDienVien;
     private LocalDate ngaysinh;

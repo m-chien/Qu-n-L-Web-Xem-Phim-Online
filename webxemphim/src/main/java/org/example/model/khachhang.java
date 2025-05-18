@@ -16,7 +16,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class khachhang {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     String idUser;
     String tenUser;
     String diachiKh;

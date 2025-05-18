@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class phim {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String idPhim;
     private String tenphim;
     private String daodien;

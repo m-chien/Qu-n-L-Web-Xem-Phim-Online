@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class theloai {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String idtheloai;
     private String tentheloai;
 }

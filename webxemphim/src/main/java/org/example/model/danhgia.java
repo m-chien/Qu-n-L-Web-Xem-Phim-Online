@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class danhgia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     String idDanhGia;
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "idUser")
