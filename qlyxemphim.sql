@@ -11,6 +11,7 @@ use Qlxemphim
 
 create table khachhang
 (	
+	stt int identity(1,1),
 	idUser Char(5) primary key,
 	tenUser nvarchar(30),
 	diachiKh nvarchar(50),

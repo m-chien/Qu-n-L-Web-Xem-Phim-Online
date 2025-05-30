@@ -3,7 +3,6 @@ package org.example.service;
 import org.example.dto.request.khachhangCreationRequest;
 import org.example.dto.request.khachhangUpdateRequest;
 import org.example.exception.AppException;
-import org.example.exception.DuplicateFieldException;
 import org.example.exception.ErrorCode;
 import org.example.model.khachhang;
 import org.example.repository.khachhangrepository;
@@ -11,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class khachhangservice {
     @Autowired
     private khachhangrepository khachhangrepository;
+    @Autowired
+    private org.example.mapper.khachhangMapper khachhangMapper;
 
     public List<khachhang> getallkhachang()
     {
@@ -31,13 +31,9 @@ public class khachhangservice {
             throw new AppException(ErrorCode.Email_Duplicate);
         if (khachhangrepository.existsBysdt(khach.getSdt()))
             throw new AppException(ErrorCode.Sdt_Duplicate);
-        khachhang khachhang1 = khachhang.builder()
-                .tenUser(khach.getTenUser())
-                .diachiKh(khach.getDiachiKh())
-                .sdt(khach.getSdt())
-                .email(khach.getEmail())
-                .matkhau(khach.getMatkhau())
-                .build();
+
+        khachhang khachhang1 = khachhangMapper.tokhachhang(khach);
+
         return khachhangrepository.save(makeIDUSer(khachhang1));
     }
     public void delete(String id)
@@ -47,10 +43,9 @@ public class khachhangservice {
     public khachhang update(String id, khachhangUpdateRequest khachhangUpdateRequest)
     {
         khachhang khachhang1 = getonekhachhang(id);
-        khachhang1.setDiachiKh(khachhangUpdateRequest.getDiachiKh());
-        khachhang1.setSdt(khachhangUpdateRequest.getSdt());
-        khachhang1.setEmail(khachhangUpdateRequest.getEmail());
-        khachhang1.setMatkhau(khachhangUpdateRequest.getMatkhau());
+
+        khachhangMapper.updateKhachhang(khachhang1,khachhangUpdateRequest);
+
         return khachhangrepository.save(khachhang1);
     }
     public khachhang makeIDUSer(khachhang khachhang)

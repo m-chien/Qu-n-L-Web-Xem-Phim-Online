@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.example.exception.AppException;
+import org.example.exception.ErrorCode;
 import org.example.model.phim;
 import org.example.repository.phimrepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,14 @@ public class phimService {
     }
 
     //xóa phim
-    public void xoaphim(String idphim)
+    public boolean xoaphim(String idphim)
     {
-         phimrepository.deleteById(idphim);
+        if (phimrepository.existsById(idphim))
+        {
+            phimrepository.deleteById(idphim);
+            return true;
+        }
+         else return false;
     }
 
     //lấy tất cả phim
@@ -37,7 +44,7 @@ public class phimService {
     //lấy 1 phim
     public phim get1phim(String idphim) {
         return phimrepository.findById(idphim)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy phim với ID: " + idphim));
+                .orElseThrow(() -> new AppException(ErrorCode.Id_Not_Found));
     }
 
     //update phim

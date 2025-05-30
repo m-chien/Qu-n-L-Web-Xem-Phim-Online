@@ -15,6 +15,12 @@ import lombok.NoArgsConstructor;
 //      1005	        Duplicate	                Dữ liệu bị trùng lặp.
 //      1006	        Validation Error	        Dữ liệu không đúng định dạng.
 public enum ErrorCode {
+    Not_Found(1001,"can't find data"),
+    Unauthorized(1002,"Người dùng chưa xác thực hoặc không có quyền"),
+    Server_Error(1003,"error from server"),
+    Bad_Request(1004,"data is incorrect"),
+    Duplicate(1005,"data is duplicate"),
+    Validation_Error(1006,"Validation Error"),
     User_Exitsted(1005,"User existed"),
     Email_Duplicate(1005,"Email cannot be Duplicate!!!!"),
     Sdt_Duplicate(1005,"SDT cannot be Duplicate!!!!"),
