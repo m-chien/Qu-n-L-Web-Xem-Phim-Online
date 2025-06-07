@@ -9,48 +9,69 @@ create database Qlxemphim
 go
 use Qlxemphim
 
+create table nguoidung
+(
+	idUser char(5) primary key,
+	email varchar(50) unique check(email like '[A-Za-z]%@gmail.com') not  null,
+	matkhau varchar(255) not null,
+	ngaytao Date default getdate(),
+	loaitaikhoan nvarchar(20) default 'khách hàng',
+	trangthai nvarchar(20) default 'active'
+)
+create table nhanvien
+(
+	idNhanvien char(5) primary key,
+	idUser char(5) unique,
+	hoten nvarchar(50),
+	sdt varchar(10),
+	emaillienhe varchar(50) unique not  null,
+	gioitinh nvarchar(20),
+	chucVu nvarchar(30),
+	Luong money,
+	trangthai nvarchar(30) default N'đang làm'
+	foreign key (idUser) references nguoidung(idUser)
+			on update
+				cascade
+			on delete
+				cascade
+)
 create table khachhang
-(	
-	stt int identity(1,1),
-	idUser Char(5) primary key,
-	tenUser nvarchar(30),
-	diachiKh nvarchar(50),
-	SDT varchar(11),
-	email varchar(50),
-	matkhau varchar(10)
-	unique(SDT,email,matkhau)
+(
+	idKhachhang char(5) primary key,
+	idUser char(5) unique,
+	hoten nvarchar(50),
+	sdt varchar(10),
+	ngaysinh date,
+	gioitinh nvarchar(20),
+	foreign key (idUser) references nguoidung(idUser)
+			on update
+				cascade
+			on delete
+				cascade
 )
 create table phim
 (
-	idPhim Char(5) primary key,
-	tenphim nvarchar(50),
-	daodien nvarchar(30),
-	MoTaPhim nvarchar(100),
-    ThoiLuong INT,
-    NgaySanXuat DATE,
-    LuotXem INT DEFAULT 0,
-	quocgia nvarchar(30),
-	gioihandotuoi int,
+	idPhim char(5) PRIMARY KEY,
+    tenphim NVARCHAR(100) NOT NULL,
+    DaoDien NVARCHAR(50),
+    thoiluong INT NOT NULL,
+    ngayphathanh DATE NOT NULL,
+    gioihandotuoi NVARCHAR(10),
+    quocgia NVARCHAR(50),
+    luotxem BIGINT DEFAULT 0,
+    trangthai NVARCHAR(20) DEFAULT N'Sắp chiếu',
+    url_poster VARCHAR(255),
+    mo_ta NVARCHAR(MAX)
 )
-create table dienvien
+create table danhgia
 (
-	idDienVien Char(5) primary key,
-	tenDienVien nvarchar(30),
-	ngaysinh date,
-	quoctich nvarchar(30),
-	mota nvarchar(100)
-)
-create table theloai 
-(
-	idtheloai Char(5) primary key,
-	tentheloai nvarchar(30),
-)
-create table theloai_phim
-(
-	idtheloai Char(5),
-	idPhim Char(5)
-	primary key (idtheloai,idPhim)
-	foreign key (idtheloai) references theloai(idtheloai)
+	idDanhGia char(5) primary key,
+	idUser char(5),
+	idPhim char(5),
+	diemdanhgia int,
+	ngaydanhgia date default getdate(),
+	binhluan nvarchar(255),
+	foreign key (idUser) references nguoidung(idUser)
 			on update
 				cascade
 			on delete
@@ -59,13 +80,21 @@ create table theloai_phim
 			on update
 				cascade
 			on delete
-				cascade,
+				cascade
+)
+create table dienvien
+(
+	idDienVien char(5) primary key,
+	tendienvien nvarchar(50),
+	ngaysinh date,
+	quoctich nvarchar(30),
+	mota nvarchar(100),
 )
 create table dienvien_phim
 (
-	idDienVien Char(5),
-	idPhim Char(5)
-	primary key (idDienVien,idPhim)
+	idDienVien char(5),
+	idPhim char(5),
+	primary key (idDienVien, idPhim),
 	foreign key (idDienVien) references dienvien(idDienVien)
 			on update
 				cascade
@@ -77,13 +106,17 @@ create table dienvien_phim
 			on delete
 				cascade
 )
-create table lichsuxemphim
+create table theloai
 (
-	idUser Char(5),
-	idPhim Char(5),
-	ngayxem date,
-	primary key (idUser,idPhim),
-	foreign key (idUser) references khachhang(idUser)
+	idTheLoai char(5) primary key,
+	tentheloai nvarchar(30),
+)
+create table theloai_phim
+(
+	idTheLoai char(5),
+	idPhim char(5),
+	primary key (idTheLoai, idPhim),
+	foreign key (idTheLoai) references theloai(idTheLoai)
 			on update
 				cascade
 			on delete
@@ -94,13 +127,99 @@ create table lichsuxemphim
 			on delete
 				cascade
 )
-create table phimyeuthich
+create table ve
 (
-	idphimyeuthich Char(5) primary key,
-	idUser Char(5),
-	idPhim Char(5),
-	ngayluu date,
-	foreign key (idUser) references khachhang(idUser)
+	idVe char(5) PRIMARY KEY,
+    idUser char(5) NOT NULL,
+    NgayDat DATETIME DEFAULT GETDATE(),
+    TongGiaTriDonHang MONEY NOT NULL,
+    trangthai NVARCHAR(30) DEFAULT N'Đang chờ thanh toán',
+)
+CREATE TABLE Food
+(
+    idFood char(5) PRIMARY KEY,
+    TenDoAn NVARCHAR(100) NOT NULL,
+    MoTa NVARCHAR(MAX),
+    GiaBan MONEY NOT NULL,
+    TrangThai NVARCHAR(20) DEFAULT N'Còn hàng',
+	soluongtonkho int default 0,
+    url_anh VARCHAR(255)
+)
+create table ve_food
+(
+	idVe char(5),
+	idFood char(5),
+	soluong int,
+	primary key (idVe, idFood),
+	foreign key (idVe) references ve(idVe)
+			on update
+				cascade
+			on delete
+				cascade,
+	foreign key (idFood) references Food(idFood)
+			on update
+				cascade
+			on delete
+				cascade
+)
+create table thanhtoan
+(
+	idThanhToan char(5) primary key,
+	idVe char(5),
+	phuongthucthanhtoan nvarchar(30) default N'online',
+	trangthai nvarchar(40) default N'Đang chờ',
+	soTienThanhToan money not null,
+	ngayThanhToan DATETIME DEFAULT GETDATE(),
+	foreign key (idVe) references ve(idVe)
+			on update
+				cascade
+			on delete
+				cascade
+)
+create table phong
+(
+	idPhong char(5) primary key,
+	tenphong nvarchar(50),
+	tongSoLuongChoNgoi int,
+)
+create table loaighe
+(
+	idLoaiGhe char(5) primary key,
+	tenloaighe nvarchar(50),
+	gia money,
+)
+create table chongoi
+(
+	idChoNgoi char(5) primary key,
+	idPhong char(5),
+	idLoaiGhe char(5),
+	hang nvarchar(1) not null,
+	[cot] int not null,
+	foreign key (idPhong) references phong(idPhong)
+			on update
+				cascade
+			on delete
+				cascade,
+	foreign key (idLoaiGhe) references loaighe(idLoaiGhe)
+			on update
+				cascade
+			on delete
+				cascade
+)
+create table suatchieu
+(
+	idSuatChieu char(5) primary key,
+	tenSuatChieu nvarchar(30),
+	tgianchieu time not null unique,
+)
+create table lichchieu
+(
+	idLichChieu char(5) primary key,
+	idPhim char(5),
+	idSuatChieu char(5),
+	idPhong char(5),
+	ngaychieu date,
+	foreign key (idPhong) references phong(idPhong)
 			on update
 				cascade
 			on delete
@@ -109,179 +228,436 @@ create table phimyeuthich
 			on update
 				cascade
 			on delete
+				cascade,
+	foreign key (idSuatChieu) references suatchieu(idSuatChieu)
+			on update
+				cascade
+			on delete
 				cascade
 )
-create table binhluan
+create table chitietdatve
 (
-	idbinhluan Char(5) primary key,
-	idUser Char(5),
-	idPhim Char(5),
-	noidung nvarchar(200),
-	ngaydang date,
-	foreign key (idUser) references khachhang(idUser)
+	idChiTietVe char(5) PRIMARY key,
+    idVe char(5) NOT NULL,
+    idLichChieu char(5) NOT NULL,
+    idChoNgoi char(5) NOT NULL,
+    GiaVeDonLe MONEY NOT NULL,
+    TrangThaiVe NVARCHAR(30) DEFAULT N'Đã đặt',
+	unique(idLichChieu,idChoNgoi),
+	foreign key (idVe) references ve(idVe)
 			on update
 				cascade
 			on delete
 				cascade,
-	foreign key (idPhim) references phim(idPhim)
-			on update
-				cascade
-			on delete
-				cascade
-)
-create table danhgia
-(
-	iddanhgia Char(5) primary key,
-	idUser Char(5),
-	idPhim Char(5),
-	diemdanhgia int,
-	ngaydanhgia date,
-	foreign key (idUser) references khachhang(idUser)
+	foreign key (idLichChieu) references lichchieu(idLichChieu)
 			on update
 				cascade
 			on delete
 				cascade,
-	foreign key (idPhim) references phim(idPhim)
+	foreign key (idChoNgoi) references chongoi(idChoNgoi)
 			on update
-				cascade
+				no action
 			on delete
-				cascade
+				no action,
 )
+alter table nguoidung
+	add constraint CK_trangthai_user
+		check ( trangthai = N'Active' or (trangthai = N'offline'))
+alter table NhanVien
+	add constraint CK_trangthai_nhanvien
+		check ( trangthai = N'Đang làm' or (trangthai = N'Nghỉ Việc'))
+alter table phim
+	add constraint Check_trangthai_Phim
+		check ( trangthai = N'Đang chiếu' or (trangthai = N'Đã chiếu') or (trangthai = N'Sắp chiếu'))
+alter table ve
+	add constraint CK_trangthai_ve
+		check ( trangthai = N'Đang chờ thanh toán' or (trangthai = N'Đã thanh toán') or (trangthai = N'Đã hủy'))
+alter table Food
+	add constraint CK_trangthai_phim
+		check ( trangthai = N'Còn hàng' or (trangthai = N'Hết Hàng'))
+alter table thanhtoan
+	add constraint CK_trangthai_thanhtoan
+			check ( trangthai = N'Đang chờ' or (trangthai = N'Thành công') or (trangthai = N'Thất bại')),
+		constraint CK_phuongthuc_thanhtoan
+			check ( phuongthucthanhtoan = N'online' or (phuongthucthanhtoan = N'tiền Mặt'))
+alter table ChiTietDatVe
+	add constraint CK_trangthai_ChiTietDatVe
+		check ( TrangThaiVe = N'Đã đặt' 
+		or (TrangThaiVe = N'Đã thanh toán') 
+		or (TrangThaiVe = N'Đã sử dụng') 
+		or (TrangThaiVe = N'Đã hủy') 
+		or (TrangThaiVe = N'Đã hoàn tiền'))
+-- 1. Bảng nguoidung
+INSERT INTO nguoidung (idUser, email, matkhau, ngaytao, loaitaikhoan, trangthai) VALUES
+('U0001', 'anh.nguyen@gmail.com', 'hashedpass123abc', '2023-01-05', N'Khách hàng', N'active'),
+('U0002', 'binh.le@gmail.com', 'hashedpass456def', '2023-02-10', N'Khách hàng', N'active'),
+('U0003', 'cuong.tran@gmail.com', 'hashedpass789ghi', '2023-03-15', N'Khách hàng', N'active'),
+('U0004', 'duyen.pham@gmail.com', 'hashedpassabcjkl', '2023-04-20', N'Khách hàng', N'active'),
+('U0005', 'em.hoang@gmail.com', 'hashedpassdefmno', '2023-05-25', N'Khách hàng', N'active'),
+('U0006', 'thao.nguyen@gmail.com', 'hashedpassghipqr', '2023-06-01', N'Nhân viên', N'active'),
+('U0007', 'long.tran@gmail.com', 'hashedpassjklstu', '2023-07-07', N'Nhân viên', N'active'),
+('U0008', 'minh.vo@gmail.com', 'hashedpassvwyxyz', '2023-08-12', N'Admin', N'active'),
+('U0009', 'ngoc.phan@gmail.com', 'hashedpass1a2b3c', '2023-09-18', N'Khách hàng', N'active'),
+('U0010', 'huy.do@gmail.com', 'hashedpass4d5e6f', '2023-10-23', N'Khách hàng', N'active');
 
-ALTER TABLE KhachHang
-    ADD CONSTRAINT CK_KhachHang_SDT 
-    CHECK (LEN(SDT) = 10 AND PATINDEX('%[^0-9]%', SDT) = 0);
-alter table KhachHang
-	add constraint CK_KhachHang_Email
-			check(email like '[A-Za-z]%@gmail.com')
-alter table danhgia
-	add CONSTRAINT ck_diemdanhgia CHECK (diemdanhgia BETWEEN 1 AND 10)
-
--- Insert KhachHang
-INSERT INTO khachhang (idUser, tenUser, diachiKh, SDT, email, matkhau) VALUES
-    ('KH001', 'Nguyen Thi A', '123 Mai Xuân Thưởng, TP.HCM', '0123456781', 'nguyen.a@gmail.com', 'password1'),
-    ('KH002', 'Tran Thi B', '456 Le Lai, TP.HCM', '0123456789', 'tran.b@gmail.com', 'password2'),
-    ('KH003', 'Le Thi C', '789 Hoa Mai, TP.HCM', '0123456783', 'le.c@gmail.com', 'password3'),
-    ('KH004', 'Nguyen Thi D', '321 Nguyen Trai, TP.HCM', '0124567894', 'nguyen.d@gmail.com', 'password4'),
-    ('KH005', 'Pham Thi E', '654 Quang Trung, TP.HCM', '0123457895', 'pham.e@gmail.com', 'password5'),
-    ('KH006', 'Bui Thi F', '987 Tran Phu, TP.HCM', '0123467896', 'bui.f@gmail.com', 'password6'),
-    ('KH007', 'Hoang Thi G', '123 Vo Thi Sau, TP.HCM', '0123467897', 'hoang.g@gmail.com', 'password7'),
-    ('KH008', 'Phan Thi H', '456 An Duong Vuong, TP.HCM', '0124567898', 'phan.h@gmail.com', 'password8'),
-    ('KH009', 'Nguyen Thi I', '789 Le Quang Dieu, TP.HCM', '0123567899', 'nguyen.i@gmail.com', 'password9'),
-    ('KH010', 'Trinh Thi J', '321 Ho Chi Minh, TP.HCM', '0124567900', 'trinh.j@gmail.com', 'password10');
-
--- Insert Phim
-INSERT INTO phim (idPhim, tenphim, daodien, MoTaPhim, ThoiLuong, NgaySanXuat, LuotXem, quocgia, gioihandotuoi) VALUES
-    ('PH001', N'Hai Phượng', N'Lê Văn Kiệt', N'Phim hành động Việt Nam về hành trình cứu con của một bà mẹ đơn thân.', 120, '2023-01-01', 1000, N'Việt Nam', 18),
-    ('PH002', N'Avengers: Endgame', N'Anthony Russo & Joe Russo', N'Tập phim đỉnh cao trong loạt phim Marvel, kết thúc cuộc chiến với Thanos.', 181, '2023-02-01', 1500, N'Mỹ', 13),
-    ('PH003', N'Train to Busan', N'Yeon Sang-ho', N'Phim kinh dị Hàn Quốc về đại dịch zombie trên chuyến tàu.', 118, '2023-03-01', 1200, N'Hàn Quốc', 16),
-    ('PH004', N'Rurouni Kenshin', N'Keishi Ōtomo', N'Phim kiếm hiệp Nhật Bản chuyển thể từ manga nổi tiếng.', 134, '2023-04-01', 1100, N'Nhật Bản', 15),
-    ('PH005', N'Mắt Biếc', N'Victor Vũ', N'Tác phẩm tình cảm lãng mạn chuyển thể từ truyện của Nguyễn Nhật Ánh.', 100, '2023-05-01', 1400, N'Việt Nam', 13),
-    ('PH006', N'Inception', N'Christopher Nolan', N'Trận chiến giữa mộng và thực, lối kể chuyện đầy chiều sâu và phức tạp.', 148, '2023-06-01', 1600, N'Mỹ', 12),
-    ('PH007', N'Parasite', N'Bong Joon-ho', N'Bộ phim giành giải Oscar với câu chuyện phân hóa giàu nghèo tại Hàn Quốc.', 132, '2023-07-01', 1700, N'Hàn Quốc', 16),
-    ('PH008', N'Your Name', N'Makoto Shinkai', N'Anime nổi tiếng kể về hai người hoán đổi thân xác kỳ lạ và tình cảm vượt không gian.', 115, '2023-08-01', 1300, N'Nhật Bản', 14),
-    ('PH009', N'Tiệc Trăng Máu', N'Nguyễn Quang Dũng', N'Hài kịch đen hé lộ những bí mật của bạn bè trong một bữa tiệc.', 125, '2023-09-01', 1500, N'Việt Nam', 18),
-    ('PH010', N'Iron Man', N'Jon Favreau', N'Phim mở màn vũ trụ điện ảnh Marvel với nhân vật Tony Stark.', 140, '2023-10-01', 2000, N'Mỹ', 20);
+-- 9. Bảng NhanVien
+INSERT INTO NhanVien (idNhanVien, idUser, hoten, sdt, emaillienhe, gioitinh, chucVu, Luong, trangthai) VALUES
+('NV001', 'U0006', N'Nguyễn Thị Thảo', '0912345678', 'thao.nguyen.nv@gmail.com', N'Nữ', N'Nhân viên bán vé', 7000000, N'Đang làm'),
+('NV002', 'U0007', N'Trần Văn Long', '0987654321', 'long.tran.ql@gmail.com', N'Nam', N'Quản lý lịch chiếu', 12000000, N'Đang làm'),
+('NV003', 'U0008', N'Võ Minh', '0901122334', 'minh.vo.admin@gmail.com', N'Nam', N'Admin hệ thống', 15000000, N'Đang làm'),
+('NV004', 'U0001', N'Phạm Anh Đào', '0902233445', 'anh.dao.nv@gmail.com', N'Nữ', N'Nhân viên soát vé', 6500000, N'Đang làm'),
+('NV005', 'U0002', N'Lê Bình An', '0903344556', 'binh.an.nv@gmail.com', N'Nam', N'Nhân viên quầy Food', 6800000, N'Đang làm'),
+('NV006', 'U0003', N'Trần Cường Phát', '0904455667', 'cuong.phat.kythuat@gmail.com', N'Nam', N'Kỹ thuật viên', 9000000, N'Đang làm'),
+('NV007', 'U0004', N'Phạm Thị Duyên', '0905566778', 'duyen.phu.trach@gmail.com', N'Nữ', N'Phụ trách phòng chiếu', 8500000, N'Đang làm'),
+('NV008', 'U0005', N'Hoàng Em', '0906677889', 'em.hoang.tapvu@gmail.com', N'Nam', N'Tạp vụ', 5500000, N'Đang làm'),
+('NV009', 'U0009', N'Phan Thị Ngọc', '0907788990', 'ngoc.phan.ke.toan@gmail.com', N'Nữ', N'Kế toán', 10000000, N'Đang làm'),
+('NV010', 'U0010', N'Đỗ Xuân Huy', '0908899001', 'huy.do.nvbh@gmail.com', N'Nam', N'Nhân viên bán hàng', 7200000, N'Đang làm');
 
 set dateformat ymd
--- Insert DienVien
-INSERT INTO dienvien (idDienVien, tenDienVien, ngaysinh, quoctich, mota) VALUES
-    ('DV001', N'Ngô Thanh Vân', '1979-02-26', N'Việt Nam', N'Nữ diễn viên, nhà sản xuất nổi tiếng với các phim hành động như Hai Phượng.'),
-    ('DV002', N'Johnny Depp', '1963-06-09', N'Mỹ', N'Tài tử Hollywood, nổi tiếng qua loạt phim Cướp biển vùng Caribbean.'),
-    ('DV003', N'Song Hye Kyo', '1981-11-22', N'Hàn Quốc', N'Mỹ nhân phim truyền hình, nổi bật với Hậu duệ mặt trời.'),
-    ('DV004', N'Ken Watanabe', '1959-10-21', N'Nhật Bản', N'Nam diễn viên kỳ cựu từng tham gia Inception, The Last Samurai.'),
-    ('DV005', N'Ninh Dương Lan Ngọc', '1990-04-04', N'Việt Nam', N'Nữ diễn viên nổi bật với nhiều phim điện ảnh và truyền hình Việt.'),
-    ('DV006', N'Chris Evans', '1981-06-13', N'Mỹ', N'Nổi tiếng với vai Captain America trong vũ trụ Marvel.'),
-    ('DV007', N'Lee Min Ho', '1987-06-22', N'Hàn Quốc', N'Tài tử đình đám với phim Vườn sao băng, Huyền thoại biển xanh.'),
-    ('DV008', N'Takeshi Kaneshiro', '1973-10-11', N'Nhật Bản', N'Diễn viên gạo cội, từng xuất hiện trong nhiều phim hành động châu Á.'),
-    ('DV009', N'Huỳnh Đông', '1984-03-13', N'Việt Nam', N'Gương mặt quen thuộc trên sóng truyền hình Việt Nam.'),
-    ('DV010', N'Robert Downey Jr.', '1965-04-04', N'Mỹ', N'Iron Man – biểu tượng của Marvel với lối diễn xuất cá tính.');
-
--- Insert TheLoai
-INSERT INTO theloai (idtheloai, tentheloai) VALUES
-    ('TL001', N'Hành động'),
-    ('TL002', N'Kinh dị'),
-    ('TL003', N'Lãng mạn'),
-    ('TL004', N'Phiêu lưu'),
-    ('TL005', N'Hài hước'),
-    ('TL006', N'Khoa học viễn tưởng'),
-    ('TL007', N'Tâm lý'),
-    ('TL008', N'Hoạt hình'),
-    ('TL009', N'Tình cảm'),
-    ('TL010', N'Thể thao');
-
-
--- Insert TheLoai_Phim
-INSERT INTO theloai_phim (idtheloai, idPhim) VALUES
-    ('TL001', 'PH001'), ('TL002', 'PH002'), ('TL003', 'PH003'), ('TL004', 'PH004'), ('TL005', 'PH005'),
-    ('TL006', 'PH006'), ('TL007', 'PH007'), ('TL008', 'PH008'), ('TL009', 'PH009'), ('TL010', 'PH010');
-
--- Insert DienVien_Phim
-INSERT INTO dienvien_phim (idDienVien, idPhim) VALUES
-    ('DV001', 'PH001'), ('DV002', 'PH002'), ('DV003', 'PH003'), ('DV004', 'PH004'), ('DV005', 'PH005'),
-    ('DV006', 'PH006'), ('DV007', 'PH007'), ('DV008', 'PH008'), ('DV009', 'PH009'), ('DV010', 'PH010');
+-- 10. Bảng KhachHang
+INSERT INTO KhachHang (idKhachhang, idUser, hoten, sdt, ngaysinh, gioitinh) VALUES
+('KH001', 'U0001', N'Nguyễn Văn Anh', '0912345678', '1990-01-01', N'Nam'),
+('KH002', 'U0002', N'Lê Thị Bình', '0987654321', '1995-02-02', N'Nữ'),
+('KH003', 'U0003', N'Trần Đình Cường', '0901234567', '1988-03-03', N'Nam'),
+('KH004', 'U0004', N'Phạm Thu Duyên', '0902345678', '1992-04-04', N'Nữ'),
+('KH005', 'U0005', N'Hoàng Thanh Em', '0903456789', '1998-05-05', N'Nam'),
+('KH006', 'U0009', N'Phan Ngọc Mai', '0909876543', '1993-09-09', N'Nữ'),
+('KH007', 'U0010', N'Đỗ Văn Huy', '0908765432', '1991-10-10', N'Nam'),
+('KH008', 'U0006', N'Đinh Thanh Thảo', '0911223344', '1987-06-15', N'Nữ'), -- Khách hàng dùng chung ID User với NV
+('KH009', 'U0007', N'Lê Long An', '0922334455', '1989-07-20', N'Nam'), -- Khách hàng dùng chung ID User với NV
+('KH010', 'U0008', N'Võ Minh Quân', '0933445566', '1985-08-25', N'Nam'); -- Khách hàng dùng chung ID User với NV
 set dateformat ymd
--- Insert into lichsuxemphim
-INSERT INTO lichsuxemphim (idUser, idPhim, ngayxem) VALUES
-	('KH001', 'PH001', '2023-01-01'),
-	('KH002', 'PH002', '2023-02-01'),
-	('KH003', 'PH003', '2023-03-01'),
-	('KH004', 'PH004', '2023-04-01'),
-	('KH005', 'PH005', '2023-05-01'),
-	('KH006', 'PH006', '2023-06-01'),
-	('KH007', 'PH007', '2023-07-01'),
-	('KH008', 'PH008', '2023-08-01'),
-	('KH009', 'PH009', '2023-09-01'),
-	('KH010', 'PH010', '2023-10-01');
+-- 2. Bảng phim
+INSERT INTO Phim (idPhim, tenphim, DaoDien, thoiluong, ngayphathanh, gioihandotuoi, quocgia, luotxem, trangthai, url_poster, mo_ta) VALUES
+('P0001', N'Lật Mặt 7: Một Chuyến Phiêu Lưu', N'Lý Hải', 135, '2024-04-26', N'K', N'Việt Nam', 1500000, N'Đang chiếu', '/images/mnOlHBO.jpg', N'Hành trình cảm xúc và sự đoàn tụ gia đình.'),
+('P0002', N'Cái Giá Của Hạnh Phúc', N'Nguyễn Ngọc Lâm', 105, '2024-03-08', N'T16', N'Việt Nam', 800000, N'Đã chiếu', '/images/caigiacuamothanhphuc.jpg', N'Câu chuyện về những lựa chọn và hậu quả.'),
+('P0003', N'Dune: Part Two', N'Denis Villeneuve', 166, '2024-03-01', N'T13', N'Mỹ', 2500000, N'Đã chiếu', '/images/Dune.jpg', N'Chuyến đi sử thi tiếp theo trên hành tinh Arrakis.'),
+('P0004', N'Godzilla x Kong: The New Empire', N'Adam Wingard', 115, '2024-03-29', N'T13', N'Mỹ', 1800000, N'Đã chiếu', '/images/Kong.jpg', N'Hai titan huyền thoại đối đầu với một mối đe dọa mới.'),
+('P0005', N'Kung Fu Panda 4', N'Mike Mitchell', 94, '2024-03-08', N'P', N'Mỹ', 1200000, N'Đã chiếu', '/images/panda.jpg', N'Po trở lại với cuộc phiêu lưu mới đầy hài hước.'),
+('P0006', N'Inside Out 2', N'Kelsey Mann', 96, '2024-06-14', N'P', N'Mỹ', 0, N'Sắp chiếu', '/images/insideout.jpg', N'Riley đối mặt với những cảm xúc mới khi trưởng thành.'),
+('P0007', N'A Quiet Place: Day One', N'Michael Sarnoski', 100, '2024-06-28', N'T16', N'Mỹ', 0, N'Sắp chiếu', '/images/quietplace.jpg', N'Ngày đầu tiên khi sự im lặng trở thành sinh tồn.'),
+('P0008', N'Deadpool & Wolverine', N'Shawn Levy', 127, '2024-07-26', N'T18', N'Mỹ', 0, N'Sắp chiếu', '/images/deadpool.jpg', N'Hai siêu anh hùng bất đắc dĩ hợp tác.'),
+('P0009', N'Mắt Biếc', N'Victor Vũ', 117, '2019-12-20', N'T13', N'Việt Nam', 3000000, N'Đã chiếu', '/images/matbiec.jpg', N'Tình yêu tuổi học trò trong bối cảnh làng Đo Đo.'),
+('P0010', N'Bố Già', N'Trấn Thành', 128, '2021-03-12', N'T13', N'Việt Nam', 4200000, N'Đã chiếu', '/images/bogia.jpg', N'Câu chuyện cảm động về tình cha con.');
 set dateformat ymd
--- Insert into phimyeuthich
-INSERT INTO phimyeuthich (idphimyeuthich, idUser, idPhim, ngayluu) VALUES
-	('PY001', 'KH001', 'PH001', '2023-01-01'),
-	('PY002', 'KH002', 'PH002', '2023-02-01'),
-	('PY003', 'KH003', 'PH003', '2023-03-01'),
-	('PY004', 'KH004', 'PH004', '2023-04-01'),
-	('PY005', 'KH005', 'PH005', '2023-05-01'),
-	('PY006', 'KH006', 'PH006', '2023-06-01'),
-	('PY007', 'KH007', 'PH007', '2023-07-01'),
-	('PY008', 'KH008', 'PH008', '2023-08-01'),
-	('PY009', 'KH009', 'PH009', '2023-09-01'),
-	('PY010', 'KH010', 'PH010', '2023-10-01');
-
--- Insert into binhluan
+-- 11. Bảng danhgia
+INSERT INTO danhgia (idDanhGia, idUser, idPhim, diemdanhgia, ngaydanhgia, binhluan) VALUES
+('DG001', 'U0001', 'P0001', 9, '2024-05-01', N'Phim rất hay, ý nghĩa.'),
+('DG002', 'U0002', 'P0003', 8, '2024-03-05', N'Kỹ xảo đỉnh cao, nội dung sâu sắc.'),
+('DG003', 'U0003', 'P0002', 7, '2024-03-10', N'Cốt truyện hấp dẫn.'),
+('DG004', 'U0004', 'P0004', 8, '2024-04-01', N'Hành động mãn nhãn.'),
+('DG005', 'U0005', 'P0005', 9, '2024-03-12', N'Hoạt hình vui nhộn, ý nghĩa.'),
+('DG006', 'U0009', 'P0001', 7, '2024-05-05', N'Phim ổn, nhưng hơi dài.'),
+('DG007', 'U0010', 'P0009', 10, '2024-01-01', N'Bộ phim yêu thích của tôi.'),
+('DG008', 'U0001', 'P0009', 9, '2024-01-10', N'Xem đi xem lại vẫn hay.'),
+('DG009', 'U0002', 'P0004', 7, '2024-04-05', N'Godzilla và Kong vẫn là số 1.'),
+('DG010', 'U0003', 'P0001', 8, '2024-05-03', N'Cốt truyện nhân văn.');
 set dateformat ymd
-INSERT INTO binhluan (idbinhluan,idUser, idPhim, noidung, ngaydang) VALUES
-	('BL001','KH001', 'PH001', N'Phim rất hay, diễn xuất tuyệt vời!', '2023-04-01'),
-	('BL002','KH002', 'PH002', N'Không thích cốt truyện, nhưng hình ảnh đẹp.', '2023-04-02'),
-	('BL003','KH003', 'PH003', N'Phim này thú vị, thích cách diễn viên thể hiện cảm xúc.', '2023-04-03'),
-	('BL004','KH004', 'PH004', N'Chắc chắn sẽ xem lại, phim này rất hấp dẫn!', '2023-04-04'),
-	('BL005','KH005', 'PH005', N'Không hợp gu của mình lắm, nhưng vẫn ok.', '2023-04-05'),
-	('BL006','KH006', 'PH006', N'Phim hay quá, mời bạn bè cùng xem!', '2023-04-06'),
-	('BL007','KH007', 'PH007', N'Phim hơi dài, nhưng kịch bản rất ấn tượng.', '2023-04-07'),
-	('BL008','KH008', 'PH008', N'Một bộ phim đáng xem, có nhiều thông điệp hay.', '2023-04-08'),
-	('BL009','KH009', 'PH009', N'Phim quá buồn, nhưng diễn viên làm tốt công việc của mình.', '2023-04-09'),
-	('BL010','KH010', 'PH010', N'Phim tuyệt vời, rất xứng đáng với sự mong đợi!', '2023-04-10');
+-- 3. Bảng dienvien
+INSERT INTO dienvien  VALUES
+('DV001', N'Ryan Reynolds', '1976-10-23', N'Canada', N'Diễn viên hài hành động.'),
+('DV002', N'Hugh Jackman', '1968-10-12', N'Australia', N'Nổi tiếng với vai Wolverine.'),
+('DV003', N'Zendaya', '1996-09-01', N'Mỹ', N'Ngôi sao trẻ đa tài.'),
+('DV004', N'Timothée Chalamet', '1995-12-27', N'Mỹ', N'Diễn viên trẻ triển vọng.'),
+('DV005', N'Võ Thanh Hiền', '1985-05-15', N'Việt Nam', N'Diễn viên thực lực.'),
+('DV006', N'Trần Thành', '1987-07-05', N'Việt Nam', N'Đạo diễn, diễn viên, MC.'),
+('DV007', N'Issa Rae', '1985-01-13', N'Mỹ', N'Biên kịch, diễn viên, nhà sản xuất.'),
+('DV008', N'Lương Định Thanh', '1990-09-20', N'Việt Nam', N'Diễn viên truyền hình và điện ảnh.'),
+('DV009', N'Kelly Marie Tran', '1989-01-17', N'Mỹ', N'Diễn viên lồng tiếng.'),
+('DV010', N'Quốc Anh', '1996-08-08', N'Việt Nam', N'Diễn viên trẻ.');
 
--- Insert into danhgia
+-- 4. Bảng theloai
+INSERT INTO TheLoai VALUES
+('TL001', N'Hành động'),
+('TL002', N'Khoa học viễn tưởng'),
+('TL003', N'Hài hước'),
+('TL004', N'Hoạt hình'),
+('TL005', N'Tâm lý'),
+('TL006', N'Kinh dị'),
+('TL007', N'Phiêu lưu'),
+('TL008', N'Tình cảm'),
+('TL009', N'Gia đình'),
+('TL010', N'Chính kịch');
+
+-- 12. Bảng dienvien_phim
+INSERT INTO DienVien_Phim (idDienVien, idPhim) VALUES
+('DV001', 'P0008'), ('DV002', 'P0008'), ('DV003', 'P0003'), ('DV004', 'P0003'),
+('DV005', 'P0001'), ('DV006', 'P0010'), ('DV007', 'P0006'), ('DV008', 'P0009'),
+('DV009', 'P0005'), ('DV010', 'P0002');
+
+-- 13. Bảng theloai_phim
+INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
+('TL001', 'P0001'), ('TL009', 'P0001'), ('TL005', 'P0002'), ('TL010', 'P0002'),
+('TL002', 'P0003'), ('TL007', 'P0003'), ('TL001', 'P0004'), ('TL002', 'P0004'),
+('TL004', 'P0005'), ('TL003', 'P0005'), ('TL004', 'P0006'), ('TL005', 'P0006'),
+('TL006', 'P0007'), ('TL001', 'P0008'), ('TL003', 'P0008'), ('TL005', 'P0009'),
+('TL008', 'P0009'), ('TL003', 'P0010'), ('TL009', 'P0010'), ('TL010', 'P0010');
 set dateformat ymd
-INSERT INTO danhgia (iddanhgia,idUser, idPhim, diemdanhgia, ngaydanhgia) VALUES
-	('DG001','KH001', 'PH001', 8, '2023-01-01'),
-	('DG002','KH002', 'PH002', 7, '2023-02-01'),
-	('DG003','KH003', 'PH003', 9, '2023-03-01'),
-	('DG004','KH004', 'PH004', 6, '2023-04-01'),
-	('DG005','KH005', 'PH005', 8, '2023-05-01'),
-	('DG006','KH006', 'PH006', 7, '2023-06-01'),
-	('DG007','KH007', 'PH007', 10, '2023-07-01'),
-	('DG008','KH008', 'PH008', 9, '2023-08-01'),
-	('DG009','KH009', 'PH009', 6, '2023-09-01'),
-	('DG010','KH010', 'PH010', 8, '2023-10-01');
+-- 16. Bảng ve (DonHangVe)
+INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai) VALUES
+('V0001', 'U0001', GETDATE(), 270000, N'Đã thanh toán'),
+('V0002', 'U0002', GETDATE(), 100000, N'Đã thanh toán'),
+('V0003', 'U0003', GETDATE(), 85000, N'Đã thanh toán'),
+('V0004', 'U0004', GETDATE(), 120000, N'Đang chờ thanh toán'),
+('V0005', 'U0005', GETDATE(), 180000, N'Đã thanh toán'),
+('V0006', 'U0009', GETDATE(), 90000, N'Đã thanh toán'),
+('V0007', 'U0010', GETDATE(), 95000, N'Đang chờ thanh toán'),
+('V0008', 'U0001', GETDATE(), 360000, N'Đã thanh toán'),
+('V0009', 'U0002', GETDATE(), 200000, N'Đã thanh toán'),
+('V0010', 'U0003', GETDATE(), 170000, N'Đã thanh toán');
 
+-- 8. Bảng Food
+INSERT INTO Food (idFood, TenDoAn, MoTa, GiaBan, TrangThai, soluongtonkho, url_anh) VALUES
+('F0001', N'Bắp rang bơ caramel', N'Bắp rang bơ vị caramel thơm ngon.', 60000, N'Còn hàng', 500, 'https://placehold.co/100x100/e0e0e0/black?text=Popcorn+C'),
+('F0002', N'Coca-Cola (lon)', N'Nước ngọt có ga giải khát.', 30000, N'Còn hàng', 800, 'https://placehold.co/100x100/e0e0e0/black?text=Coca'),
+('F0003', N'Snack khoai tây', N'Snack khoai tây giòn rụm.', 45000, N'Còn hàng', 300, 'https://placehold.co/100x100/e0e0e0/black?text=Snack'),
+('F0004', N'Combo bắp nước nhỏ', N'1 bắp nhỏ + 1 nước nhỏ.', 85000, N'Còn hàng', 200, 'https://placehold.co/100x100/e0e0e0/black?text=Combo+N'),
+('F0005', N'Combo bắp nước lớn', N'1 bắp lớn + 2 nước lớn.', 130000, N'Còn hàng', 150, 'https://placehold.co/100x100/e0e0e0/black?text=Combo+L'),
+('F0006', N'Hot dog', N'Bánh mì kẹp xúc xích nóng.', 70000, N'Còn hàng', 100, 'https://placehold.co/100x100/e0e0e0/black?text=Hotdog'),
+('F0007', N'Nước lọc đóng chai', N'Nước uống tinh khiết.', 20000, N'Còn hàng', 1000, 'https://placehold.co/100x100/e0e0e0/black?text=Water'),
+('F0008', N'Kẹo dẻo', N'Kẹo dẻo nhiều màu sắc.', 35000, N'Còn hàng', 400, 'https://placehold.co/100x100/e0e0e0/black?text=Candy'),
+('F0009', N'Pizza mini', N'Pizza cỡ nhỏ với nhiều vị.', 90000, N'Còn hàng', 80, 'https://placehold.co/100x100/e0e0e0/black?text=Pizza'),
+('F0100', N'Kem ly', N'Kem mát lạnh nhiều hương vị.', 55000, N'Còn hàng', 120, 'https://placehold.co/100x100/e0e0e0/black?text=IceCream');
 
---select 10 bộ phim mà user xem gần nhất
-SELECT p.*
-FROM lichsuxemphim ls
-JOIN phim p ON ls.idPhim = p.idPhim
-WHERE ls.idUser = 'KH001'
-ORDER BY ls.ngayxem DESC
-OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
+-- 18. Bảng ve_food (ChiTietDoAn)
+INSERT INTO Ve_Food (idVe, idFood,soluong) VALUES
+('V0001', 'F0004',1), ('V0001', 'F0002',1), -- Combo và Coca
+('V0002', 'F0001',1), -- Bắp
+('V0003', 'F0002',2), ('V0003', 'F0003',2), -- Coca và Snack
+('V0005', 'F0005',2), ('V0005', 'F0007',6), -- Combo lớn và nước lọc
+('V0006', 'F0001',3), ('V0006', 'F0002',4),
+('V0008', 'F0004',2), ('V0008', 'F0002',3), ('V0008', 'F0003',5),
+('V0009', 'F0001',6), ('V0009', 'F0002',1), ('V0009', 'F0007',2),
+('V0010', 'F0001',2), ('V0010', 'F0002',2);
+set dateformat ymd
+INSERT INTO ThanhToan (idThanhToan, idVe, phuongthucthanhtoan, trangthai, soTienThanhToan, ngayThanhToan) VALUES
+('TT001', 'V0001', N'online', N'Thành công', 270000, GETDATE()),
+('TT002', 'V0002', N'online', N'Thành công', 100000, GETDATE()),
+('TT003', 'V0003', N'online', N'Thành công', 85000, GETDATE()),
+('TT004', 'V0004', N'online', N'Thất bại', 120000, GETDATE()),
+('TT005', 'V0005', N'online', N'Thành công', 180000, GETDATE()),
+('TT006', 'V0006', N'tiền mặt', N'Thành công', 90000, GETDATE()),
+('TT007', 'V0007', N'online', N'Đang chờ', 95000, GETDATE()),
+('TT008', 'V0008', N'online', N'Thành công', 360000, GETDATE()),
+('TT009', 'V0009', N'online', N'Thành công', 200000, GETDATE()),
+('TT010', 'V0010', N'tiền mặt', N'Thành công', 170000, GETDATE());
 
-select * from khachhang
+-- 5. Bảng Phong
+INSERT INTO Phong (idPhong, tenphong, tongSoLuongChoNgoi) VALUES
+('R0001', N'Phòng Cinema 1', 150),
+('R0002', N'Phòng Cinema 2', 120),
+('R0003', N'Phòng Cinema 3', 100),
+('R0004', N'Phòng Cinema 4', 80),
+('R0005', N'Phòng Cinema 5', 180),
+('R0006', N'Phòng Cinema 6', 90),
+('R0007', N'Phòng Cinema 7', 70),
+('R0008', N'Phòng Cinema 8', 110),
+('R0009', N'Phòng Cinema 9', 130),
+('R0010', N'Phòng Cinema 10', 60);
+
+-- 6. Bảng LoaiGhe
+INSERT INTO LoaiGhe (idLoaiGhe, tenloaighe, gia) VALUES
+('LG001', N'Ghế thường', 100000),
+('LG002', N'Ghế VIP', 150000),
+('LG003', N'Ghế đôi', 200000);
+
+-- 14. Bảng chongoi
+-- Giả định mỗi phòng có ghế từ hàng A đến D, và cột 1 đến 20
+INSERT INTO ChoNgoi (idChoNgoi, idPhong, hang, [cot], idLoaiGhe) VALUES
+('CG001', 'R0001', N'A', 1, 'LG001'), ('CG002', 'R0001', N'A', 2, 'LG001'),
+('CG003', 'R0001', N'A', 3, 'LG001'), ('CG004', 'R0001', N'B', 1, 'LG001'),
+('CG005', 'R0002', N'A', 1, 'LG001'), ('CG006', 'R0002', N'B', 2, 'LG001'),
+('CG007', 'R0003', N'A', 1, 'LG002'), ('CG008', 'R0004', N'C', 1, 'LG003'),
+('CG009', 'R0005', N'D', 5, 'LG001'), ('CG010', 'R0001', N'A', 4, 'LG002'),
+-- Thêm ghế cho R0001 (đã có 5 ghế, cần thêm 15 ghế nữa)
+('CG011', 'R0001', N'A', 5, 'LG001'), ('CG012', 'R0001', N'B', 2, 'LG001'),
+('CG013', 'R0001', N'B', 3, 'LG001'), ('CG014', 'R0001', N'B', 4, 'LG002'),
+('CG015', 'R0001', N'B', 5, 'LG001'), ('CG016', 'R0001', N'C', 1, 'LG001'),
+('CG017', 'R0001', N'C', 2, 'LG001'), ('CG018', 'R0001', N'C', 3, 'LG002'),
+('CG019', 'R0001', N'C', 4, 'LG001'), ('CG020', 'R0001', N'C', 5, 'LG001'),
+('CG021', 'R0001', N'D', 1, 'LG001'), ('CG022', 'R0001', N'D', 2, 'LG001'),
+('CG023', 'R0001', N'D', 3, 'LG002'), ('CG024', 'R0001', N'D', 4, 'LG001'),
+('CG025', 'R0001', N'D', 5, 'LG001'),
+
+-- Thêm ghế cho R0002 (đã có 2 ghế, cần thêm 18 ghế nữa)
+('CG026', 'R0002', N'A', 2, 'LG001'), ('CG027', 'R0002', N'A', 3, 'LG001'),
+('CG028', 'R0002', N'A', 4, 'LG002'), ('CG029', 'R0002', N'A', 5, 'LG001'),
+('CG030', 'R0002', N'B', 1, 'LG001'), ('CG031', 'R0002', N'B', 3, 'LG001'),
+('CG032', 'R0002', N'B', 4, 'LG002'), ('CG033', 'R0002', N'B', 5, 'LG001'),
+('CG034', 'R0002', N'C', 1, 'LG001'), ('CG035', 'R0002', N'C', 2, 'LG001'),
+('CG036', 'R0002', N'C', 3, 'LG002'), ('CG037', 'R0002', N'C', 4, 'LG001'),
+('CG038', 'R0002', N'C', 5, 'LG001'), ('CG039', 'R0002', N'D', 1, 'LG001'),
+('CG040', 'R0002', N'D', 2, 'LG001'), ('CG041', 'R0002', N'D', 3, 'LG002'),
+('CG042', 'R0002', N'D', 4, 'LG001'), ('CG043', 'R0002', N'D', 5, 'LG001'),
+
+-- Thêm ghế cho R0003 (đã có 1 ghế, cần thêm 19 ghế nữa)
+('CG044', 'R0003', N'A', 2, 'LG002'), ('CG045', 'R0003', N'A', 3, 'LG002'),
+('CG046', 'R0003', N'A', 4, 'LG001'), ('CG047', 'R0003', N'A', 5, 'LG001'),
+('CG048', 'R0003', N'B', 1, 'LG001'), ('CG049', 'R0003', N'B', 2, 'LG001'),
+('CG050', 'R0003', N'B', 3, 'LG001'), ('CG051', 'R0003', N'B', 4, 'LG002'),
+('CG052', 'R0003', N'B', 5, 'LG001'), ('CG053', 'R0003', N'C', 1, 'LG001'),
+('CG054', 'R0003', N'C', 2, 'LG001'), ('CG055', 'R0003', N'C', 3, 'LG002'),
+('CG056', 'R0003', N'C', 4, 'LG001'), ('CG057', 'R0003', N'C', 5, 'LG001'),
+('CG058', 'R0003', N'D', 1, 'LG001'), ('CG059', 'R0003', N'D', 2, 'LG001'),
+('CG060', 'R0003', N'D', 3, 'LG002'), ('CG061', 'R0003', N'D', 4, 'LG001'),
+('CG062', 'R0003', N'D', 5, 'LG001'),
+
+-- Thêm ghế cho R0004 (đã có 1 ghế, cần thêm 19 ghế nữa)
+('CG063', 'R0004', N'A', 1, 'LG003'), ('CG064', 'R0004', N'A', 2, 'LG003'),
+('CG065', 'R0004', N'A', 3, 'LG001'), ('CG066', 'R0004', N'A', 4, 'LG001'),
+('CG067', 'R0004', N'A', 5, 'LG003'), ('CG068', 'R0004', N'B', 1, 'LG001'),
+('CG069', 'R0004', N'B', 2, 'LG001'), ('CG070', 'R0004', N'B', 3, 'LG001'),
+('CG071', 'R0004', N'B', 4, 'LG003'), ('CG072', 'R0004', N'B', 5, 'LG001'),
+('CG073', 'R0004', N'C', 2, 'LG001'), ('CG074', 'R0004', N'C', 3, 'LG001'),
+('CG075', 'R0004', N'C', 4, 'LG003'), ('CG076', 'R0004', N'C', 5, 'LG001'),
+('CG077', 'R0004', N'D', 1, 'LG001'), ('CG078', 'R0004', N'D', 2, 'LG001'),
+('CG079', 'R0004', N'D', 3, 'LG001'), ('CG080', 'R0004', N'D', 4, 'LG003'),
+('CG081', 'R0004', N'D', 5, 'LG001'),
+
+-- Thêm ghế cho R0005 (đã có 1 ghế, cần thêm 19 ghế nữa)
+('CG082', 'R0005', N'A', 1, 'LG001'), ('CG083', 'R0005', N'A', 2, 'LG001'),
+('CG084', 'R0005', N'A', 3, 'LG001'), ('CG085', 'R0005', N'A', 4, 'LG001'),
+('CG086', 'R0005', N'A', 5, 'LG001'), ('CG087', 'R0005', N'B', 1, 'LG001'),
+('CG088', 'R0005', N'B', 2, 'LG001'), ('CG089', 'R0005', N'B', 3, 'LG001'),
+('CG090', 'R0005', N'B', 4, 'LG001'), ('CG091', 'R0005', N'B', 5, 'LG001'),
+('CG092', 'R0005', N'C', 1, 'LG001'), ('CG093', 'R0005', N'C', 2, 'LG001'),
+('CG094', 'R0005', N'C', 3, 'LG001'), ('CG095', 'R0005', N'C', 4, 'LG001'),
+('CG096', 'R0005', N'C', 5, 'LG001'), ('CG097', 'R0005', N'D', 1, 'LG001'),
+('CG098', 'R0005', N'D', 2, 'LG001'), ('CG099', 'R0005', N'D', 3, 'LG001'),
+('CG100', 'R0005', N'D', 4, 'LG001'), ('CG101', 'R0005', N'E', 1, 'LG001'); -- Thêm 1 ghế để đảm bảo đủ 20 sau CG009
+
+-- 7. Bảng SuatChieu
+INSERT INTO SuatChieu (idSuatChieu, tenSuatChieu, tgianchieu) VALUES
+('SC001', N'Suất sáng 10:00', '10:00:00'),
+('SC002', N'Suất trưa 13:00', '13:00:00'),
+('SC003', N'Suất chiều 16:00', '16:00:00'),
+('SC004', N'Suất tối 19:00', '19:00:00'),
+('SC005', N'Suất khuya 22:00', '22:00:00'),
+('SC006', N'Suất đặc biệt 09:30', '09:30:00'),
+('SC007', N'Suất muộn 23:30', '23:30:00'),
+('SC008', N'Suất sớm 08:30', '08:30:00'),
+('SC009', N'Suất 14:30', '14:30:00'),
+('SC010', N'Suất 20:30', '20:30:00');
+set dateformat ymd
+-- 15. Bảng lichchieu
+INSERT INTO LichChieu (idLichChieu, idPhim, idSuatChieu, idPhong, ngaychieu) VALUES
+('LC001', 'P0001', 'SC003', 'R0001', '2024-06-07' ),
+('LC002', 'P0001', 'SC004', 'R0001', '2024-06-07' ),
+('LC003', 'P0003', 'SC004', 'R0002', '2024-06-07' ),
+('LC004', 'P0005', 'SC002', 'R0003', '2024-06-07' ),
+('LC005', 'P0006', 'SC001', 'R0004', '2024-06-15' ),
+('LC006', 'P0007', 'SC005', 'R0001', '2024-06-28' ),
+('LC007', 'P0008', 'SC004', 'R0005', '2024-07-26'),
+('LC008', 'P0001', 'SC003', 'R0001', '2024-06-08' ),
+('LC009', 'P0003', 'SC004', 'R0002', '2024-06-08' ),
+('LC010', 'P0005', 'SC002', 'R0003', '2024-06-08' ),
+('LC011', 'P0001', 'SC006', 'R0002' ,'2024-06-08'),
+('LC012', 'P0002', 'SC001', 'R0003', '2024-06-07'),
+('LC013', 'P0004', 'SC005', 'R0004', '2024-06-07'),
+('LC014', 'P0009', 'SC006', 'R0005', '2024-06-07'),
+('LC015', 'P0002', 'SC002', 'R0006', '2024-06-08'), -- Sử dụng phòng mới R0006
+('LC016', 'P0004', 'SC007', 'R0007', '2024-06-08'), -- Sử dụng suất chiếu SC007 và phòng R0007
+('LC017', 'P0010', 'SC008', 'R0008', '2024-06-08'), -- Sử dụng suất chiếu SC008 và phòng R0008
+('LC018', 'P0001', 'SC009', 'R0009', '2024-06-09'), -- Sử dụng suất chiếu SC009 và phòng R0009
+('LC019', 'P0003', 'SC010', 'R0010', '2024-06-09'), -- Sử dụng suất chiếu SC010 và phòng R0010
+('LC020', 'P0005', 'SC001', 'R0001', '2024-06-10'), -- Quay lại phòng R0001
+('LC021', 'P0006', 'SC002', 'R0002', '2024-06-10'),
+('LC022', 'P0007', 'SC003', 'R0003', '2024-06-15'),
+('LC023', 'P0008', 'SC004', 'R0004', '2024-06-15'),
+('LC024', 'P0009', 'SC005', 'R0005', '2024-06-20'),
+('LC025', 'P0010', 'SC006', 'R0006', '2024-06-20'),
+('LC026', 'P0001', 'SC007', 'R0007', '2024-07-01'), -- Suất chiếu mới, phòng mới, tháng mới
+('LC027', 'P0002', 'SC008', 'R0008', '2024-07-01'),
+('LC028', 'P0003', 'SC009', 'R0009', '2024-07-05'),
+('LC029', 'P0004', 'SC010', 'R0010', '2024-07-05'),
+('LC030', 'P0005', 'SC001', 'R0001', '2024-07-10');
+-- 19. Bảng chitietdatve
+INSERT INTO ChiTietDatVe (idChiTietVe, idVe, idLichChieu, idChoNgoi, GiaVeDonLe, TrangThaiVe) VALUES
+('CTV01', 'V0001', 'LC001', 'CG001', 90000, N'Đã đặt'),
+('CTV02', 'V0001', 'LC001', 'CG002', 90000, N'Đã đặt'),
+('CTV03', 'V0001', 'LC001', 'CG003', 90000, N'Đã đặt'),
+('CTV04', 'V0002', 'LC003', 'CG007', 100000, N'Đã đặt'),
+('CTV05', 'V0003', 'LC004', 'CG005', 85000, N'Đã đặt'),
+('CTV06', 'V0004', 'LC005', 'CG008', 120000, N'Đã đặt'),
+('CTV07', 'V0005', 'LC002', 'CG004', 95000, N'Đã đặt'),
+('CTV08', 'V0005', 'LC002', 'CG009', 95000, N'Đã đặt'),
+('CTV09', 'V0009', 'LC009', 'CG006', 100000, N'Đã đặt'),
+('CTV10', 'V0009', 'LC009', 'CG007', 100000, N'Đã đặt');
+--chọn phim
+select * from phim where phim.ngayphathanh <= getdate()+30
+--chọn chọn ngày đi sau khi chọn phim
+select distinct l.ngaychieu from lichchieu l, phim p, suatchieu s
+where l.idPhim = p.idPhim  and l.idSuatChieu = s.idSuatChieu and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu'
+--chọn suất chiếu và phòng tương ứng sau khi đã chọn phim và ngày đi
+select s.*, ph.tenphong from lichchieu l, phim p, suatchieu s, phong ph
+where l.idPhim = p.idPhim  
+	and l.idSuatChieu = s.idSuatChieu
+	and l.idPhong = ph.idPhong
+	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
+	and l.ngaychieu = '2024-06-07'
+--lấy ra phòng sau khi đã chọn phim, ngày đi và thời gian chiếu
+select ph.* from lichchieu l, phim p, suatchieu s, phong ph
+where l.idPhim = p.idPhim  
+	and l.idSuatChieu = s.idSuatChieu 
+	and l.idPhong = ph.idPhong
+	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
+	and l.ngaychieu = '2024-06-07'
+	and s.tgianchieu = '16:00:00'
+--lấy ra lịch chiếu từ các thuộc tính đã chọn
+select distinct l.* from lichchieu l, phim p, suatchieu s, phong ph
+where l.idPhim = p.idPhim  
+	and l.idSuatChieu = s.idSuatChieu 
+	and l.idPhong = ph.idPhong
+	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
+	and l.ngaychieu = '2024-06-07'
+	and s.tgianchieu = '16:00:00'
+--lấy tất cả các ghế ngồi đã được đặt từ các thuộc tính đã chọn
+select ch.*
+from chitietdatve c join chongoi ch on c.idChoNgoi = ch.idChoNgoi
+where c.idLichChieu = (
+			select top 1 l.idLichChieu from lichchieu l, phim p, suatchieu s
+			where l.idPhim = p.idPhim  
+				and l.idSuatChieu = s.idSuatChieu 
+				and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
+				and l.ngaychieu = '2024-06-07'
+				and s.tgianchieu = '16:00:00')
+--thêm bản ghi cho vé vừa mới đặt
+insert into ve values
+('V0011','U0001',getdate(),0,N'Đang chờ thanh toán');
+--trước khi insert chitietdatve người dùng sẽ lấy danh sách ghế đã chọn từ trên giao diện sau đó với mỗi ghế sẽ select ra 1 giá rồi sau đó
+--mới insert vào bảng chitietdatve
+insert into chitietdatve values
+('CTV11', 'V0011', 'LC001', 'CG006', 100000, N'Đã đặt'),
+('CTV12', 'V0011', 'LC001', 'CG005', 100000, N'Đã đặt');
+--chọn mua thêm đồ ăn đồ uống nếu muốn
+insert into ve_food values
+('V0011', 'F0001',2),
+('V0011', 'F0003',2);
+--tính tổng só tiền phải trả sau khi đặt chỗ và mua đồ ăn
+update ve
+set TongGiaTriDonHang = ISNULL((SELECT SUM(c.GiaVeDonLe)
+                                FROM chitietdatve c
+                                WHERE c.idVe = 'V0011'), 0) 
+						+ ISNULL((SELECT SUM(vf.SoLuong * f.giaban) -- Tổng tiền đồ ăn (sử dụng DonGiaBan từ Ve_Food)
+                                from ve_food vf join Food f on vf.idFood = f.idFood
+                               WHERE vf.idVe = 'V0011'), 0)
+where idVe = 'V0011'
+--kiểm tra xem giá đã cập nhật chưa
+select * from ve where idVe = 'V0011'
+-- thêm bản ghi thanh toán cho vé vừa mới đặt
+insert into thanhtoan values
+('TT011', 'V0011', N'online', N'Thành công', 410000, GETDATE());
+select * from thanhtoan where idVe = 'V0011'
+-- nếu thanh toán thành công thì sẽ chuyển trạng thái của vé thành đã thanh toán
+update ve
+set trangthai = N'Đã thanh toán'
+where idVe = 'V0011'
+--khi thêm lịch trình nhân viên sẽ xem gọi hàm này để kiểm tra có trùng lịch hay không, nếu trả ra 1 bản ghi hoặc nhiều hơn thì sẽ là lịch  này bị trùng
+--SELECT * FROM LichChieu lc
+--         JOIN SuatChieu sc ON lc.idSuatChieu = sc.idSuatChieu
+--         JOIN Phim p ON lc.idPhim = p.idPhim
+--         WHERE lc.idPhong = :phongId
+--          AND lc.ngaychieu = :ngayChieu
+--          AND (
+--               (sc.tgianchieu < :thoiGianKetThuc AND :tgianChieu < DATEADD(minute, p.thoiluong, sc.tgianchieu))
+--           );

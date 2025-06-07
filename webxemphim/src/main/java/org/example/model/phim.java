@@ -1,9 +1,6 @@
 package org.example.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,11 +16,19 @@ public class phim {
     @Id
     private String idPhim;
     private String tenphim;
+    @Column(name = "DaoDien")
     private String daodien;
-    private String MoTaPhim;
-    private int ThoiLuong;
-    private LocalDate NgaySanXuat;
-    private int LuotXem;
+    @Column(name = "thoiluong")
+    private int thoiLuong;
+    @Column(name = "ngayphathanh")
+    private LocalDate ngaySanXuat;
+    @Column(name = "luotxem")
+    private int luotXem;
     private String quocgia;
     private int gioihandotuoi;
+    private String trangthai;
+    @Column(name = "mo_ta")
+    private String moTaPhim;
+    @Column(name = "url_poster")
+    private String url_anh;
 }

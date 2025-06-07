@@ -53,12 +53,14 @@ public class phimService {
         phim updated = existing.toBuilder()
                 .tenphim(phim.getTenphim())
                 .daodien(phim.getDaodien())
-                .MoTaPhim(phim.getMoTaPhim())
-                .ThoiLuong(phim.getThoiLuong())
-                .NgaySanXuat(phim.getNgaySanXuat())
-                .LuotXem(phim.getLuotXem())
+                .moTaPhim(phim.getMoTaPhim())
+                .thoiLuong(phim.getThoiLuong())
+                .ngaySanXuat(phim.getNgaySanXuat())
+                .luotXem(phim.getLuotXem())
                 .quocgia(phim.getQuocgia())
                 .gioihandotuoi(phim.getGioihandotuoi())
+                .trangthai(phim.getTrangthai())
+                .url_anh(phim.getUrl_anh())
                 .build();
         return phimrepository.save(updated);
     }

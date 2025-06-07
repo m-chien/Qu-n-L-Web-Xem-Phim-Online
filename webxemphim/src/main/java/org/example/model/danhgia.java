@@ -15,12 +15,8 @@ import java.time.LocalDate;
 public class danhgia {
     @Id
     String idDanhGia;
-    @ManyToOne
-    @JoinColumn(name = "idUser", referencedColumnName = "idUser")
-    khachhang idUser; // ID của khách hàng
-    @ManyToOne
-    @JoinColumn(name = "idPhim", referencedColumnName = "idPhim")
-    phim idPhim; // ID của phim
-    int diemDanhGia; // Điểm đánh giá
-    LocalDate ngayDanhGia; // Ngày đánh giá
+    String idUser;
+    String idPhim;
+    int diemDanhGia;
+    LocalDate ngayDanhGia;
 }
