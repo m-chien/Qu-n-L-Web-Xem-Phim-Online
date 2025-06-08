@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/film")
+@RequestMapping("/api")
 public class phimController {
     @Autowired
     private phimService phimService;
 
-    @GetMapping("/getall")
+    @GetMapping("/movies")
     public List<phim> getAllPhim()
     {
         return phimService.getallphim();

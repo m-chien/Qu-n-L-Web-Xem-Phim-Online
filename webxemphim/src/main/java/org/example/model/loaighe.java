@@ -1,6 +1,5 @@
 package org.example.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -14,16 +13,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class nhanvien {
+public class loaighe {
     @Id
-    String idNhanvien;
-    String idUser;
-    String hoten;
-    String sdt;
-    String emaillienhe;
-    String gioitinh;
-    String chucvu;
-    @Column(name = "Luong")
-    BigDecimal luong;
-    String trangthai;
+    String idLoaiGhe;
+    String tenloaighe;
+    BigDecimal gia;
 }

@@ -14,16 +14,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class nhanvien {
+public class chitietdatve {
     @Id
-    String idNhanvien;
-    String idUser;
-    String hoten;
-    String sdt;
-    String emaillienhe;
-    String gioitinh;
-    String chucvu;
-    @Column(name = "Luong")
-    BigDecimal luong;
-    String trangthai;
+    String idChiTietVe;
+    String idVe;
+    String idLichChieu;
+    String idChoNgoi;
+    @Column(name = "GiaVeDonLe")
+    BigDecimal giaVeDonLe;
+    @Column(name = "TrangThaiVe")
+    String trangthaive;
 }

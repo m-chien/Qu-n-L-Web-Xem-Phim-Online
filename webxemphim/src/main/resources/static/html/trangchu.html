@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CinemaVN - Đặt vé xem phim online</title>
+    <link rel="stylesheet" href="/css/trangchu.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="navbar">
+        <div class="nav-brand">
+          <i class="fas fa-film"></i>
+          <span>ChienCINEMA</span>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="#" class="nav-link active">Trang chủ</a></li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li><a href="#" class="nav-link">Rạp</a></li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#" class="nav-link">Tin tức</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="btn-login">Đăng nhập</button>
+          <button class="btn-register">Đăng ký</button>
+        </div>
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="hero-slider">
+        <div class="hero-slide active">
+          <div class="hero-bg"></div>
+          <div class="hero-content">
+            <h1 id="hero-title">Chào mừng đến với ChienCINEMA</h1>
+            <p id="hero-description">Trải nghiệm điện ảnh tuyệt vời nhất</p>
+            <div class="hero-buttons">
+              <button class="btn-primary">Đặt vé ngay</button>
+              <button class="btn-secondary">Xem trailer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-indicators">
+        <span class="indicator active"></span>
+        <span class="indicator"></span>
+        <span class="indicator"></span>
+      </div>
+    </section>
+
+    <!-- Quick Booking -->
+    <section class="quick-booking">
+      <div class="container">
+        <div class="booking-form">
+          <div class="form-group">
+            <label>Chọn phim</label>
+            <select id="movie-select">
+              <option value="">Đang tải...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Chọn rạp</label>
+            <select>
+              <option>Galaxy Nguyễn Du</option>
+              <option>Galaxy Đà Nẵng</option>
+              <option>Galaxy Kinh Dương Vương</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Chọn ngày</label>
+            <input type="date" />
+          </div>
+          <div class="form-group">
+            <label>Chọn suất</label>
+            <select>
+              <option>10:00</option>
+              <option>13:00</option>
+              <option>16:00</option>
+              <option>19:00</option>
+              <option>22:00</option>
+            </select>
+          </div>
+          <button class="btn-book">Đặt vé</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Now Showing -->
+    <section class="now-showing">
+      <div class="container">
+        <h2 class="section-title">
+          Phim đang chiếu
+          <div class="loading-spinner" id="now-showing-loading">
+            <div class="loading"></div>
+          </div>
+        </h2>
+        <div class="movie-grid" id="now-showing-grid">
+          <!-- Movies will be loaded here via API -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="coming-soon">
+      <div class="container">
+        <h2 class="section-title">
+          Phim sắp chiếu
+          <div class="loading-spinner" id="coming-soon-loading">
+            <div class="loading"></div>
+          </div>
+        </h2>
+        <div class="movie-grid" id="coming-soon-grid">
+          <!-- Movies will be loaded here via API -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Promotions -->
+    <section class="promotions">
+      <div class="container">
+        <h2 class="section-title">Khuyến mãi hot</h2>
+        <div class="promo-grid">
+          <div class="promo-card">
+            <div class="promo-image">
+              <div class="promo-placeholder">
+                <i class="fas fa-percent"></i>
+              </div>
+            </div>
+            <div class="promo-content">
+              <h3>Giảm 50% vé thứ 2 hàng tuần</h3>
+              <p>Áp dụng cho tất cả suất chiếu vào thứ 2 hàng tuần</p>
+              <button class="btn-promo">Xem chi tiết</button>
+            </div>
+          </div>
+
+          <div class="promo-card">
+            <div class="promo-image">
+              <div class="promo-placeholder">
+                <i class="fas fa-gift"></i>
+              </div>
+            </div>
+            <div class="promo-content">
+              <h3>Combo bắp nước chỉ 99k</h3>
+              <p>1 bắp rang bơ + 2 nước ngọt + 1 snack</p>
+              <button class="btn-promo">Xem chi tiết</button>
+            </div>
+          </div>
+
+          <div class="promo-card">
+            <div class="promo-image">
+              <div class="promo-placeholder">
+                <i class="fas fa-users"></i>
+              </div>
+            </div>
+            <div class="promo-content">
+              <h3>Vé nhóm từ 4 người giảm 30%</h3>
+              <p>Áp dụng cho nhóm từ 4 người trở lên</p>
+              <button class="btn-promo">Xem chi tiết</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-brand">
+              <i class="fas fa-film"></i>
+              <span>ChienCINEMA</span>
+            </div>
+            <p>Website đặt vé xem phim hàng đầu Việt Nam</p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Dịch vụ</h4>
+            <ul>
+              <li><a href="#">Đặt vé online</a></li>
+              <li><a href="#">Chọn chỗ ngồi</a></li>
+              <li><a href="#">Thẻ thành viên</a></li>
+              <li><a href="#">Voucher</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Hỗ trợ</h4>
+            <ul>
+              <li><a href="#">Câu hỏi thường gặp</a></li>
+              <li><a href="#">Chính sách</a></li>
+              <li><a href="#">Liên hệ</a></li>
+              <li><a href="#">Góp ý</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Liên hệ</h4>
+            <div class="contact-info">
+              <p><i class="fas fa-phone"></i> 0969 827 284</p>
+              <p><i class="fas fa-envelope"></i> chientranminh355@gmail.com</p>
+              <p><i class="fas fa-map-marker-alt"></i> 88 Nguyễn Giản Thanh</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 ChienCINEMA. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Thông báo lỗi</h3>
+        <p id="error-message"></p>
+      </div>
+    </div>
+
+    <script>
+      // API Configuration
+      const API_BASE_URL = "http://localhost:8080/api";
+      const MOVIES_ENDPOINT = `${API_BASE_URL}/movies`;
+
+      // Global variables
+      let allMovies = [];
+
+      // DOM Elements
+      const nowShowingGrid = document.getElementById("now-showing-grid");
+      const comingSoonGrid = document.getElementById("coming-soon-grid");
+      const movieSelect = document.getElementById("movie-select");
+      const nowShowingLoading = document.getElementById("now-showing-loading");
+      const comingSoonLoading = document.getElementById("coming-soon-loading");
+      const errorModal = document.getElementById("error-modal");
+      const errorMessage = document.getElementById("error-message");
+
+      // Utility Functions
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorModal.style.display = "block";
+      }
+
+      function hideLoading(element) {
+        if (element) {
+          element.style.display = "none";
+        }
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return "Chưa có thông tin";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("vi-VN");
+      }
+
+      // API Functions
+      async function fetchMovies() {
+        try {
+          const response = await fetch(MOVIES_ENDPOINT);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const movies = await response.json();
+          allMovies = movies;
+          return movies;
+        } catch (error) {
+          console.error("Error fetching movies:", error);
+          showError("Không thể tải danh sách phim. Vui lòng thử lại sau.");
+          return [];
+        }
+      }
+
+      // Movie Card Creation
+      function createMovieCard(movie, isComingSoon = false) {
+        const card = document.createElement("div");
+        card.className = "movie-card";
+
+        const posterUrl = movie.url_anh || "";
+        const rating = movie.luotXem
+          ? Math.min(Math.round(movie.luotXem / 1000), 10)
+          : 0;
+
+        card.innerHTML = `
+          <div class="movie-poster">
+            ${
+              posterUrl
+                ? `<img src="${posterUrl}" alt="${movie.tenphim}" style="width: 100%; height: 100%; object-fit: cover;">`
+                : `<div class="poster-placeholder">
+                <i class="fas fa-film"></i>
+              </div>`
+            }
+            <div class="movie-overlay">
+              <button class="btn-trailer" onclick="playTrailer('${
+                movie.idPhim
+              }')">
+                <i class="fas fa-play"></i>
+              </button>
+            </div>
+            ${
+              isComingSoon && movie.ngaySanXuat
+                ? `<div class="coming-date">${formatDate(
+                    movie.ngaySanXuat
+                  )}</div>`
+                : ""
+            }
+          </div>
+          <div class="movie-info">
+            <h3>${movie.tenphim || "Chưa có tên"}</h3>
+            ${
+              !isComingSoon
+                ? `
+              <div class="movie-rating">
+                <i class="fas fa-star"></i>
+                <span>${rating}/10</span>
+              </div>
+            `
+                : ""
+            }
+            <p class="movie-genre">
+              ${movie.quocgia || "Chưa rõ"} • ${movie.gioihandotuoi || 0}
+              ${movie.thoiLuong ? ` • ${movie.thoiLuong} phút` : ""}
+            </p>
+            ${
+              movie.daodien
+                ? `<p class="movie-director">Đạo diễn: ${movie.daodien}</p>`
+                : ""
+            }
+            ${
+              movie.moTaPhim
+                ? `<p class="movie-description">${movie.moTaPhim.substring(
+                    0,
+                    100
+                  )}...</p>`
+                : ""
+            }
+            <button class="btn-book-movie" onclick="${
+              isComingSoon
+                ? `notifyMovie('${movie.idPhim}')`
+                : `bookMovie('${movie.idPhim}')`
+            }">
+              ${isComingSoon ? "Đặt thông báo" : "Đặt vé"}
+            </button>
+          </div>
+        `;
+
+        return card;
+      }
+
+      // Movie Loading Functions
+      function loadNowShowingMovies(movies) {
+        hideLoading(nowShowingLoading);
+        nowShowingGrid.innerHTML = "";
+
+        const nowShowingMovies = movies.filter(
+          (movie) =>
+            movie.trangthai &&
+            movie.trangthai.toLowerCase().includes("đang chiếu")
+        );
+
+        if (nowShowingMovies.length === 0) {
+          nowShowingGrid.innerHTML = `
+            <div class="no-movies">
+              <p>Hiện tại chưa có phim nào đang chiếu</p>
+            </div>
+          `;
+          return;
+        }
+
+        nowShowingMovies.forEach((movie) => {
+          const movieCard = createMovieCard(movie, false);
+          nowShowingGrid.appendChild(movieCard);
+        });
+      }
+
+      function loadComingSoonMovies(movies) {
+        hideLoading(comingSoonLoading);
+        comingSoonGrid.innerHTML = "";
+
+        const comingSoonMovies = movies.filter(
+          (movie) =>
+            movie.trangthai &&
+            movie.trangthai.toLowerCase().includes("sắp chiếu")
+        );
+
+        if (comingSoonMovies.length === 0) {
+          comingSoonGrid.innerHTML = `
+            <div class="no-movies">
+              <p>Hiện tại chưa có phim nào sắp chiếu</p>
+            </div>
+          `;
+          return;
+        }
+
+        comingSoonMovies.forEach((movie) => {
+          const movieCard = createMovieCard(movie, true);
+          comingSoonGrid.appendChild(movieCard);
+        });
+      }
+
+      function loadMovieSelect(movies) {
+        movieSelect.innerHTML = '<option value="">Chọn phim</option>';
+
+        const availableMovies = movies.filter(
+          (movie) =>
+            movie.trangthai &&
+            movie.trangthai.toLowerCase().includes("đang chiếu")
+        );
+
+        availableMovies.forEach((movie) => {
+          const option = document.createElement("option");
+          option.value = movie.idPhim;
+          option.textContent = movie.tenphim;
+          movieSelect.appendChild(option);
+        });
+      }
+
+      // Event Handlers
+      function playTrailer(movieId) {
+        const movie = allMovies.find((m) => m.idPhim === movieId);
+        if (movie) {
+          alert(`Đang phát trailer: ${movie.tenphim}`);
+        }
+      }
+
+      function bookMovie(movieId) {
+        const movie = allMovies.find((m) => m.idPhim === movieId);
+        if (movie) {
+          alert(`Đặt vé phim: ${movie.tenphim}`);
+        }
+      }
+
+      function notifyMovie(movieId) {
+        const movie = allMovies.find((m) => m.idPhim === movieId);
+        if (movie) {
+          alert(`Đã đặt thông báo cho phim: ${movie.tenphim}`);
+        }
+      }
+
+      // Initialize App
+      async function initializeApp() {
+        try {
+          const movies = await fetchMovies();
+
+          if (movies.length > 0) {
+            loadNowShowingMovies(movies);
+            loadComingSoonMovies(movies);
+            loadMovieSelect(movies);
+
+            // Update hero with featured movie
+            const featuredMovie =
+              movies.find((m) => m.luotXem && m.luotXem > 0) || movies[0];
+            if (featuredMovie) {
+              document.getElementById("hero-title").textContent =
+                featuredMovie.tenphim;
+              document.getElementById("hero-description").textContent =
+                featuredMovie.moTaPhim || "Trải nghiệm điện ảnh tuyệt vời";
+            }
+          } else {
+            hideLoading(nowShowingLoading);
+            hideLoading(comingSoonLoading);
+          }
+        } catch (error) {
+          console.error("Error initializing app:", error);
+          hideLoading(nowShowingLoading);
+          hideLoading(comingSoonLoading);
+        }
+      }
+
+      // Error Modal Event Listeners
+      document.querySelector(".close").onclick = function () {
+        errorModal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target === errorModal) {
+          errorModal.style.display = "none";
+        }
+      };
+
+      // Mobile Menu Toggle
+      document
+        .querySelector(".mobile-menu-toggle")
+        .addEventListener("click", function () {
+          document.querySelector(".nav-menu").toggleClass("active");
+        });
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", initializeApp);
+
+      // Refresh data every 5 minutes
+      setInterval(async () => {
+        const movies = await fetchMovies();
+        if (movies.length > 0) {
+          loadNowShowingMovies(movies);
+          loadComingSoonMovies(movies);
+          loadMovieSelect(movies);
+        }
+      }, 300000);
+    </script>
+  </body>
+</html>

@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -14,16 +15,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class nhanvien {
+public class ve {
     @Id
-    String idNhanvien;
+    String idVe;
     String idUser;
-    String hoten;
-    String sdt;
-    String emaillienhe;
-    String gioitinh;
-    String chucvu;
-    @Column(name = "Luong")
-    BigDecimal luong;
+    @Column(name = "NgayDat")
+    LocalDateTime ngaydat;
+    @Column(name = "TongGiaTriDonHang")
+    BigDecimal tongGiaTriDonHang;
     String trangthai;
 }

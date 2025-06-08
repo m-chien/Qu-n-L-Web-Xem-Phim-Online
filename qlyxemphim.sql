@@ -329,16 +329,24 @@ INSERT INTO KhachHang (idKhachhang, idUser, hoten, sdt, ngaysinh, gioitinh) VALU
 set dateformat ymd
 -- 2. Bảng phim
 INSERT INTO Phim (idPhim, tenphim, DaoDien, thoiluong, ngayphathanh, gioihandotuoi, quocgia, luotxem, trangthai, url_poster, mo_ta) VALUES
-('P0001', N'Lật Mặt 7: Một Chuyến Phiêu Lưu', N'Lý Hải', 135, '2024-04-26', N'K', N'Việt Nam', 1500000, N'Đang chiếu', '/images/mnOlHBO.jpg', N'Hành trình cảm xúc và sự đoàn tụ gia đình.'),
+('P0001', N'Lật Mặt 7: Một Chuyến Phiêu Lưu', N'Lý Hải', 135, '2024-04-26', N'K', N'Việt Nam', 1500000, N'Đang chiếu', '/images/latmat.jpg', N'Hành trình cảm xúc và sự đoàn tụ gia đình.'),
 ('P0002', N'Cái Giá Của Hạnh Phúc', N'Nguyễn Ngọc Lâm', 105, '2024-03-08', N'T16', N'Việt Nam', 800000, N'Đã chiếu', '/images/caigiacuamothanhphuc.jpg', N'Câu chuyện về những lựa chọn và hậu quả.'),
 ('P0003', N'Dune: Part Two', N'Denis Villeneuve', 166, '2024-03-01', N'T13', N'Mỹ', 2500000, N'Đã chiếu', '/images/Dune.jpg', N'Chuyến đi sử thi tiếp theo trên hành tinh Arrakis.'),
 ('P0004', N'Godzilla x Kong: The New Empire', N'Adam Wingard', 115, '2024-03-29', N'T13', N'Mỹ', 1800000, N'Đã chiếu', '/images/Kong.jpg', N'Hai titan huyền thoại đối đầu với một mối đe dọa mới.'),
-('P0005', N'Kung Fu Panda 4', N'Mike Mitchell', 94, '2024-03-08', N'P', N'Mỹ', 1200000, N'Đã chiếu', '/images/panda.jpg', N'Po trở lại với cuộc phiêu lưu mới đầy hài hước.'),
+('P0005', N'Kung Fu Panda 4', N'Mike Mitchell', 94, '2024-03-08', N'P', N'Mỹ', 1200000, N'Đang chiếu', '/images/panda.jpg', N'Po trở lại với cuộc phiêu lưu mới đầy hài hước.'),
 ('P0006', N'Inside Out 2', N'Kelsey Mann', 96, '2024-06-14', N'P', N'Mỹ', 0, N'Sắp chiếu', '/images/insideout.jpg', N'Riley đối mặt với những cảm xúc mới khi trưởng thành.'),
 ('P0007', N'A Quiet Place: Day One', N'Michael Sarnoski', 100, '2024-06-28', N'T16', N'Mỹ', 0, N'Sắp chiếu', '/images/quietplace.jpg', N'Ngày đầu tiên khi sự im lặng trở thành sinh tồn.'),
 ('P0008', N'Deadpool & Wolverine', N'Shawn Levy', 127, '2024-07-26', N'T18', N'Mỹ', 0, N'Sắp chiếu', '/images/deadpool.jpg', N'Hai siêu anh hùng bất đắc dĩ hợp tác.'),
 ('P0009', N'Mắt Biếc', N'Victor Vũ', 117, '2019-12-20', N'T13', N'Việt Nam', 3000000, N'Đã chiếu', '/images/matbiec.jpg', N'Tình yêu tuổi học trò trong bối cảnh làng Đo Đo.'),
-('P0010', N'Bố Già', N'Trấn Thành', 128, '2021-03-12', N'T13', N'Việt Nam', 4200000, N'Đã chiếu', '/images/bogia.jpg', N'Câu chuyện cảm động về tình cha con.');
+('P0010', N'Bố Già', N'Trấn Thành', 128, '2021-03-12', N'T13', N'Việt Nam', 4200000, N'Đang chiếu', '/images/bogia.jpg', N'Câu chuyện cảm động về tình cha con.'),
+('P0011', N'Dưới Đáy Hồ', N'Trần Hữu Tấn', 98, '2025-06-06', N'T18', N'Việt Nam', 2340000, N'Đang chiếu', '/images/duoidayho.jpg', N'Phim kinh dị về truyền thuyết bí ẩn vùng hồ.'),
+('P0012', N'Điệp Quỷ Tân Nương', N'Paul Agusta', 101, '2025-06-06', N'T16', N'Indonesia', 237890, N'Đang chiếu', '/images/diephuytannuong.jpg', N'Phim kinh dị Indonesia xoay quanh hôn lễ ám ảnh.'),
+('P0013', N'Từ Vũ Trụ John Wick: Ballerina', N'Len Wiseman', 125, '2025-06-06', N'T18', N'Mỹ', 1234440, N'Đang chiếu', '/images/johnwick_ballerina.jpg', N'Phim hành động bom tấn về assassin trong thế giới John Wick.'),
+('P0014', N'Buôn Thần Bán Thánh', N'Pae Arak Amornsupasiri', 125, '2025-06-06', N'T16', N'Thái Lan', 567550, N'Đang chiếu', '/images/buonthan_banthan.jpg', N'Hài Thái nói về những buôn bán tâm linh với góc nhìn hài hước.'),
+('P0015', N'Dính "Thính" Là Yêu', N'Kang Yi Kwan', 92, '2025-06-06', N'T13', N'Hàn Quốc', 123440, N'Đang chiếu', '/images/dinhthingialove.jpg', N'Hài tâm lý lãng mạn Hàn Quốc về tình yêu và “thính”.'),
+('P0016', N'Doraemon: Nobita''s Art World Tales', N'Yukiyo Teramoto', 100, '2025-05-23', N'P', N'Nhật Bản', 5000000, N'Đang chiếu', '/images/doraemon_artworld.jpg', N'Chuyến phiêu lưu vào thế giới hội họa của Nobita và Doraemon.'),
+('P0017', N'Mission: Impossible – The Final Reckoning', N'Christopher McQuarrie', 169, '2025-05-23', N'T16', N'Mỹ', 2607023, N'Đang chiếu', '/images/mi_final_reckoning.jpg', N'Thám hiểm những pha hành động nghẹt thở trong phần cuối cùng của chuỗi Mission Impossible.'),
+('P0018', N'Lilo & Stitch (Live‑Action)', N'Dean Fleischer Camp', 108, '2025-05-23', N'P', N'Mỹ', 1200324, N'Đang chiếu', '/images/lilo_stitch_live.jpg', N'Phiên bản chân thực đầy cảm xúc của tác phẩm gốc, đề cao ý nghĩa gia đình và “ohana”.');
 set dateformat ymd
 -- 11. Bảng danhgia
 INSERT INTO danhgia (idDanhGia, idUser, idPhim, diemdanhgia, ngaydanhgia, binhluan) VALUES

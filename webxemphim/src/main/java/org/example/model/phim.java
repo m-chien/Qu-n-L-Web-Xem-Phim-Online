@@ -14,21 +14,24 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class phim {
     @Id
-    private String idPhim;
-    private String tenphim;
+    String idPhim;
+    String tenphim;
     @Column(name = "DaoDien")
-    private String daodien;
+    String daodien;
     @Column(name = "thoiluong")
-    private int thoiLuong;
+    int thoiLuong;
     @Column(name = "ngayphathanh")
-    private LocalDate ngaySanXuat;
+    LocalDate ngaySanXuat;
     @Column(name = "luotxem")
-    private int luotXem;
-    private String quocgia;
-    private int gioihandotuoi;
-    private String trangthai;
+    Long luotXem;
+    @Column(name = "quocgia")
+    String quocgia;
+    @Column(name = "gioihandotuoi")
+    String gioihandotuoi;
+    @Column(name = "trangthai")
+    String trangthai;
     @Column(name = "mo_ta")
-    private String moTaPhim;
+    String moTaPhim;
     @Column(name = "url_poster")
-    private String url_anh;
+    String url_anh;
 }

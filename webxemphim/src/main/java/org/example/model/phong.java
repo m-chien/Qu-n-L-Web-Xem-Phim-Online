@@ -1,6 +1,7 @@
 package org.example.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -8,11 +9,11 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class theloai {
+public class phong {
     @Id
-    @Column(name = "idTheLoai")
-    String idtheloai;
-    String tentheloai;
+    String idPhong;
+    String tenphong;
+    int tongSoLuongChoNgoi;
 }

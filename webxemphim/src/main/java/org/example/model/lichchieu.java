@@ -1,6 +1,7 @@
 package org.example.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,16 +11,13 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class danhgia {
+public class lichchieu {
     @Id
-    String idDanhGia;
-    String idUser;
+    String idLichChieu;
     String idPhim;
-    @Column(name = "diemdanhgia")
-    int diemDanhGia;
-    @Column(name = "ngaydanhgia")
-    LocalDate ngayDanhGia;
-    String binhluan;
+    String idSuatChieu;
+    String idPhong;
+    LocalDate ngaychieu;
 }
