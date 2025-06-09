@@ -5,6 +5,8 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class nguoidung {
     String idUser;
     String email;
     String matkhau;
-    String ngaytao;
+    LocalDate ngaytao;
     String loaitaikhoan;
     String trangthai;
 }

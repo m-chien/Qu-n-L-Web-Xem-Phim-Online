@@ -39,7 +39,7 @@
     <section class="hero">
       <div class="hero-slider">
         <div class="hero-slide active">
-          <div class="hero-bg"></div>
+          <div class="hero-bg" id="hero-bg"></div>
           <div class="hero-content">
             <h1 id="hero-title">Chào mừng đến với ChienCINEMA</h1>
             <p id="hero-description">Trải nghiệm điện ảnh tuyệt vời nhất</p>
@@ -69,27 +69,21 @@
           </div>
           <div class="form-group">
             <label>Chọn rạp</label>
-            <select>
-              <option>Galaxy Nguyễn Du</option>
-              <option>Galaxy Đà Nẵng</option>
-              <option>Galaxy Kinh Dương Vương</option>
+            <select id="cinema-select" disabled>
+              <option value="">Vui lòng chọn phim trước</option>
             </select>
           </div>
           <div class="form-group">
             <label>Chọn ngày</label>
-            <input type="date" />
+            <input type="date" id="date-select" disabled />
           </div>
           <div class="form-group">
             <label>Chọn suất</label>
-            <select>
-              <option>10:00</option>
-              <option>13:00</option>
-              <option>16:00</option>
-              <option>19:00</option>
-              <option>22:00</option>
+            <select id="showtime-select" disabled>
+              <option value="">Vui lòng chọn ngày trước</option>
             </select>
           </div>
-          <button class="btn-book">Đặt vé</button>
+          <button class="btn-book" id="btn-book" disabled>Đặt vé</button>
         </div>
       </div>
     </section>

@@ -1,6 +1,5 @@
 package org.example.dto.request;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,10 +8,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class khachhangCreationRequest {
-    String tenUser;
-    String diachiKh;
-    String sdt;
+public class UserloginCreationRequest {
     String email;
     String matkhau;
+    String hoten;
+    String sdt;
 }

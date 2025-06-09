@@ -9,10 +9,15 @@ let allMovies = [];
 const nowShowingGrid = document.getElementById("now-showing-grid");
 const comingSoonGrid = document.getElementById("coming-soon-grid");
 const movieSelect = document.getElementById("movie-select");
+const cinemaSelect = document.getElementById("cinema-select");
+const dateSelect = document.getElementById("date-select");
+const showtimeSelect = document.getElementById("showtime-select");
+const bookButton = document.getElementById("btn-book");
 const nowShowingLoading = document.getElementById("now-showing-loading");
 const comingSoonLoading = document.getElementById("coming-soon-loading");
 const errorModal = document.getElementById("error-modal");
 const errorMessage = document.getElementById("error-message");
+const heroBg = document.getElementById("hero-bg");
 
 // Utility Functions
 function showError(message) {
@@ -30,6 +35,25 @@ function formatDate(dateString) {
   if (!dateString) return "Chưa có thông tin";
   const date = new Date(dateString);
   return date.toLocaleDateString("vi-VN");
+}
+
+// Set minimum date to today
+function setMinDate() {
+  const today = new Date().toISOString().split("T")[0];
+  dateSelect.min = today;
+  dateSelect.value = today;
+}
+
+// Navigation Functions
+function goToMovieDetail(movieId) {
+  // Store movie data in sessionStorage for the detail page
+  const movie = allMovies.find((m) => m.idPhim === movieId);
+  if (movie) {
+    // Chỉ truyền ID
+    sessionStorage.setItem("selectedMovieId", movieId);
+    // Hoặc qua URL parameter
+    window.location.href = `/html/chitietphim.html?id=${movieId}`;
+  }
 }
 
 // API Functions
@@ -53,6 +77,14 @@ async function fetchMovies() {
 function createMovieCard(movie, isComingSoon = false) {
   const card = document.createElement("div");
   card.className = "movie-card";
+  // Add click event to entire card for navigation
+  card.style.cursor = "pointer";
+  card.addEventListener("click", (e) => {
+    // Prevent navigation if clicking on buttons
+    if (!e.target.closest("button")) {
+      goToMovieDetail(movie.idPhim);
+    }
+  });
 
   const posterUrl = movie.url_anh || "";
   const rating = movie.luotXem
@@ -112,19 +144,21 @@ function createMovieCard(movie, isComingSoon = false) {
                   )}...</p>`
                 : ""
             }
-            <button class="btn-book-movie" onclick="${
-              isComingSoon
-                ? `notifyMovie('${movie.idPhim}')`
-                : `bookMovie('${movie.idPhim}')`
-            }">
-              ${isComingSoon ? "Đặt thông báo" : "Đặt vé"}
-            </button>
+            <div class="movie-actions">
+              
+              <button class="btn-book-movie" onclick="${
+                isComingSoon
+                  ? `notifyMovie('${movie.idPhim}')`
+                  : `bookMovie('${movie.idPhim}')`
+              }">
+                ${isComingSoon ? "Đặt thông báo" : "Đặt vé"}
+              </button>
+            </div>
           </div>
         `;
 
   return card;
 }
-
 // Movie Loading Functions
 function loadNowShowingMovies(movies) {
   hideLoading(nowShowingLoading);
@@ -190,31 +224,187 @@ function loadMovieSelect(movies) {
   });
 }
 
+// Booking form functions
+function loadCinemas(movieId) {
+  cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
+  cinemaSelect.disabled = false;
+
+  // Mock cinema data - replace with actual API call
+  const cinemas = [
+    { id: 1, name: "Galaxy Nguyễn Du" },
+    { id: 2, name: "Galaxy Đà Nẵng" },
+    { id: 3, name: "Galaxy Kinh Dương Vương" },
+  ];
+
+  cinemas.forEach((cinema) => {
+    const option = document.createElement("option");
+    option.value = cinema.id;
+    option.textContent = cinema.name;
+    cinemaSelect.appendChild(option);
+  });
+}
+
+function loadShowtimes(movieId, cinemaId, date) {
+  showtimeSelect.innerHTML = '<option value="">Chọn suất</option>';
+  showtimeSelect.disabled = false;
+
+  // Mock showtime data - replace with actual API call
+  const showtimes = ["10:00", "13:00", "16:00", "19:00", "22:00"];
+
+  showtimes.forEach((time) => {
+    const option = document.createElement("option");
+    option.value = time;
+    option.textContent = time;
+    showtimeSelect.appendChild(option);
+  });
+}
+
+function updateHeroBackground(movie) {
+  if (movie && movie.url_anh) {
+    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(${movie.url_anh})`;
+    heroBg.style.backgroundSize = "cover";
+    heroBg.style.backgroundPosition = "center";
+    heroBg.style.backgroundRepeat = "no-repeat";
+  }
+}
+
 // Event Handlers
 function playTrailer(movieId) {
+  event.stopPropagation(); // Prevent card click event
   const movie = allMovies.find((m) => m.idPhim === movieId);
   if (movie) {
-    alert(`Đang phát trailer: ${movie.tenphim}`);
+    if (movie.trailer_url) {
+      // If trailer URL exists, open it
+      window.open(movie.trailer_url, "_blank");
+    } else {
+      // Fallback message
+      alert(`Đang phát trailer: ${movie.tenphim}`);
+    }
   }
 }
 
 function bookMovie(movieId) {
+  event.stopPropagation(); // Prevent card click event
   const movie = allMovies.find((m) => m.idPhim === movieId);
   if (movie) {
-    alert(`Đặt vé phim: ${movie.tenphim}`);
+    // Set the movie in the booking form
+    movieSelect.value = movieId;
+    movieSelect.dispatchEvent(new Event("change"));
+
+    // Scroll to booking form
+    document
+      .querySelector(".quick-booking")
+      .scrollIntoView({ behavior: "smooth" });
   }
 }
 
 function notifyMovie(movieId) {
+  event.stopPropagation(); // Prevent card click event
   const movie = allMovies.find((m) => m.idPhim === movieId);
   if (movie) {
     alert(`Đã đặt thông báo cho phim: ${movie.tenphim}`);
   }
 }
 
+// Form validation and enable/disable logic
+function validateBookingForm() {
+  const movieSelected = movieSelect.value !== "";
+  const cinemaSelected = cinemaSelect.value !== "";
+  const dateSelected = dateSelect.value !== "";
+  const showtimeSelected = showtimeSelect.value !== "";
+
+  bookButton.disabled = !(
+    movieSelected &&
+    cinemaSelected &&
+    dateSelected &&
+    showtimeSelected
+  );
+}
+
+// Event Listeners for booking form
+movieSelect.addEventListener("change", function () {
+  const selectedMovieId = this.value;
+
+  if (selectedMovieId) {
+    loadCinemas(selectedMovieId);
+    dateSelect.disabled = false;
+  } else {
+    // Reset and disable other fields
+    cinemaSelect.innerHTML =
+      '<option value="">Vui lòng chọn phim trước</option>';
+    cinemaSelect.disabled = true;
+    dateSelect.disabled = true;
+    dateSelect.value = "";
+    showtimeSelect.innerHTML =
+      '<option value="">Vui lòng chọn ngày trước</option>';
+    showtimeSelect.disabled = true;
+  }
+
+  validateBookingForm();
+});
+
+cinemaSelect.addEventListener("change", function () {
+  const selectedMovieId = movieSelect.value;
+  const selectedCinemaId = this.value;
+  const selectedDate = dateSelect.value;
+
+  if (selectedMovieId && selectedCinemaId && selectedDate) {
+    loadShowtimes(selectedMovieId, selectedCinemaId, selectedDate);
+  }
+
+  validateBookingForm();
+});
+
+dateSelect.addEventListener("change", function () {
+  const selectedMovieId = movieSelect.value;
+  const selectedCinemaId = cinemaSelect.value;
+  const selectedDate = this.value;
+
+  if (selectedMovieId && selectedCinemaId && selectedDate) {
+    loadShowtimes(selectedMovieId, selectedCinemaId, selectedDate);
+  } else {
+    showtimeSelect.innerHTML =
+      '<option value="">Vui lòng chọn ngày trước</option>';
+    showtimeSelect.disabled = true;
+  }
+
+  validateBookingForm();
+});
+
+showtimeSelect.addEventListener("change", function () {
+  validateBookingForm();
+});
+
+bookButton.addEventListener("click", function () {
+  const selectedMovie = allMovies.find((m) => m.idPhim === movieSelect.value);
+  const selectedCinema = cinemaSelect.options[cinemaSelect.selectedIndex].text;
+  const selectedDate = dateSelect.value;
+  const selectedShowtime = showtimeSelect.value;
+
+  if (selectedMovie) {
+    // Store booking info and redirect to booking page
+    const bookingInfo = {
+      movie: selectedMovie,
+      cinema: selectedCinema,
+      date: selectedDate,
+      showtime: selectedShowtime,
+    };
+    sessionStorage.setItem("bookingInfo", JSON.stringify(bookingInfo));
+
+    // Redirect to booking page or show success message
+    alert(
+      `Đặt vé thành công!\nPhim: ${selectedMovie.tenphim}\nRạp: ${selectedCinema}\nNgày: ${selectedDate}\nSuất: ${selectedShowtime}`
+    );
+
+    // Uncomment the line below if you have a booking page
+    // window.location.href = '/html/datve.html';
+  }
+});
+
 // Initialize App
 async function initializeApp() {
   try {
+    setMinDate();
     const movies = await fetchMovies();
 
     if (movies.length > 0) {
@@ -230,6 +420,7 @@ async function initializeApp() {
           featuredMovie.tenphim;
         document.getElementById("hero-description").textContent =
           featuredMovie.moTaPhim || "Trải nghiệm điện ảnh tuyệt vời";
+        updateHeroBackground(featuredMovie);
       }
     } else {
       hideLoading(nowShowingLoading);
@@ -257,7 +448,8 @@ window.onclick = function (event) {
 document
   .querySelector(".mobile-menu-toggle")
   .addEventListener("click", function () {
-    document.querySelector(".nav-menu").toggleClass("active");
+    const navMenu = document.querySelector(".nav-menu");
+    navMenu.classList.toggle("active");
   });
 
 // Initialize when DOM is loaded

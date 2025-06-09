@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi tiết phim - ChienCINEMA</title>
+    <link rel="stylesheet" href="/css/chitietphim.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="navbar">
+        <div class="nav-brand">
+          <i class="fas fa-film"></i>
+          <span>ChienCINEMA</span>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="/html/trangchu.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li><a href="#" class="nav-link">Rạp</a></li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#" class="nav-link">Tin tức</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="btn-login">Đăng nhập</button>
+          <button class="btn-register">Đăng ký</button>
+        </div>
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Loading Spinner -->
+    <div id="loading-container" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Đang tải thông tin phim...</p>
+      </div>
+    </div>
+
+    <!-- Movie Detail Content -->
+    <main class="movie-detail" id="movie-detail" style="display: none">
+      <!-- Hero Section -->
+      <section class="movie-hero">
+        <div class="movie-backdrop" id="movie-backdrop"></div>
+        <div class="movie-hero-content">
+          <div class="container">
+            <div class="movie-hero-info">
+              <div class="movie-poster-container">
+                <img
+                  id="movie-poster"
+                  src=""
+                  alt="Movie Poster"
+                  class="movie-poster"
+                />
+                <button class="btn-trailer" id="btn-trailer">
+                  <i class="fas fa-play"></i>
+                  <span>Xem Trailer</span>
+                </button>
+              </div>
+              <div class="movie-info">
+                <h1 id="movie-title" class="movie-title"></h1>
+                <div class="movie-meta">
+                  <span class="movie-rating" id="movie-rating">
+                    <i class="fas fa-star"></i>
+                    <span id="rating-value">0</span>/10
+                  </span>
+                  <span class="movie-year" id="movie-year"></span>
+                  <span class="movie-duration" id="movie-duration"></span>
+                  <span class="movie-age-rating" id="movie-age-rating"></span>
+                </div>
+                <div class="movie-genres" id="movie-genres">
+                  <span class="genre-tag" id="movie-country"></span>
+                </div>
+                <p class="movie-description" id="movie-description"></p>
+                <div class="movie-director" id="movie-director-section">
+                  <strong>Đạo diễn:</strong>
+                  <span id="movie-director"></span>
+                </div>
+                <div class="movie-status" id="movie-status-section">
+                  <strong>Trạng thái:</strong>
+                  <span id="movie-status" class="status-badge"></span>
+                </div>
+                <div class="movie-actions">
+                  <button class="btn-book-primary" id="btn-book-movie">
+                    <i class="fas fa-ticket-alt"></i>
+                    Đặt vé ngay
+                  </button>
+                  <button class="btn-wishlist" id="btn-wishlist">
+                    <i class="far fa-heart"></i>
+                    Yêu thích
+                  </button>
+                  <button class="btn-share" id="btn-share">
+                    <i class="fas fa-share-alt"></i>
+                    Chia sẻ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Movie Stats -->
+      <section class="movie-stats">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="view-count">0</span>
+                <span class="stat-label">Lượt xem</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="release-date"></span>
+                <span class="stat-label">Ngày phát hành</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="duration-stat"></span>
+                <span class="stat-label">Thời lượng</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-globe"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="country-stat"></span>
+                <span class="stat-label">Quốc gia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Booking Section -->
+      <section class="booking-section" id="booking-section">
+        <div class="container">
+          <h2 class="section-title">Đặt vé xem phim</h2>
+          <div class="booking-form">
+            <div class="form-group">
+              <label>Chọn rạp</label>
+              <select id="cinema-select">
+                <option value="">Chọn rạp chiếu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Chọn ngày</label>
+              <input type="date" id="date-select" />
+            </div>
+            <div class="form-group">
+              <label>Chọn suất chiếu</label>
+              <select id="showtime-select" disabled>
+                <option value="">Vui lòng chọn ngày trước</option>
+              </select>
+            </div>
+            <button class="btn-book-ticket" id="btn-book-ticket" disabled>
+              Đặt vé ngay
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Movies -->
+      <section class="related-movies">
+        <div class="container">
+          <h2 class="section-title">Phim liên quan</h2>
+          <div class="movie-grid" id="related-movies-grid">
+            <!-- Related movies will be loaded here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Thông báo lỗi</h3>
+        <p id="error-message"></p>
+        <button
+          class="btn-back-home"
+          onclick="window.location.href='/html/trangchu.html'"
+        >
+          Về trang chủ
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-brand">
+              <i class="fas fa-film"></i>
+              <span>ChienCINEMA</span>
+            </div>
+            <p>Website đặt vé xem phim hàng đầu Việt Nam</p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Dịch vụ</h4>
+            <ul>
+              <li><a href="#">Đặt vé online</a></li>
+              <li><a href="#">Chọn chỗ ngồi</a></li>
+              <li><a href="#">Thẻ thành viên</a></li>
+              <li><a href="#">Voucher</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Hỗ trợ</h4>
+            <ul>
+              <li><a href="#">Câu hỏi thường gặp</a></li>
+              <li><a href="#">Chính sách</a></li>
+              <li><a href="#">Liên hệ</a></li>
+              <li><a href="#">Góp ý</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Liên hệ</h4>
+            <div class="contact-info">
+              <p><i class="fas fa-phone"></i> 0969 827 284</p>
+              <p><i class="fas fa-envelope"></i> chientranminh355@gmail.com</p>
+              <p><i class="fas fa-map-marker-alt"></i> 88 Nguyễn Giản Thanh</p>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 ChienCINEMA. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/js/chitietphim.js"></script>
+  </body>
+</html>

@@ -24,11 +24,11 @@ public class phimController {
         return phimService.getallphim();
     }
 
-    @GetMapping("/getone/{idphim}")
-    public ApiResponse<phim> getOnePhim(@PathVariable String idphim)
+    @GetMapping("/phim/{movieId}")
+    public ApiResponse<phim> getOnePhim(@PathVariable String movieId)
     {
         ApiResponse<phim> phimApiResponse = new ApiResponse<>();
-        phimApiResponse.setResult(phimService.get1phim(idphim));
+        phimApiResponse.setResult(phimService.get1phim(movieId));
         phimApiResponse.setMessage("Lấy thành công!!");
         return phimApiResponse;
     }
