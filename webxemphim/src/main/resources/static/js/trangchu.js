@@ -32,13 +32,6 @@ function formatDate(dateString) {
   return date.toLocaleDateString("vi-VN");
 }
 
-function getAgeRatingText(age) {
-  if (age >= 18) return "18+";
-  if (age >= 16) return "16+";
-  if (age >= 13) return "13+";
-  return "P";
-}
-
 // API Functions
 async function fetchMovies() {
   try {
@@ -103,9 +96,7 @@ function createMovieCard(movie, isComingSoon = false) {
                 : ""
             }
             <p class="movie-genre">
-              ${movie.quocgia || "Chưa rõ"} • ${getAgeRatingText(
-    movie.gioihandotuoi || 0
-  )}
+              ${movie.quocgia || "Chưa rõ"} • ${movie.gioihandotuoi || 0}
               ${movie.thoiLuong ? ` • ${movie.thoiLuong} phút` : ""}
             </p>
             ${
@@ -141,7 +132,7 @@ function loadNowShowingMovies(movies) {
 
   const nowShowingMovies = movies.filter(
     (movie) =>
-      movie.trangthai && movie.trangthai.toLowerCase().includes("đang chiều")
+      movie.trangthai && movie.trangthai.toLowerCase().includes("đang chiếu")
   );
 
   if (nowShowingMovies.length === 0) {
@@ -165,7 +156,7 @@ function loadComingSoonMovies(movies) {
 
   const comingSoonMovies = movies.filter(
     (movie) =>
-      movie.trangthai && movie.trangthai.toLowerCase().includes("sắp chiều")
+      movie.trangthai && movie.trangthai.toLowerCase().includes("sắp chiếu")
   );
 
   if (comingSoonMovies.length === 0) {
@@ -188,7 +179,7 @@ function loadMovieSelect(movies) {
 
   const availableMovies = movies.filter(
     (movie) =>
-      movie.trangthai && movie.trangthai.toLowerCase().includes("đang chiều")
+      movie.trangthai && movie.trangthai.toLowerCase().includes("đang chiếu")
   );
 
   availableMovies.forEach((movie) => {
@@ -281,3 +272,18 @@ setInterval(async () => {
     loadMovieSelect(movies);
   }
 }, 300000);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const login_button = document.querySelector(".btn-login");
+  const register_button = document.querySelector(".btn-register");
+  if (login_button) {
+    login_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+  if (register_button) {
+    register_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+});
