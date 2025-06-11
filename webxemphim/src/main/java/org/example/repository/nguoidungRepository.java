@@ -9,4 +9,8 @@ import java.util.Optional;
 @Repository
 public interface nguoidungRepository extends JpaRepository<nguoidung,String > {
     Optional<nguoidung> findTopByOrderByIdUserDesc();
+
+    boolean existsByEmail(String email);
+
+    nguoidung findByEmail(String email);
 }

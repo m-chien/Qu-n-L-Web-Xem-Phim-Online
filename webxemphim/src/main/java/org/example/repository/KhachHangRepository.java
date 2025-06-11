@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface KhachHangRepository extends JpaRepository<khachhang,String > {
     Optional<khachhang> findTopByOrderByIdKhachhangDesc();
+
+    boolean existsBySdt(String sdt);
 }

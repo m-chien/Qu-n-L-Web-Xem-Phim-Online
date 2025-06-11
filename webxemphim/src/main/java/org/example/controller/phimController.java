@@ -1,9 +1,12 @@
 package org.example.controller;
 
 import org.example.dto.request.ApiResponse;
+import org.example.dto.request.PhimDetailRequest;
 import org.example.exception.AppException;
 import org.example.exception.ErrorCode;
 import org.example.model.phim;
+import org.example.service.DienVienService;
+import org.example.service.TheLoaiService;
 import org.example.service.phimService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,22 +16,48 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/movies")
 public class phimController {
-    @Autowired
-    private phimService phimService;
 
-    @GetMapping("/movies")
-    public List<phim> getAllPhim()
-    {
-        return phimService.getallphim();
+    private final phimService phimService;
+    private final DienVienService dienVienService;
+    private final TheLoaiService theLoaiService;
+
+    public phimController(org.example.service.phimService phimService, DienVienService dienVienService, TheLoaiService theLoaiService) {
+        this.phimService = phimService;
+        this.dienVienService = dienVienService;
+        this.theLoaiService = theLoaiService;
     }
 
-    @GetMapping("/phim/{movieId}")
-    public ApiResponse<phim> getOnePhim(@PathVariable String movieId)
+    @GetMapping
+    public ApiResponse<List<phim>> getAllPhim() {
+        ApiResponse<List<phim>> response = new ApiResponse<>();
+        response.setResult(phimService.getallphim());
+        response.setMessage("Lấy danh sách phim thành công!");
+        return response;
+    }
+
+    @GetMapping("/{movieId}")
+    public ApiResponse<PhimDetailRequest> getOnePhim(@PathVariable String movieId)
     {
-        ApiResponse<phim> phimApiResponse = new ApiResponse<>();
-        phimApiResponse.setResult(phimService.get1phim(movieId));
+        ApiResponse<PhimDetailRequest> phimApiResponse = new ApiResponse<>();
+        phim phim1 = phimService.get1phim(movieId);
+        PhimDetailRequest phimDetailRequest1 = PhimDetailRequest.builder()
+                .idPhim(phim1.getIdPhim())
+                .tenphim(phim1.getTenphim())
+                .daodien(phim1.getDaodien())
+                .thoiLuong(phim1.getThoiLuong())
+                .ngaySanXuat(phim1.getNgaySanXuat())
+                .luotXem(phim1.getLuotXem())
+                .quocgia(phim1.getQuocgia())
+                .gioihandotuoi(phim1.getGioihandotuoi())
+                .trangthai(phim1.getTrangthai())
+                .moTaPhim(phim1.getMoTaPhim())
+                .url_anh(phim1.getUrl_anh())
+                .tendienvien(dienVienService.GetListActorByIdphim(movieId))
+                .tentheloai(theLoaiService.GetAllTheloaiByIdphim(movieId))
+                .build();
+        phimApiResponse.setResult(phimDetailRequest1);
         phimApiResponse.setMessage("Lấy thành công!!");
         return phimApiResponse;
     }

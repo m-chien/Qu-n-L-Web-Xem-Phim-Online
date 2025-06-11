@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // Sử dụng cùng endpoint với trangchu.js
+    // Gọi API chi tiết phim
     const response = await fetch(`${MOVIES_ENDPOINT}/${movieId}`);
     if (!response.ok) {
       // Nếu không có API chi tiết, thử lấy tất cả phim rồi filter
@@ -27,8 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       displayMovieDetails(movie);
     } else {
-      const movie = await response.json();
-      console(movie);
+      const apiResponse = await response.json();
+      console.log("API Response:", apiResponse);
+
+      // Xử lý ApiResponse wrapper - lấy dữ liệu từ result
+      const movie = apiResponse.result || apiResponse;
       displayMovieDetails(movie);
     }
 
@@ -99,11 +102,102 @@ function displayMovieDetails(data) {
   document.getElementById("country-stat").textContent =
     data.quocgia || data.quocGia || "Chưa rõ";
 
-  // Thể loại
-  if (data.theloai || data.theLoai) {
-    document.getElementById("movie-genre").textContent =
-      data.theloai || data.theLoai;
+  // Thể loại - hiển thị dưới dạng nút bấm trong movie-genres
+  displayGenres(data.tentheloai || data.theLoai || []);
+
+  // Diễn viên - thêm vào sau phần director
+  displayActors(data.tendienvien || data.dienVien || []);
+}
+
+function displayGenres(genres) {
+  const genreContainer = document.getElementById("movie-genres");
+  if (!genreContainer) return;
+
+  // Xóa nội dung cũ nhưng giữ lại country tag
+  const countryTag = genreContainer.querySelector(".genre-tag");
+  genreContainer.innerHTML = "";
+  if (countryTag) {
+    genreContainer.appendChild(countryTag);
   }
+
+  if (!genres || genres.length === 0) {
+    const noGenreSpan = document.createElement("span");
+    noGenreSpan.className = "no-data";
+    noGenreSpan.textContent = "Chưa có thông tin thể loại";
+    genreContainer.appendChild(noGenreSpan);
+    return;
+  }
+
+  // Nếu genres là string, chuyển thành array
+  const genreArray = Array.isArray(genres) ? genres : [genres];
+
+  genreArray.forEach((genre) => {
+    const genreButton = document.createElement("button");
+    genreButton.className = "genre-btn";
+    genreButton.textContent = genre;
+    genreButton.onclick = () => {
+      // Chuyển đến trang tìm kiếm với thể loại
+      window.location.href = `/html/timkiem.html?theloai=${encodeURIComponent(
+        genre
+      )}`;
+    };
+    genreContainer.appendChild(genreButton);
+  });
+}
+
+function displayActors(actors) {
+  // Tìm phần director section để thêm actors sau đó
+  const directorSection = document.getElementById("movie-director-section");
+  if (!directorSection) return;
+
+  // Xóa phần actors cũ nếu có
+  let actorSection = document.getElementById("movie-actors-section");
+  if (actorSection) {
+    actorSection.remove();
+  }
+
+  // Tạo phần actors mới
+  actorSection = document.createElement("div");
+  actorSection.id = "movie-actors-section";
+  actorSection.className = "movie-actors";
+
+  const actorLabel = document.createElement("strong");
+  actorLabel.textContent = "Diễn viên: ";
+  actorSection.appendChild(actorLabel);
+
+  if (!actors || actors.length === 0) {
+    const noActorSpan = document.createElement("span");
+    noActorSpan.className = "no-data";
+    noActorSpan.textContent = "Chưa có thông tin diễn viên";
+    actorSection.appendChild(noActorSpan);
+  } else {
+    // Nếu actors là string, chuyển thành array
+    const actorArray = Array.isArray(actors) ? actors : [actors];
+
+    const actorContainer = document.createElement("div");
+    actorContainer.className = "actor-buttons-container";
+
+    actorArray.forEach((actor) => {
+      const actorButton = document.createElement("button");
+      actorButton.className = "actor-btn";
+      actorButton.textContent = actor;
+      actorButton.onclick = () => {
+        // Chuyển đến trang tìm kiếm với diễn viên
+        window.location.href = `/html/timkiem.html?dienvien=${encodeURIComponent(
+          actor
+        )}`;
+      };
+      actorContainer.appendChild(actorButton);
+    });
+
+    actorSection.appendChild(actorContainer);
+  }
+
+  // Thêm phần actors sau director section
+  directorSection.parentNode.insertBefore(
+    actorSection,
+    directorSection.nextSibling
+  );
 }
 
 function showError(message) {
@@ -296,12 +390,12 @@ async function loadRelatedMovies(currentMovieId) {
     const response = await fetch(MOVIES_ENDPOINT);
     if (!response.ok) throw new Error("Không thể tải phim liên quan");
 
-    const allMovies = await response.json();
+    const allMovies = (await response.json()).result;
 
     // Lọc ra những phim khác (trừ phim hiện tại)
     const relatedMovies = allMovies
       .filter((m) => m.idPhim !== currentMovieId)
-      .slice(0, 6); // Chỉ lấy 6 phim đầu
+      .slice(0, 5);
 
     container.innerHTML = ""; // Clear existing content
 
@@ -317,8 +411,8 @@ async function loadRelatedMovies(currentMovieId) {
         <div class="movie-poster">
           ${
             movie.url_anh
-              ? `<img src="${movie.url_anh}" alt="${movie.tenphim}" style="width: 100%; height: 200px; object-fit: cover;" />`
-              : `<div class="poster-placeholder" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
+              ? `<img src="${movie.url_anh}" alt="${movie.tenphim}" style="width: 100%; height: 300px; object-fit: cover;" />`
+              : `<div class="poster-placeholder" style="height: 300px; display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
                 <i class="fas fa-film"></i>
                </div>`
           }
@@ -326,9 +420,11 @@ async function loadRelatedMovies(currentMovieId) {
         <div class="movie-info">
           <h4>${movie.tenphim}</h4>
           <p>${movie.quocgia || "Chưa rõ"} • ${movie.gioihandotuoi || 0}</p>
+        </div>
+        <div class ="xem_chi-tiet">
           <a href="/html/chitietphim.html?id=${
             movie.idPhim
-          }" class="btn btn-sm">Xem chi tiết</a>
+          }" class="btn-sm">Xem chi tiết</a>
         </div>
       `;
       container.appendChild(div);
@@ -357,4 +453,19 @@ document.addEventListener("DOMContentLoaded", () => {
       errorModal.style.display = "none";
     }
   };
+});
+//đăng ký/đăng nhập
+document.addEventListener("DOMContentLoaded", () => {
+  const login_button = document.querySelector(".btn-login");
+  const register_button = document.querySelector(".btn-register");
+  if (login_button) {
+    login_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+  if (register_button) {
+    register_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
 });

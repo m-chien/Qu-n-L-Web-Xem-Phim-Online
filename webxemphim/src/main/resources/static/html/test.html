@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tài Khoản Của Tôi - CinemaHub</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        min-height: 100vh;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ff6b35;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .nav-brand:hover {
+        transform: scale(1.05);
+      }
+
+      .nav-brand i {
+        font-size: 2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: #ff6b35;
+      }
+
+      .user-menu {
+        position: relative;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #ff6b35;
+        cursor: pointer;
+        object-fit: cover;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-top: 80px;
+        padding: 2rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .page-title {
+        color: #fff;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .account-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 2rem;
+        height: fit-content;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #333;
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid #ff6b35;
+        margin: 0 auto 1rem;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .profile-avatar:hover {
+        transform: scale(1.1);
+      }
+
+      .profile-name {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-email {
+        color: #ccc;
+        font-size: 0.9rem;
+      }
+
+      .member-badge {
+        display: inline-block;
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        color: #fff;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #ccc;
+        text-decoration: none;
+        padding: 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        color: #fff;
+        transform: translateX(5px);
+      }
+
+      .sidebar-menu i {
+        width: 20px;
+        text-align: center;
+      }
+
+      /* Content Area */
+      .content-area {
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .section-title {
+        color: #fff;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #ff6b35;
+      }
+
+      /* Profile Form */
+      .profile-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-group label {
+        color: #ccc;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 1rem;
+        border: 2px solid #333;
+        border-radius: 10px;
+        background: #2d2d2d;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #ff6b35;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        color: #fff;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #ff6b35;
+        border: 2px solid #ff6b35;
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-secondary:hover {
+        background: #ff6b35;
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      /* Booking History */
+      .booking-history {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .booking-item {
+        background: #2d2d2d;
+        border-radius: 10px;
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: 1.5rem;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+
+      .booking-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(255, 107, 53, 0.2);
+      }
+
+      .movie-poster {
+        width: 100px;
+        height: 140px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .booking-info h3 {
+        color: #fff;
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .booking-details {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .booking-status {
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .status-confirmed {
+        background: #28a745;
+        color: #fff;
+      }
+
+      .status-pending {
+        background: #ffc107;
+        color: #000;
+      }
+
+      .status-cancelled {
+        background: #dc3545;
+        color: #fff;
+      }
+
+      .booking-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      /* Rewards */
+      .rewards-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .reward-card {
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        border: 2px solid #333;
+        transition: all 0.3s ease;
+      }
+
+      .reward-card:hover {
+        border-color: #ff6b35;
+        transform: translateY(-5px);
+      }
+
+      .reward-icon {
+        font-size: 3rem;
+        color: #ff6b35;
+        margin-bottom: 1rem;
+      }
+
+      .reward-title {
+        color: #fff;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .reward-value {
+        color: #ff6b35;
+        font-size: 2rem;
+        font-weight: bold;
+      }
+
+      /* Settings */
+      .settings-group {
+        background: #2d2d2d;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .settings-group h3 {
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #333;
+      }
+
+      .setting-item:last-child {
+        border-bottom: none;
+      }
+
+      .setting-info h4 {
+        color: #fff;
+        margin-bottom: 0.3rem;
+      }
+
+      .setting-info p {
+        color: #ccc;
+        font-size: 0.9rem;
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background: #333;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .toggle-switch.active {
+        background: #ff6b35;
+      }
+
+      .toggle-switch::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+      }
+
+      .toggle-switch.active::before {
+        transform: translateX(30px);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 1rem;
+        }
+
+        .account-container {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .sidebar {
+          order: 2;
+        }
+
+        .content-area {
+          order: 1;
+        }
+
+        .profile-form {
+          grid-template-columns: 1fr;
+        }
+
+        .booking-item {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .rewards-overview {
+          grid-template-columns: 1fr;
+        }
+
+        .navbar {
+          padding: 1rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal-content {
+        background: #1a1a1a;
+        margin: 5% auto;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        padding: 2rem;
+        animation: slideIn 0.3s ease;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-title {
+        color: #fff;
+        font-size: 1.5rem;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        color: #ccc;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .close-modal:hover {
+        color: #ff6b35;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: #fff;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        z-index: 10001;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.error {
+        background: linear-gradient(45deg, #dc3545, #fd7e14);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="navbar">
+        <a href="#" class="nav-brand">
+          <i class="fas fa-film"></i>
+          CinemaHub
+        </a>
+        <div class="nav-links">
+          <a href="#">Trang chủ</a>
+          <a href="#">Phim</a>
+          <a href="#">Rạp</a>
+          <a href="#">Khuyến mãi</a>
+          <a href="#">Liên hệ</a>
+        </div>
+        <div class="user-menu">
+          <img
+            src="https://via.placeholder.com/40x40/ff6b35/ffffff?text=U"
+            alt="Avatar"
+            class="user-avatar"
+          />
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <h1 class="page-title">Tài Khoản Của Tôi</h1>
+
+      <div class="account-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="profile-header">
+            <img
+              src="https://via.placeholder.com/100x100/ff6b35/ffffff?text=User"
+              alt="Avatar"
+              class="profile-avatar"
+              id="profileAvatar"
+            />
+            <div class="profile-name">Nguyễn Văn A</div>
+            <div class="profile-email">nguyenvana@email.com</div>
+            <span class="member-badge">VIP Member</span>
+          </div>
+
+          <ul class="sidebar-menu">
+            <li>
+              <a href="#" class="menu-item active" data-section="profile">
+                <i class="fas fa-user"></i>
+                Thông tin cá nhân
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="bookings">
+                <i class="fas fa-ticket-alt"></i>
+                Lịch sử đặt vé
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="rewards">
+                <i class="fas fa-gift"></i>
+                Điểm thưởng
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                Cài đặt
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="security">
+                <i class="fas fa-shield-alt"></i>
+                Bảo mật
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="support">
+                <i class="fas fa-headset"></i>
+                Hỗ trợ
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content-area">
+          <!-- Profile Section -->
+          <div id="profile" class="content-section active">
+            <h2 class="section-title">Thông tin cá nhân</h2>
+            <form class="profile-form" id="profileForm">
+              <div class="form-group">
+                <label for="firstName">Họ</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value="Nguyễn Văn"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Tên</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value="A"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value="nguyenvana@email.com"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value="0123456789"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="birthDate">Ngày sinh</label>
+                <input
+                  type="date"
+                  id="birthDate"
+                  name="birthDate"
+                  value="1990-01-01"
+                />
+              </div>
+              <div class="form-group">
+                <label for="gender">Giới tính</label>
+                <select id="gender" name="gender">
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="address">Địa chỉ</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  placeholder="Nhập địa chỉ của bạn"
+                >
+123 Đường ABC, Quận 1, TP.HCM</textarea
+                >
+              </div>
+              <div class="form-group full-width">
+                <button type="submit" class="btn-primary">
+                  Cập nhật thông tin
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Bookings Section -->
+          <div id="bookings" class="content-section">
+            <h2 class="section-title">Lịch sử đặt vé</h2>
+            <div class="booking-history">
+              <div class="booking-item">
+                <img
+                  src="https://via.placeholder.com/100x140/333/ff6b35?text=Movie"
+                  alt="Movie Poster"
+                  class="movie-poster"
+                />
+                <div class="booking-info">
+                  <h3>Avengers: Endgame</h3>
+                  <div class="booking-details">
+                    <i class="fas fa-calendar"></i> 15/06/2024 - 19:30
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-map-marker-alt"></i> CGV Vincom Center
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-chair"></i> Ghế: A1, A2
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-credit-card"></i> Tổng: 200,000 VNĐ
+                  </div>
+                </div>
+                <div class="booking-actions">
+                  <span class="booking-status status-confirmed"
+                    >Đã xác nhận</span
+                  >
+                  <button class="btn-secondary">Xem chi tiết</button>
+                </div>
+              </div>
+
+              <div class="booking-item">
+                <img
+                  src="https://via.placeholder.com/100x140/333/ff6b35?text=Movie"
+                  alt="Movie Poster"
+                  class="movie-poster"
+                />
+                <div class="booking-info">
+                  <h3>Spider-Man: No Way Home</h3>
+                  <div class="booking-details">
+                    <i class="fas fa-calendar"></i> 10/06/2024 - 21:00
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-map-marker-alt"></i> Lotte Cinema
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-chair"></i> Ghế: B5
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-credit-card"></i> Tổng: 120,000 VNĐ
+                  </div>
+                </div>
+                <div class="booking-actions">
+                  <span class="booking-status status-pending"
+                    >Chờ xác nhận</span
+                  >
+                  <button class="btn-secondary">Hủy vé</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rewards Section -->
+          <div id="rewards" class="content-section">
+            <h2 class="section-title">Điểm thưởng</h2>
+            <div class="rewards-overview">
+              <div class="reward-card">
+                <div class="reward-icon">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="reward-title">Điểm tích lũy</div>
+                <div class="reward-value">2,450</div>
+              </div>
+              <div class="reward-card">
+                <div class="reward-icon">
+                  <i class="fas fa-gift"></i>
+                </div>
+                <div class="reward-title">Voucher</div>
+                <div class="reward-value">5</div>
+              </div>
+              <div class="reward-card">
+                <div class="reward-icon">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div class="reward-title">Cấp độ</div>
+                <div class="reward-value">VIP</div>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Voucher khả dụng</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Giảm 20% cho vé xem phim</h4>
+                  <p>Áp dụng cho tất cả các phim. Hết hạn: 30/06/2024</p>
+                </div>
+                <button class="btn-secondary">Sử dụng</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Combo bắp nước miễn phí</h4>
+                  <p>Combo bắp rang + nước ngọt. Hết hạn: 25/06/2024</p>
+                </div>
+                <button class="btn-secondary">Sử dụng</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Section -->
+          <div id="settings" class="content-section">
+            <h2 class="section-title">Cài đặt</h2>
+
+            <div class="settings-group">
+              <h3>Thông báo</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Email thông báo</h4>
+                  <p>Nhận thông báo về phim mới và khuyến mãi</p>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-setting="email-notifications"
+                ></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>SMS thông báo</h4>
+                  <p>Nhận SMS xác nhận đặt vé</p>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-setting="sms-notifications"
+                ></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Push notifications</h4>
+                  <p>Thông báo trên trình duyệt</p>
+                </div>
+                <div
+                  class="toggle-switch"
+                  data-setting="push-notifications"
+                ></div>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Tùy chọn hiển thị</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chế độ tối</h4>
+                  <p>Sử dụng giao diện tối</p>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-setting="dark-mode"
+                ></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Ngôn ngữ</h4>
+                  <p>Tiếng Việt</p>
+                </div>
+                <button class="btn-secondary">Thay đổi</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Section -->
+          <div id="security" class="content-section">
+            <h2 class="section-title">Bảo mật</h2>
+
+            <div class="settings-group">
+              <h3>Mật khẩu</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Đổi mật khẩu</h4>
+                  <p>Cập nhật lần cuối: 15/05/2024</p>
+                </div>
+                <button
+                  class="btn-secondary"
+                  onclick="openChangePasswordModal()"
+                >
+                  Đổi mật khẩu
+                </button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Xác thực 2 bước</h4>
+                  <p>Bảo mật tài khoản với xác thực 2 bước</p>
+                </div>
+                <div class="toggle-switch" data-setting="two-factor"></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Phiên đăng nhập</h4>
+                  <p>Quản lý các thiết bị đã đăng nhập</p>
+                </div>
+                <button class="btn-secondary">Quản lý</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Quyền riêng tư</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chia sẻ dữ liệu</h4>
+                  <p>Cho phép chia sẻ dữ liệu để cải thiện dịch vụ</p>
+                </div>
+                <div class="toggle-switch" data-setting="data-sharing"></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Lịch sử hoạt động</h4>
+                  <p>Lưu lịch sử xem phim và tìm kiếm</p>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-setting="activity-history"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Support Section -->
+          <div id="support" class="content-section">
+            <h2 class="section-title">Hỗ trợ</h2>
+
+            <div class="settings-group">
+              <h3>Liên hệ hỗ trợ</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Hotline</h4>
+                  <p>1900-xxxx (7:00 - 22:00 hàng ngày)</p>
+                </div>
+                <button class="btn-secondary">Gọi ngay</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Email hỗ trợ</h4>
+                  <p>support@cinemahub.com</p>
+                </div>
+                <button class="btn-secondary">Gửi email</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chat trực tuyến</h4>
+                  <p>Hỗ trợ 24/7</p>
+                </div>
+                <button class="btn-secondary">Bắt đầu chat</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Câu hỏi thường gặp</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Làm thế nào để đặt vé?</h4>
+                  <p>Hướng dẫn chi tiết cách đặt vé xem phim</p>
+                </div>
+                <button class="btn-secondary">Xem hướng dẫn</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chính sách hoàn tiền</h4>
+                  <p>Điều kiện và quy trình hoàn tiền</p>
+                </div>
+                <button class="btn-secondary">Đọc thêm</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Tích điểm thành viên</h4>
+                  <p>Cách thức tích điểm và sử dụng voucher</p>
+                </div>
+                <button class="btn-secondary">Tìm hiểu</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Đổi mật khẩu</h3>
+          <button
+            class="close-modal"
+            onclick="closeModal('changePasswordModal')"
+          >
+            &times;
+          </button>
+        </div>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn-primary">Đổi mật khẩu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Avatar Upload Modal -->
+    <div id="avatarModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Thay đổi ảnh đại diện</h3>
+          <button class="close-modal" onclick="closeModal('avatarModal')">
+            &times;
+          </button>
+        </div>
+        <div class="avatar-upload">
+          <input
+            type="file"
+            id="avatarInput"
+            accept="image/*"
+            style="display: none"
+          />
+          <div
+            class="upload-area"
+            onclick="document.getElementById('avatarInput').click()"
+          >
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Nhấp để chọn ảnh hoặc kéo thả ảnh vào đây</p>
+            <p class="upload-note">
+              Định dạng: JPG, PNG. Kích thước tối đa: 5MB
+            </p>
+          </div>
+          <div class="upload-actions">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="closeModal('avatarModal')"
+            >
+              Hủy
+            </button>
+            <button type="button" class="btn-primary" onclick="uploadAvatar()">
+              Cập nhật
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+      <span id="notificationText"></span>
+    </div>
+
+    <script>
+      // Menu navigation
+      document.querySelectorAll(".menu-item").forEach((item) => {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Remove active class from all menu items
+          document.querySelectorAll(".menu-item").forEach((menu) => {
+            menu.classList.remove("active");
+          });
+
+          // Add active class to clicked item
+          this.classList.add("active");
+
+          // Hide all content sections
+          document.querySelectorAll(".content-section").forEach((section) => {
+            section.classList.remove("active");
+          });
+
+          // Show selected section
+          const sectionId = this.getAttribute("data-section");
+          document.getElementById(sectionId).classList.add("active");
+        });
+      });
+
+      // Profile form submission
+      document
+        .getElementById("profileForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Get form data
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData);
+
+          // Simulate API call
+          setTimeout(() => {
+            showNotification(
+              "Thông tin cá nhân đã được cập nhật thành công!",
+              "success"
+            );
+
+            // Update profile display
+            document.querySelector(".profile-name").textContent =
+              data.firstName + " " + data.lastName;
+            document.querySelector(".profile-email").textContent = data.email;
+          }, 1000);
+        });
+
+      // Change password form
+      document
+        .getElementById("changePasswordForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const currentPassword =
+            document.getElementById("currentPassword").value;
+          const newPassword = document.getElementById("newPassword").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          // Validate passwords
+          if (newPassword !== confirmPassword) {
+            showNotification("Mật khẩu xác nhận không khớp!", "error");
+            return;
+          }
+
+          if (newPassword.length < 6) {
+            showNotification("Mật khẩu phải có ít nhất 6 ký tự!", "error");
+            return;
+          }
+
+          // Simulate API call
+          setTimeout(() => {
+            showNotification(
+              "Mật khẩu đã được thay đổi thành công!",
+              "success"
+            );
+            closeModal("changePasswordModal");
+            this.reset();
+          }, 1000);
+        });
+
+      // Toggle switches
+      document.querySelectorAll(".toggle-switch").forEach((toggle) => {
+        toggle.addEventListener("click", function () {
+          this.classList.toggle("active");
+          const setting = this.getAttribute("data-setting");
+          const isActive = this.classList.contains("active");
+
+          // Save setting (simulate API call)
+          setTimeout(() => {
+            showNotification(
+              `Cài đặt ${setting} đã được ${isActive ? "bật" : "tắt"}!`,
+              "success"
+            );
+          }, 500);
+        });
+      });
+
+      // Avatar upload
+      document
+        .getElementById("profileAvatar")
+        .addEventListener("click", function () {
+          openModal("avatarModal");
+        });
+
+      document
+        .getElementById("avatarInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("profileAvatar").src = e.target.result;
+              document.querySelector(".user-avatar").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      // Modal functions
+      function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      function openChangePasswordModal() {
+        openModal("changePasswordModal");
+      }
+
+      function uploadAvatar() {
+        const file = document.getElementById("avatarInput").files[0];
+        if (!file) {
+          showNotification("Vui lòng chọn ảnh để tải lên!", "error");
+          return;
+        }
+
+        // Simulate upload
+        setTimeout(() => {
+          showNotification(
+            "Ảnh đại diện đã được cập nhật thành công!",
+            "success"
+          );
+          closeModal("avatarModal");
+        }, 1500);
+      }
+
+      // Notification function
+      function showNotification(message, type = "success") {
+        const notification = document.getElementById("notification");
+        const notificationText = document.getElementById("notificationText");
+
+        notificationText.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.classList.add("show");
+
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }
+
+      // Close modal when clicking outside
+      window.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal")) {
+          e.target.style.display = "none";
+        }
+      });
+
+      // Booking actions
+      document
+        .querySelectorAll(".booking-item .btn-secondary")
+        .forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const action = this.textContent.trim();
+            if (action === "Xem chi tiết") {
+              showNotification(
+                "Đang chuyển đến trang chi tiết đặt vé...",
+                "success"
+              );
+            } else if (action === "Hủy vé") {
+              if (confirm("Bạn có chắc chắn muốn hủy vé này?")) {
+                showNotification(
+                  "Yêu cầu hủy vé đã được gửi thành công!",
+                  "success"
+                );
+                this.closest(".booking-item").querySelector(
+                  ".booking-status"
+                ).textContent = "Đã hủy";
+                this.closest(".booking-item").querySelector(
+                  ".booking-status"
+                ).className = "booking-status status-cancelled";
+                this.style.display = "none";
+              }
+            }
+          });
+        });
+
+      // Voucher usage
+      document.querySelectorAll("#rewards .btn-secondary").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          if (this.textContent.trim() === "Sử dụng") {
+            showNotification(
+              "Voucher đã được áp dụng vào tài khoản của bạn!",
+              "success"
+            );
+            this.textContent = "Đã sử dụng";
+            this.disabled = true;
+            this.style.opacity = "0.5";
+          }
+        });
+      });
+
+      // Support actions
+      document.querySelectorAll("#support .btn-secondary").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const action = this.textContent.trim();
+          switch (action) {
+            case "Gọi ngay":
+              showNotification("Đang kết nối với tổng đài...", "success");
+              break;
+            case "Gửi email":
+              showNotification("Đang mở ứng dụng email...", "success");
+              break;
+            case "Bắt đầu chat":
+              showNotification(
+                "Đang kết nối với nhân viên hỗ trợ...",
+                "success"
+              );
+              break;
+            case "Xem hướng dẫn":
+            case "Đọc thêm":
+            case "Tìm hiểu":
+              showNotification("Đang chuyển đến trang thông tin...", "success");
+              break;
+          }
+        });
+      });
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        // Show welcome notification
+        setTimeout(() => {
+          showNotification("Chào mừng bạn đến với trang tài khoản!", "success");
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

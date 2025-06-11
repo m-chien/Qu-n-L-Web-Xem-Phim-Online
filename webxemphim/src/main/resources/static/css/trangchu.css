@@ -40,6 +40,13 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   color: #ff6b35;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-brand:hover {
+  transform: scale(1.05);
 }
 
 .nav-brand i {

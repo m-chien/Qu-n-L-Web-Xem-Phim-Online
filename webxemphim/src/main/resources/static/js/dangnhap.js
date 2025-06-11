@@ -255,6 +255,7 @@ async function handleRegister(event) {
 // Social Login Handlers
 function handleGoogleLogin() {
   // Integrate with Google OAuth
+  // window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
   showModal("errorModal", "Chức năng đăng nhập Google đang được phát triển");
 }
 

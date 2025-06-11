@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tài Khoản Của Tôi - ChienCINEMA</title>
+    <link rel="stylesheet" href="/css/taikhoan.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="navbar">
+        <a href="/html/trangchu.html" class="nav-brand">
+          <i class="fas fa-film"></i>
+          ChienCINEMA
+        </a>
+        <div class="nav-links">
+          <a href="#">Trang chủ</a>
+          <a href="#">Phim</a>
+          <a href="#">Rạp</a>
+          <a href="#">Khuyến mãi</a>
+          <a href="#">Liên hệ</a>
+        </div>
+        <div class="user-menu">
+          <img src="/images/avatar.png" alt="Avatar" class="user-avatar" />
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <h1 class="page-title">Tài Khoản Của Tôi</h1>
+
+      <div class="account-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="profile-header">
+            <img
+              src="/images/avatar.png"
+              alt="Avatar"
+              class="profile-avatar"
+              id="profileAvatar"
+            />
+            <div class="profile-name">Nguyễn Văn A</div>
+            <div class="profile-email">nguyenvana@email.com</div>
+            <span class="member-badge">VIP Member</span>
+          </div>
+
+          <ul class="sidebar-menu">
+            <li>
+              <a href="#" class="menu-item active" data-section="profile">
+                <i class="fas fa-user"></i>
+                Thông tin cá nhân
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="bookings">
+                <i class="fas fa-ticket-alt"></i>
+                Lịch sử đặt vé
+              </a>
+            </li>
+            <li>
+              <a href="#" class="menu-item" data-section="security">
+                <i class="fas fa-shield-alt"></i>
+                Bảo mật
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content-area">
+          <!-- Profile Section -->
+          <div id="profile" class="content-section active">
+            <h2 class="section-title">Thông tin cá nhân</h2>
+            <form class="profile-form" id="profileForm">
+              <div class="form-group">
+                <label for="firstName">Họ</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value="Nguyễn Văn"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Tên</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value="A"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value="nguyenvana@email.com"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value="0123456789"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="birthDate">Ngày sinh</label>
+                <input
+                  type="date"
+                  id="birthDate"
+                  name="birthDate"
+                  value="1990-01-01"
+                />
+              </div>
+              <div class="form-group">
+                <label for="gender">Giới tính</label>
+                <select id="gender" name="gender">
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="address">Địa chỉ</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  placeholder="Nhập địa chỉ của bạn"
+                >
+123 Đường ABC, Quận 1, TP.HCM</textarea
+                >
+              </div>
+              <div class="form-group full-width">
+                <button type="submit" class="btn-primary">
+                  Cập nhật thông tin
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Bookings Section -->
+          <div id="bookings" class="content-section">
+            <h2 class="section-title">Lịch sử đặt vé</h2>
+            <div class="booking-history">
+              <div class="booking-item">
+                <img
+                  src="/images/johnwick_ballerina.jpg"
+                  alt="Movie Poster"
+                  class="movie-poster"
+                />
+                <div class="booking-info">
+                  <h3>Avengers: Endgame</h3>
+                  <div class="booking-details">
+                    <i class="fas fa-calendar"></i> 15/06/2024 - 19:30
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-map-marker-alt"></i> CGV Vincom Center
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-chair"></i> Ghế: A1, A2
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-credit-card"></i> Tổng: 200,000 VNĐ
+                  </div>
+                </div>
+                <div class="booking-actions">
+                  <span class="booking-status status-confirmed"
+                    >Đã xác nhận</span
+                  >
+                  <button class="btn-secondary">Xem chi tiết</button>
+                </div>
+              </div>
+
+              <div class="booking-item">
+                <img
+                  src="/images/duoidayho.jpg"
+                  alt="Movie Poster"
+                  class="movie-poster"
+                />
+                <div class="booking-info">
+                  <h3>Spider-Man: No Way Home</h3>
+                  <div class="booking-details">
+                    <i class="fas fa-calendar"></i> 10/06/2024 - 21:00
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-map-marker-alt"></i> Lotte Cinema
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-chair"></i> Ghế: B5
+                  </div>
+                  <div class="booking-details">
+                    <i class="fas fa-credit-card"></i> Tổng: 120,000 VNĐ
+                  </div>
+                </div>
+                <div class="booking-actions">
+                  <span class="booking-status status-pending"
+                    >Chờ xác nhận</span
+                  >
+                  <button class="btn-secondary">Hủy vé</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Section -->
+          <div id="security" class="content-section">
+            <h2 class="section-title">Bảo mật</h2>
+
+            <div class="settings-group">
+              <h3>Mật khẩu</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Đổi mật khẩu</h4>
+                  <p>Cập nhật lần cuối: 15/05/2024</p>
+                </div>
+                <button
+                  class="btn-secondary"
+                  onclick="openChangePasswordModal()"
+                >
+                  Đổi mật khẩu
+                </button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Xác thực 2 bước</h4>
+                  <p>Bảo mật tài khoản với xác thực 2 bước</p>
+                </div>
+                <div class="toggle-switch" data-setting="two-factor"></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Phiên đăng nhập</h4>
+                  <p>Quản lý các thiết bị đã đăng nhập</p>
+                </div>
+                <button class="btn-secondary">Quản lý</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Quyền riêng tư</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chia sẻ dữ liệu</h4>
+                  <p>Cho phép chia sẻ dữ liệu để cải thiện dịch vụ</p>
+                </div>
+                <div class="toggle-switch" data-setting="data-sharing"></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Lịch sử hoạt động</h4>
+                  <p>Lưu lịch sử xem phim và tìm kiếm</p>
+                </div>
+                <div
+                  class="toggle-switch active"
+                  data-setting="activity-history"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Support Section -->
+          <!-- <div id="support" class="content-section">
+            <h2 class="section-title">Hỗ trợ</h2>
+
+            <div class="settings-group">
+              <h3>Liên hệ hỗ trợ</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Hotline</h4>
+                  <p>1900-xxxx (7:00 - 22:00 hàng ngày)</p>
+                </div>
+                <button class="btn-secondary">Gọi ngay</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Email hỗ trợ</h4>
+                  <p>support@cinemahub.com</p>
+                </div>
+                <button class="btn-secondary">Gửi email</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chat trực tuyến</h4>
+                  <p>Hỗ trợ 24/7</p>
+                </div>
+                <button class="btn-secondary">Bắt đầu chat</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Câu hỏi thường gặp</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Làm thế nào để đặt vé?</h4>
+                  <p>Hướng dẫn chi tiết cách đặt vé xem phim</p>
+                </div>
+                <button class="btn-secondary">Xem hướng dẫn</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Chính sách hoàn tiền</h4>
+                  <p>Điều kiện và quy trình hoàn tiền</p>
+                </div>
+                <button class="btn-secondary">Đọc thêm</button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Tích điểm thành viên</h4>
+                  <p>Cách thức tích điểm và sử dụng voucher</p>
+                </div>
+                <button class="btn-secondary">Tìm hiểu</button>
+              </div>
+            </div>
+          </div> -->
+        </section>
+      </div>
+    </main>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Đổi mật khẩu</h3>
+          <button
+            class="close-modal"
+            onclick="closeModal('changePasswordModal')"
+          >
+            &times;
+          </button>
+        </div>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn-primary">Đổi mật khẩu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Avatar Upload Modal -->
+    <div id="avatarModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Thay đổi ảnh đại diện</h3>
+          <button class="close-modal" onclick="closeModal('avatarModal')">
+            &times;
+          </button>
+        </div>
+        <div class="avatar-upload">
+          <input
+            type="file"
+            id="avatarInput"
+            accept="image/*"
+            style="display: none"
+          />
+          <div
+            class="upload-area"
+            onclick="document.getElementById('avatarInput').click()"
+          >
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Nhấp để chọn ảnh hoặc kéo thả ảnh vào đây</p>
+            <p class="upload-note">
+              Định dạng: JPG, PNG. Kích thước tối đa: 5MB
+            </p>
+          </div>
+          <div class="upload-actions">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="closeModal('avatarModal')"
+            >
+              Hủy
+            </button>
+            <button type="button" class="btn-primary" onclick="uploadAvatar()">
+              Cập nhật
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Notification -->
+    <div id="notification" class="notification">
+      <span id="notificationText"></span>
+    </div>
+    <script src="/js/taikhoan.js"></script>
+  </body>
+</html>

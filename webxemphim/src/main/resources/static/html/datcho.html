@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chọn Ghế Ngồi - CineMax</title>
+    <link rel="stylesheet" href="/css/datcho.css" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <a href="/html/trangchu.html" class="nav-brand">
+          <i class="fas fa-film"></i>
+          ChienCINEMA
+        </a>
+        <div class="nav-links">
+          <a href="#">Trang chủ</a>
+          <a href="#">Phim</a>
+          <a href="#">Rạp</a>
+          <a href="#">Khuyến mãi</a>
+          <a href="#">Liên hệ</a>
+        </div>
+        <div class="user-menu">
+          <img src="/images/avatar.png" alt="Avatar" class="user-avatar" />
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="movie-header">
+        <div class="movie-info">
+          <div class="movie-poster">POSTER</div>
+          <div class="movie-details">
+            <h1 id="movieTitle">Avengers: Endgame</h1>
+            <div class="movie-meta">
+              <span>📅 <span id="selectedDate">15/06/2025</span></span>
+              <span>🕒 <span id="selectedTime">19:30</span></span>
+              <span>🏛️ <span id="cinemaName">CineMax Vincom</span></span>
+              <span>🎬 <span id="roomName">Phòng 1</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cinema-layout">
+        <div class="screen"></div>
+
+        <div id="loadingSpinner" class="loading">
+          <div class="spinner"></div>
+        </div>
+
+        <div id="seatsContainer" class="seats-container" style="display: none">
+          <!-- Demo seats layout -->
+          <div class="row">
+            <div class="row-label">A</div>
+            <div class="seat available" data-seat="A1">1</div>
+            <div class="seat available" data-seat="A2">2</div>
+            <div class="seat occupied" data-seat="A3">3</div>
+            <div class="seat available" data-seat="A4">4</div>
+            <div class="aisle"></div>
+            <div class="seat available" data-seat="A5">5</div>
+            <div class="seat available" data-seat="A6">6</div>
+            <div class="seat occupied" data-seat="A7">7</div>
+            <div class="seat available" data-seat="A8">8</div>
+          </div>
+          <div class="row">
+            <div class="row-label">B</div>
+            <div class="seat available" data-seat="B1">1</div>
+            <div class="seat available" data-seat="B2">2</div>
+            <div class="seat available" data-seat="B3">3</div>
+            <div class="seat available" data-seat="B4">4</div>
+            <div class="aisle"></div>
+            <div class="seat available" data-seat="B5">5</div>
+            <div class="seat available" data-seat="B6">6</div>
+            <div class="seat available" data-seat="B7">7</div>
+            <div class="seat available" data-seat="B8">8</div>
+          </div>
+          <div class="row">
+            <div class="row-label">C</div>
+            <div class="seat vip available" data-seat="C1">1</div>
+            <div class="seat vip available" data-seat="C2">2</div>
+            <div class="seat vip available" data-seat="C3">3</div>
+            <div class="seat vip available" data-seat="C4">4</div>
+            <div class="aisle"></div>
+            <div class="seat vip available" data-seat="C5">5</div>
+            <div class="seat vip available" data-seat="C6">6</div>
+            <div class="seat vip occupied" data-seat="C7">7</div>
+            <div class="seat vip available" data-seat="C8">8</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div
+              class="legend-seat"
+              style="background: linear-gradient(135deg, #2ecc71, #27ae60)"
+            ></div>
+            <span>Ghế trống</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-seat"
+              style="background: linear-gradient(135deg, #e74c3c, #c0392b)"
+            ></div>
+            <span>Ghế đang chọn</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-seat"
+              style="background: linear-gradient(135deg, #95a5a6, #7f8c8d)"
+            ></div>
+            <span>Ghế đã đặt</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-seat"
+              style="background: linear-gradient(135deg, #f39c12, #e67e22)"
+            ></div>
+            <span>Ghế VIP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-summary">
+        <div class="selected-seats">
+          <h3>Ghế đã chọn:</h3>
+          <div id="selectedSeatsList" class="seat-list">
+            <span style="color: #7f8c8d">Chưa chọn ghế nào</span>
+          </div>
+        </div>
+        <div class="total-price">
+          Tổng tiền: <span id="totalPrice">0</span> VND
+        </div>
+        <button id="continueBtn" class="continue-btn" disabled>
+          Tiếp tục thanh toán
+        </button>
+      </div>
+    </div>
+
+    <script src="/js/datcho.js"></script>
+  </body>
+</html>

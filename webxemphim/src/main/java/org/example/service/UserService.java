@@ -1,28 +1,43 @@
 package org.example.service;
 
 import jakarta.transaction.Transactional;
-import org.example.dto.request.UserloginCreationRequest;
+import lombok.RequiredArgsConstructor;
+import org.example.dto.request.AuthenticationResponse;
+import org.example.dto.request.UserLoginCreationRequest;
+import org.example.dto.request.UserRegisterCreationRequest;
+import org.example.exception.AppException;
+import org.example.exception.ErrorCode;
 import org.example.model.khachhang;
 import org.example.model.nguoidung;
 import org.example.repository.KhachHangRepository;
 import org.example.repository.nguoidungRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     public final nguoidungRepository nguoidungrepository;
     public final KhachHangRepository khachHangRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(nguoidungRepository nguoidungrepository, KhachHangRepository khachHangRepository) {
-        this.nguoidungrepository = nguoidungrepository;
-        this.khachHangRepository = khachHangRepository;
-    }
     @Transactional
-    public nguoidung adduser(UserloginCreationRequest userRequest)
+    public void adduser(UserRegisterCreationRequest userRequest)
     {
+        if(nguoidungrepository.existsByEmail(userRequest.getEmail()))
+        {
+            throw new AppException(ErrorCode.Email_Duplicate);
+        }
+        if (khachHangRepository.existsBySdt(userRequest.getSdt()))
+        {
+            throw new AppException(ErrorCode.Sdt_Duplicate);
+        }
         String iduser = generateNewUserId();
         nguoidung nguoidung1 = nguoidung.builder()
                 .idUser(iduser)
@@ -32,6 +47,7 @@ public class UserService {
                 .loaitaikhoan("Khách hàng")
                 .trangthai("active")
                 .build();
+        nguoidung1.setMatkhau(passwordEncoder.encode(userRequest.getMatkhau()));
         String idkhachhang = generateNewCustomerId();
         khachhang khachhang1 = khachhang.builder()
                 .idKhachhang(idkhachhang)
@@ -39,11 +55,25 @@ public class UserService {
                 .sdt(userRequest.getSdt())
                 .hoten(userRequest.getHoten())
                 .build();
-        nguoidung nguoidung2 = nguoidungrepository.save(nguoidung1);
+        nguoidungrepository.save(nguoidung1);
         khachHangRepository.save(khachhang1);
-        return nguoidung2;
     }
-
+    public AuthenticationResponse CheckUserAccount(UserLoginCreationRequest user)
+    {
+        nguoidung nguoidung1 = nguoidungrepository.findByEmail(user.getEmail());
+        if (nguoidung1 == null)
+        {
+            throw new AppException(ErrorCode.Not_Found);
+        }
+        if (!passwordEncoder.matches(user.getMatkhau(),nguoidung1.getMatkhau()))
+        {
+            throw new AppException(ErrorCode.Wrong_Password);
+        }
+        var token = jwtService.generateToken(nguoidung1.getEmail());
+        return AuthenticationResponse.builder()
+                .token(token)
+                .build();
+    }
     private String generateNewUserId() {
         Optional<nguoidung> lastKhachHang = nguoidungrepository
                 .findTopByOrderByIdUserDesc();

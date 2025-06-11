@@ -24,8 +24,9 @@ public enum ErrorCode {
     User_Exitsted(1005,"User existed"),
     Email_Duplicate(1005,"Email cannot be Duplicate!!!!"),
     Sdt_Duplicate(1005,"SDT cannot be Duplicate!!!!"),
-    Id_Not_Found(1001," Id not found ")
-    ;
+    Id_Not_Found(1001," Id not found "),
+    Wrong_Password(1004,"Password is wronged"),
+    GOOGLE_LOGIN_FAILED(1001,"wrong" );
     private int code;
     private String message;
 

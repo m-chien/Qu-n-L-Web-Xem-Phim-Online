@@ -1,9 +1,13 @@
 // API Configuration
 const API_BASE_URL = "http://localhost:8080/api";
 const MOVIES_ENDPOINT = `${API_BASE_URL}/movies`;
+const SCHEDULE_ENDPOINT = `${API_BASE_URL}/schedule/date`;
+const SHOWTIME_ENDPOINT = `${API_BASE_URL}/showtime`;
 
 // Global variables
 let allMovies = [];
+let availableDates = [];
+let availableShowtimes = [];
 
 // DOM Elements
 const nowShowingGrid = document.getElementById("now-showing-grid");
@@ -37,11 +41,17 @@ function formatDate(dateString) {
   return date.toLocaleDateString("vi-VN");
 }
 
-// Set minimum date to today
-function setMinDate() {
-  const today = new Date().toISOString().split("T")[0];
-  dateSelect.min = today;
-  dateSelect.value = today;
+// Format date for display (no longer need setMinDate since we're using select)
+function formatDateForDisplay(dateString) {
+  if (!dateString) return "Chưa có thông tin";
+  const date = new Date(dateString);
+  const options = {
+    weekday: "short",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return date.toLocaleDateString("vi-VN", options);
 }
 
 // Navigation Functions
@@ -63,12 +73,59 @@ async function fetchMovies() {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const movies = await response.json();
-    allMovies = movies;
-    return movies;
+    const apiResponse = await response.json();
+
+    // Kiểm tra cấu trúc API response
+    if (apiResponse.code === 1000 && apiResponse.result) {
+      allMovies = apiResponse.result;
+      return apiResponse.result;
+    } else {
+      // Nếu API trả về lỗi
+      throw new Error(apiResponse.message || "API trả về lỗi không xác định");
+    }
   } catch (error) {
     console.error("Error fetching movies:", error);
     showError("Không thể tải danh sách phim. Vui lòng thử lại sau.");
+    return [];
+  }
+}
+
+async function fetchScheduleDates(movieId) {
+  try {
+    const response = await fetch(`${SCHEDULE_ENDPOINT}/${movieId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const apiResponse = await response.json();
+
+    if (apiResponse.code === 1000 && apiResponse.result) {
+      return apiResponse.result; // Trả về mảng dates
+    } else {
+      throw new Error(apiResponse.message || "Không thể lấy ngày chiếu");
+    }
+  } catch (error) {
+    console.error("Error fetching schedule dates:", error);
+    showError("Không thể tải ngày chiếu. Vui lòng thử lại sau.");
+    return [];
+  }
+}
+
+async function fetchShowtimes(movieId, date) {
+  try {
+    const response = await fetch(`${SHOWTIME_ENDPOINT}/${movieId}/${date}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const apiResponse = await response.json();
+
+    if (apiResponse.code === 1000 && apiResponse.result) {
+      return apiResponse.result; // Trả về mảng showtimes
+    } else {
+      throw new Error(apiResponse.message || "Không thể lấy suất chiếu");
+    }
+  } catch (error) {
+    console.error("Error fetching showtimes:", error);
+    showError("Không thể tải suất chiếu. Vui lòng thử lại sau.");
     return [];
   }
 }
@@ -159,6 +216,7 @@ function createMovieCard(movie, isComingSoon = false) {
 
   return card;
 }
+
 // Movie Loading Functions
 function loadNowShowingMovies(movies) {
   hideLoading(nowShowingLoading);
@@ -224,12 +282,38 @@ function loadMovieSelect(movies) {
   });
 }
 
-// Booking form functions
+// Updated Booking form functions using real APIs
+async function loadDates(movieId) {
+  dateSelect.innerHTML = '<option value="">Đang tải ngày chiếu...</option>';
+  dateSelect.disabled = true;
+
+  try {
+    availableDates = await fetchScheduleDates(movieId);
+
+    dateSelect.innerHTML = '<option value="">Chọn ngày</option>';
+
+    if (availableDates && availableDates.length > 0) {
+      availableDates.forEach((date) => {
+        const option = document.createElement("option");
+        option.value = date;
+        option.textContent = formatDateForDisplay(date);
+        dateSelect.appendChild(option);
+      });
+      dateSelect.disabled = false;
+    } else {
+      dateSelect.innerHTML = '<option value="">Không có lịch chiếu</option>';
+    }
+  } catch (error) {
+    console.error("Error loading dates:", error);
+    dateSelect.innerHTML = '<option value="">Lỗi khi tải ngày chiếu</option>';
+  }
+}
+
 function loadCinemas(movieId) {
   cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
   cinemaSelect.disabled = false;
 
-  // Mock cinema data - replace with actual API call
+  // Mock cinema data - replace with actual API call if you have cinema API
   const cinemas = [
     { id: 1, name: "Galaxy Nguyễn Du" },
     { id: 2, name: "Galaxy Đà Nẵng" },
@@ -244,19 +328,35 @@ function loadCinemas(movieId) {
   });
 }
 
-function loadShowtimes(movieId, cinemaId, date) {
-  showtimeSelect.innerHTML = '<option value="">Chọn suất</option>';
-  showtimeSelect.disabled = false;
+async function loadShowtimes(movieId, date) {
+  showtimeSelect.innerHTML = '<option value="">Đang tải suất chiếu...</option>';
+  showtimeSelect.disabled = true;
 
-  // Mock showtime data - replace with actual API call
-  const showtimes = ["10:00", "13:00", "16:00", "19:00", "22:00"];
+  try {
+    availableShowtimes = await fetchShowtimes(movieId, date);
 
-  showtimes.forEach((time) => {
-    const option = document.createElement("option");
-    option.value = time;
-    option.textContent = time;
-    showtimeSelect.appendChild(option);
-  });
+    showtimeSelect.innerHTML = '<option value="">Chọn suất</option>';
+
+    if (availableShowtimes && availableShowtimes.length > 0) {
+      // Group showtimes by cinema if the API returns cinema info
+      // Assuming the API returns an array of showtime objects
+      availableShowtimes.forEach((showtime) => {
+        const option = document.createElement("option");
+        // Adjust this based on your API response structure
+        option.value = showtime.id || showtime.time || showtime;
+        option.textContent = showtime.time || showtime.gioChieu || showtime;
+        showtimeSelect.appendChild(option);
+      });
+      showtimeSelect.disabled = false;
+    } else {
+      showtimeSelect.innerHTML =
+        '<option value="">Không có suất chiếu</option>';
+    }
+  } catch (error) {
+    console.error("Error loading showtimes:", error);
+    showtimeSelect.innerHTML =
+      '<option value="">Lỗi khi tải suất chiếu</option>';
+  }
 }
 
 function updateHeroBackground(movie) {
@@ -321,20 +421,26 @@ function validateBookingForm() {
   );
 }
 
-// Event Listeners for booking form
-movieSelect.addEventListener("change", function () {
+// Updated Event Listeners for booking form
+movieSelect.addEventListener("change", async function () {
   const selectedMovieId = this.value;
 
   if (selectedMovieId) {
+    // Load cinemas and dates simultaneously
     loadCinemas(selectedMovieId);
-    dateSelect.disabled = false;
+    await loadDates(selectedMovieId);
+
+    // Reset showtime select
+    showtimeSelect.innerHTML =
+      '<option value="">Vui lòng chọn ngày trước</option>';
+    showtimeSelect.disabled = true;
   } else {
     // Reset and disable other fields
     cinemaSelect.innerHTML =
       '<option value="">Vui lòng chọn phim trước</option>';
     cinemaSelect.disabled = true;
+    dateSelect.innerHTML = '<option value="">Vui lòng chọn phim trước</option>';
     dateSelect.disabled = true;
-    dateSelect.value = "";
     showtimeSelect.innerHTML =
       '<option value="">Vui lòng chọn ngày trước</option>';
     showtimeSelect.disabled = true;
@@ -344,24 +450,15 @@ movieSelect.addEventListener("change", function () {
 });
 
 cinemaSelect.addEventListener("change", function () {
-  const selectedMovieId = movieSelect.value;
-  const selectedCinemaId = this.value;
-  const selectedDate = dateSelect.value;
-
-  if (selectedMovieId && selectedCinemaId && selectedDate) {
-    loadShowtimes(selectedMovieId, selectedCinemaId, selectedDate);
-  }
-
   validateBookingForm();
 });
 
-dateSelect.addEventListener("change", function () {
+dateSelect.addEventListener("change", async function () {
   const selectedMovieId = movieSelect.value;
-  const selectedCinemaId = cinemaSelect.value;
   const selectedDate = this.value;
 
-  if (selectedMovieId && selectedCinemaId && selectedDate) {
-    loadShowtimes(selectedMovieId, selectedCinemaId, selectedDate);
+  if (selectedMovieId && selectedDate) {
+    await loadShowtimes(selectedMovieId, selectedDate);
   } else {
     showtimeSelect.innerHTML =
       '<option value="">Vui lòng chọn ngày trước</option>';
@@ -393,7 +490,11 @@ bookButton.addEventListener("click", function () {
 
     // Redirect to booking page or show success message
     alert(
-      `Đặt vé thành công!\nPhim: ${selectedMovie.tenphim}\nRạp: ${selectedCinema}\nNgày: ${selectedDate}\nSuất: ${selectedShowtime}`
+      `Đặt vé thành công!\nPhim: ${
+        selectedMovie.tenphim
+      }\nRạp: ${selectedCinema}\nNgày: ${formatDateForDisplay(
+        selectedDate
+      )}\nSuất: ${selectedShowtime}`
     );
 
     // Uncomment the line below if you have a booking page
@@ -404,7 +505,6 @@ bookButton.addEventListener("click", function () {
 // Initialize App
 async function initializeApp() {
   try {
-    setMinDate();
     const movies = await fetchMovies();
 
     if (movies.length > 0) {
@@ -416,10 +516,13 @@ async function initializeApp() {
       const featuredMovie =
         movies.find((m) => m.luotXem && m.luotXem > 0) || movies[0];
       if (featuredMovie) {
-        document.getElementById("hero-title").textContent =
-          featuredMovie.tenphim;
-        document.getElementById("hero-description").textContent =
-          featuredMovie.moTaPhim || "Trải nghiệm điện ảnh tuyệt vời";
+        const heroTitle = document.getElementById("hero-title");
+        const heroDescription = document.getElementById("hero-description");
+
+        if (heroTitle) heroTitle.textContent = featuredMovie.tenphim;
+        if (heroDescription)
+          heroDescription.textContent =
+            featuredMovie.moTaPhim || "Trải nghiệm điện ảnh tuyệt vời";
         updateHeroBackground(featuredMovie);
       }
     } else {
@@ -434,9 +537,12 @@ async function initializeApp() {
 }
 
 // Error Modal Event Listeners
-document.querySelector(".close").onclick = function () {
-  errorModal.style.display = "none";
-};
+const closeModalBtn = document.querySelector(".close");
+if (closeModalBtn) {
+  closeModalBtn.onclick = function () {
+    errorModal.style.display = "none";
+  };
+}
 
 window.onclick = function (event) {
   if (event.target === errorModal) {
@@ -445,12 +551,15 @@ window.onclick = function (event) {
 };
 
 // Mobile Menu Toggle
-document
-  .querySelector(".mobile-menu-toggle")
-  .addEventListener("click", function () {
+const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+if (mobileMenuToggle) {
+  mobileMenuToggle.addEventListener("click", function () {
     const navMenu = document.querySelector(".nav-menu");
-    navMenu.classList.toggle("active");
+    if (navMenu) {
+      navMenu.classList.toggle("active");
+    }
   });
+}
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeApp);
@@ -468,11 +577,13 @@ setInterval(async () => {
 document.addEventListener("DOMContentLoaded", () => {
   const login_button = document.querySelector(".btn-login");
   const register_button = document.querySelector(".btn-register");
+
   if (login_button) {
     login_button.addEventListener("click", () => {
       window.location.href = "/html/dangnhap.html";
     });
   }
+
   if (register_button) {
     register_button.addEventListener("click", () => {
       window.location.href = "/html/dangnhap.html";

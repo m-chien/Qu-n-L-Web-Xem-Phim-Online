@@ -190,7 +190,7 @@ create table loaighe
 )
 create table chongoi
 (
-	idChoNgoi char(5) primary key,
+	idChoNgoi char(6) primary key,
 	idPhong char(5),
 	idLoaiGhe char(5),
 	hang nvarchar(1) not null,
@@ -240,7 +240,7 @@ create table chitietdatve
 	idChiTietVe char(5) PRIMARY key,
     idVe char(5) NOT NULL,
     idLichChieu char(5) NOT NULL,
-    idChoNgoi char(5) NOT NULL,
+    idChoNgoi char(6) NOT NULL,
     GiaVeDonLe MONEY NOT NULL,
     TrangThaiVe NVARCHAR(30) DEFAULT N'Đã đặt',
 	unique(idLichChieu,idChoNgoi),
@@ -372,8 +372,10 @@ INSERT INTO dienvien  VALUES
 ('DV007', N'Issa Rae', '1985-01-13', N'Mỹ', N'Biên kịch, diễn viên, nhà sản xuất.'),
 ('DV008', N'Lương Định Thanh', '1990-09-20', N'Việt Nam', N'Diễn viên truyền hình và điện ảnh.'),
 ('DV009', N'Kelly Marie Tran', '1989-01-17', N'Mỹ', N'Diễn viên lồng tiếng.'),
-('DV010', N'Quốc Anh', '1996-08-08', N'Việt Nam', N'Diễn viên trẻ.');
-
+('DV010', N'Quốc Anh', '1996-08-08', N'Việt Nam', N'Diễn viên trẻ.'),
+('DV011', N'Bae Doona', '1979-10-11', N'Hàn Quốc', N'Diễn viên nổi tiếng quốc tế.'),
+('DV012', N'Son Seok Koo', '1983-02-07', N'Hàn Quốc', N'Diễn viên đang lên với nhiều vai diễn ấn tượng.'),
+('DV013', N'Chang Ki Ha', '1982-02-20', N'Hàn Quốc', N'Ca sĩ, diễn viên, và MC truyền hình.');
 -- 4. Bảng theloai
 INSERT INTO TheLoai VALUES
 ('TL001', N'Hành động'),
@@ -385,13 +387,15 @@ INSERT INTO TheLoai VALUES
 ('TL007', N'Phiêu lưu'),
 ('TL008', N'Tình cảm'),
 ('TL009', N'Gia đình'),
-('TL010', N'Chính kịch');
+('TL010', N'Chính kịch'),
+('TL011', N'Giật gân');
 
 -- 12. Bảng dienvien_phim
 INSERT INTO DienVien_Phim (idDienVien, idPhim) VALUES
 ('DV001', 'P0008'), ('DV002', 'P0008'), ('DV003', 'P0003'), ('DV004', 'P0003'),
 ('DV005', 'P0001'), ('DV006', 'P0010'), ('DV007', 'P0006'), ('DV008', 'P0009'),
-('DV009', 'P0005'), ('DV010', 'P0002');
+('DV009', 'P0005'), ('DV010', 'P0002'), ('DV011', 'P0015'), ('DV012', 'P0015'),
+('DV013', 'P0015');
 
 -- 13. Bảng theloai_phim
 INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
@@ -399,7 +403,10 @@ INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
 ('TL002', 'P0003'), ('TL007', 'P0003'), ('TL001', 'P0004'), ('TL002', 'P0004'),
 ('TL004', 'P0005'), ('TL003', 'P0005'), ('TL004', 'P0006'), ('TL005', 'P0006'),
 ('TL006', 'P0007'), ('TL001', 'P0008'), ('TL003', 'P0008'), ('TL005', 'P0009'),
-('TL008', 'P0009'), ('TL003', 'P0010'), ('TL009', 'P0010'), ('TL010', 'P0010');
+('TL008', 'P0009'), ('TL003', 'P0010'), ('TL009', 'P0010'), ('TL010', 'P0010'),
+('TL003', 'P0015'), ('TL008', 'P0015'), ('TL006', 'P0011'), ('TL006', 'P0012'),
+('TL001', 'P0013'), ('TL005', 'P0014'), ('TL011', 'P0014'), ('TL004', 'P0016'),
+('TL001', 'P0017'), ('TL001', 'P0018'), ('TL003', 'P0018');
 set dateformat ymd
 -- 16. Bảng ve (DonHangVe)
 INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai) VALUES
@@ -468,72 +475,47 @@ INSERT INTO LoaiGhe (idLoaiGhe, tenloaighe, gia) VALUES
 ('LG001', N'Ghế thường', 100000),
 ('LG002', N'Ghế VIP', 150000),
 ('LG003', N'Ghế đôi', 200000);
-
 -- 14. Bảng chongoi
--- Giả định mỗi phòng có ghế từ hàng A đến D, và cột 1 đến 20
-INSERT INTO ChoNgoi (idChoNgoi, idPhong, hang, [cot], idLoaiGhe) VALUES
-('CG001', 'R0001', N'A', 1, 'LG001'), ('CG002', 'R0001', N'A', 2, 'LG001'),
-('CG003', 'R0001', N'A', 3, 'LG001'), ('CG004', 'R0001', N'B', 1, 'LG001'),
-('CG005', 'R0002', N'A', 1, 'LG001'), ('CG006', 'R0002', N'B', 2, 'LG001'),
-('CG007', 'R0003', N'A', 1, 'LG002'), ('CG008', 'R0004', N'C', 1, 'LG003'),
-('CG009', 'R0005', N'D', 5, 'LG001'), ('CG010', 'R0001', N'A', 4, 'LG002'),
--- Thêm ghế cho R0001 (đã có 5 ghế, cần thêm 15 ghế nữa)
-('CG011', 'R0001', N'A', 5, 'LG001'), ('CG012', 'R0001', N'B', 2, 'LG001'),
-('CG013', 'R0001', N'B', 3, 'LG001'), ('CG014', 'R0001', N'B', 4, 'LG002'),
-('CG015', 'R0001', N'B', 5, 'LG001'), ('CG016', 'R0001', N'C', 1, 'LG001'),
-('CG017', 'R0001', N'C', 2, 'LG001'), ('CG018', 'R0001', N'C', 3, 'LG002'),
-('CG019', 'R0001', N'C', 4, 'LG001'), ('CG020', 'R0001', N'C', 5, 'LG001'),
-('CG021', 'R0001', N'D', 1, 'LG001'), ('CG022', 'R0001', N'D', 2, 'LG001'),
-('CG023', 'R0001', N'D', 3, 'LG002'), ('CG024', 'R0001', N'D', 4, 'LG001'),
-('CG025', 'R0001', N'D', 5, 'LG001'),
+DECLARE @MaPhong INT = 1
+DECLARE @STT INT = 1  -- Dùng để tạo ID chỗ ngồi
 
--- Thêm ghế cho R0002 (đã có 2 ghế, cần thêm 18 ghế nữa)
-('CG026', 'R0002', N'A', 2, 'LG001'), ('CG027', 'R0002', N'A', 3, 'LG001'),
-('CG028', 'R0002', N'A', 4, 'LG002'), ('CG029', 'R0002', N'A', 5, 'LG001'),
-('CG030', 'R0002', N'B', 1, 'LG001'), ('CG031', 'R0002', N'B', 3, 'LG001'),
-('CG032', 'R0002', N'B', 4, 'LG002'), ('CG033', 'R0002', N'B', 5, 'LG001'),
-('CG034', 'R0002', N'C', 1, 'LG001'), ('CG035', 'R0002', N'C', 2, 'LG001'),
-('CG036', 'R0002', N'C', 3, 'LG002'), ('CG037', 'R0002', N'C', 4, 'LG001'),
-('CG038', 'R0002', N'C', 5, 'LG001'), ('CG039', 'R0002', N'D', 1, 'LG001'),
-('CG040', 'R0002', N'D', 2, 'LG001'), ('CG041', 'R0002', N'D', 3, 'LG002'),
-('CG042', 'R0002', N'D', 4, 'LG001'), ('CG043', 'R0002', N'D', 5, 'LG001'),
+WHILE @MaPhong <= 10
+BEGIN
+    DECLARE @Hang INT = 1
 
--- Thêm ghế cho R0003 (đã có 1 ghế, cần thêm 19 ghế nữa)
-('CG044', 'R0003', N'A', 2, 'LG002'), ('CG045', 'R0003', N'A', 3, 'LG002'),
-('CG046', 'R0003', N'A', 4, 'LG001'), ('CG047', 'R0003', N'A', 5, 'LG001'),
-('CG048', 'R0003', N'B', 1, 'LG001'), ('CG049', 'R0003', N'B', 2, 'LG001'),
-('CG050', 'R0003', N'B', 3, 'LG001'), ('CG051', 'R0003', N'B', 4, 'LG002'),
-('CG052', 'R0003', N'B', 5, 'LG001'), ('CG053', 'R0003', N'C', 1, 'LG001'),
-('CG054', 'R0003', N'C', 2, 'LG001'), ('CG055', 'R0003', N'C', 3, 'LG002'),
-('CG056', 'R0003', N'C', 4, 'LG001'), ('CG057', 'R0003', N'C', 5, 'LG001'),
-('CG058', 'R0003', N'D', 1, 'LG001'), ('CG059', 'R0003', N'D', 2, 'LG001'),
-('CG060', 'R0003', N'D', 3, 'LG002'), ('CG061', 'R0003', N'D', 4, 'LG001'),
-('CG062', 'R0003', N'D', 5, 'LG001'),
+    WHILE @Hang <= 10
+    BEGIN
+        DECLARE @Cot INT = 1
 
--- Thêm ghế cho R0004 (đã có 1 ghế, cần thêm 19 ghế nữa)
-('CG063', 'R0004', N'A', 1, 'LG003'), ('CG064', 'R0004', N'A', 2, 'LG003'),
-('CG065', 'R0004', N'A', 3, 'LG001'), ('CG066', 'R0004', N'A', 4, 'LG001'),
-('CG067', 'R0004', N'A', 5, 'LG003'), ('CG068', 'R0004', N'B', 1, 'LG001'),
-('CG069', 'R0004', N'B', 2, 'LG001'), ('CG070', 'R0004', N'B', 3, 'LG001'),
-('CG071', 'R0004', N'B', 4, 'LG003'), ('CG072', 'R0004', N'B', 5, 'LG001'),
-('CG073', 'R0004', N'C', 2, 'LG001'), ('CG074', 'R0004', N'C', 3, 'LG001'),
-('CG075', 'R0004', N'C', 4, 'LG003'), ('CG076', 'R0004', N'C', 5, 'LG001'),
-('CG077', 'R0004', N'D', 1, 'LG001'), ('CG078', 'R0004', N'D', 2, 'LG001'),
-('CG079', 'R0004', N'D', 3, 'LG001'), ('CG080', 'R0004', N'D', 4, 'LG003'),
-('CG081', 'R0004', N'D', 5, 'LG001'),
+        WHILE @Cot <= 14
+        BEGIN
+            DECLARE @IDChoNgoi NVARCHAR(10)
+            DECLARE @IDPhong NVARCHAR(10)
+            DECLARE @HangGhe CHAR(1)
+            DECLARE @IDLoaiGhe NVARCHAR(10)
 
--- Thêm ghế cho R0005 (đã có 1 ghế, cần thêm 19 ghế nữa)
-('CG082', 'R0005', N'A', 1, 'LG001'), ('CG083', 'R0005', N'A', 2, 'LG001'),
-('CG084', 'R0005', N'A', 3, 'LG001'), ('CG085', 'R0005', N'A', 4, 'LG001'),
-('CG086', 'R0005', N'A', 5, 'LG001'), ('CG087', 'R0005', N'B', 1, 'LG001'),
-('CG088', 'R0005', N'B', 2, 'LG001'), ('CG089', 'R0005', N'B', 3, 'LG001'),
-('CG090', 'R0005', N'B', 4, 'LG001'), ('CG091', 'R0005', N'B', 5, 'LG001'),
-('CG092', 'R0005', N'C', 1, 'LG001'), ('CG093', 'R0005', N'C', 2, 'LG001'),
-('CG094', 'R0005', N'C', 3, 'LG001'), ('CG095', 'R0005', N'C', 4, 'LG001'),
-('CG096', 'R0005', N'C', 5, 'LG001'), ('CG097', 'R0005', N'D', 1, 'LG001'),
-('CG098', 'R0005', N'D', 2, 'LG001'), ('CG099', 'R0005', N'D', 3, 'LG001'),
-('CG100', 'R0005', N'D', 4, 'LG001'), ('CG101', 'R0005', N'E', 1, 'LG001'); -- Thêm 1 ghế để đảm bảo đủ 20 sau CG009
+            SET @IDChoNgoi = 'CG' + RIGHT('000' + CAST(@STT AS VARCHAR), 4)
+            SET @IDPhong = 'R' + RIGHT('000' + CAST(@MaPhong AS VARCHAR), 4)
+            SET @HangGhe = CHAR(64 + @Hang)  -- Hàng A–J
 
+            -- Xác định loại ghế theo hàng
+            IF @HangGhe IN ('H', 'I', 'J')
+                SET @IDLoaiGhe = 'LG002'  -- Ghế VIP
+            ELSE
+                SET @IDLoaiGhe = 'LG001'  -- Ghế thường
+
+            INSERT INTO ChoNgoi (idChoNgoi, idPhong, idLoaiGhe, Hang, [cot])
+            VALUES (@IDChoNgoi, @IDPhong, @IDLoaiGhe, @HangGhe, @Cot)
+
+            SET @STT += 1
+            SET @Cot += 1
+        END
+
+        SET @Hang += 1
+    END
+
+    SET @MaPhong += 1
+END
 -- 7. Bảng SuatChieu
 INSERT INTO SuatChieu (idSuatChieu, tenSuatChieu, tgianchieu) VALUES
 ('SC001', N'Suất sáng 10:00', '10:00:00'),
@@ -581,26 +563,25 @@ INSERT INTO LichChieu (idLichChieu, idPhim, idSuatChieu, idPhong, ngaychieu) VAL
 ('LC030', 'P0005', 'SC001', 'R0001', '2024-07-10');
 -- 19. Bảng chitietdatve
 INSERT INTO ChiTietDatVe (idChiTietVe, idVe, idLichChieu, idChoNgoi, GiaVeDonLe, TrangThaiVe) VALUES
-('CTV01', 'V0001', 'LC001', 'CG001', 90000, N'Đã đặt'),
-('CTV02', 'V0001', 'LC001', 'CG002', 90000, N'Đã đặt'),
-('CTV03', 'V0001', 'LC001', 'CG003', 90000, N'Đã đặt'),
-('CTV04', 'V0002', 'LC003', 'CG007', 100000, N'Đã đặt'),
-('CTV05', 'V0003', 'LC004', 'CG005', 85000, N'Đã đặt'),
-('CTV06', 'V0004', 'LC005', 'CG008', 120000, N'Đã đặt'),
-('CTV07', 'V0005', 'LC002', 'CG004', 95000, N'Đã đặt'),
-('CTV08', 'V0005', 'LC002', 'CG009', 95000, N'Đã đặt'),
-('CTV09', 'V0009', 'LC009', 'CG006', 100000, N'Đã đặt'),
-('CTV10', 'V0009', 'LC009', 'CG007', 100000, N'Đã đặt');
+('CTV01', 'V0001', 'LC001', 'CG0001', 90000, N'Đã đặt'),
+('CTV02', 'V0001', 'LC001', 'CG0002', 90000, N'Đã đặt'),
+('CTV03', 'V0001', 'LC001', 'CG0003', 90000, N'Đã đặt'),
+('CTV04', 'V0002', 'LC003', 'CG0007', 100000, N'Đã đặt'),
+('CTV05', 'V0003', 'LC004', 'CG0005', 85000, N'Đã đặt'),
+('CTV06', 'V0004', 'LC005', 'CG0008', 120000, N'Đã đặt'),
+('CTV07', 'V0005', 'LC002', 'CG0004', 95000, N'Đã đặt'),
+('CTV08', 'V0005', 'LC002', 'CG0009', 95000, N'Đã đặt'),
+('CTV09', 'V0009', 'LC009', 'CG0006', 100000, N'Đã đặt'),
+('CTV10', 'V0009', 'LC009', 'CG0007', 100000, N'Đã đặt');
 --chọn phim
 select * from phim where phim.ngayphathanh <= getdate()+30
 --chọn chọn ngày đi sau khi chọn phim
-select distinct l.ngaychieu from lichchieu l, phim p, suatchieu s
-where l.idPhim = p.idPhim  and l.idSuatChieu = s.idSuatChieu and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu'
+select distinct l.ngaychieu from lichchieu l, phim p
+where l.idPhim = p.idPhim  and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu'
 --chọn suất chiếu và phòng tương ứng sau khi đã chọn phim và ngày đi
-select s.*, ph.tenphong from lichchieu l, phim p, suatchieu s, phong ph
+select s.tgianchieu from lichchieu l, phim p, suatchieu s
 where l.idPhim = p.idPhim  
 	and l.idSuatChieu = s.idSuatChieu
-	and l.idPhong = ph.idPhong
 	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
 	and l.ngaychieu = '2024-06-07'
 --lấy ra phòng sau khi đã chọn phim, ngày đi và thời gian chiếu
@@ -620,10 +601,10 @@ where l.idPhim = p.idPhim
 	and l.ngaychieu = '2024-06-07'
 	and s.tgianchieu = '16:00:00'
 --lấy tất cả các ghế ngồi đã được đặt từ các thuộc tính đã chọn
-select ch.*
+select ch.*, c.*
 from chitietdatve c join chongoi ch on c.idChoNgoi = ch.idChoNgoi
 where c.idLichChieu = (
-			select top 1 l.idLichChieu from lichchieu l, phim p, suatchieu s
+			select l.idLichChieu from lichchieu l, phim p, suatchieu s
 			where l.idPhim = p.idPhim  
 				and l.idSuatChieu = s.idSuatChieu 
 				and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
@@ -635,8 +616,8 @@ insert into ve values
 --trước khi insert chitietdatve người dùng sẽ lấy danh sách ghế đã chọn từ trên giao diện sau đó với mỗi ghế sẽ select ra 1 giá rồi sau đó
 --mới insert vào bảng chitietdatve
 insert into chitietdatve values
-('CTV11', 'V0011', 'LC001', 'CG006', 100000, N'Đã đặt'),
-('CTV12', 'V0011', 'LC001', 'CG005', 100000, N'Đã đặt');
+('CTV11', 'V0011', 'LC001', 'CG0006', 100000, N'Đã đặt'),
+('CTV12', 'V0011', 'LC001', 'CG0005', 100000, N'Đã đặt');
 --chọn mua thêm đồ ăn đồ uống nếu muốn
 insert into ve_food values
 ('V0011', 'F0001',2),
@@ -669,3 +650,6 @@ where idVe = 'V0011'
 --          AND (
 --               (sc.tgianchieu < :thoiGianKetThuc AND :tgianChieu < DATEADD(minute, p.thoiluong, sc.tgianchieu))
 --           );
+select * from chongoi where idPhong = 'R0001'
+select * from nguoidung
+select * from khachhang
