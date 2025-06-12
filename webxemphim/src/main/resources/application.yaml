@@ -21,3 +21,5 @@ spring:
       enabled: true
       force: true
   time-zone: Asia/Ho_Chi_Minh
+jwt:
+  secretKey: "fvM5429XdKnajoAwXqMnhWNgVXFoAaGqS8gcs1lorUlt3n2EAwhKv5Yf+3ektFC7"

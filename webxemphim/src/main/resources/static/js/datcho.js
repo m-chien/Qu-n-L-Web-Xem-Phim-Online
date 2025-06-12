@@ -1,11 +1,6 @@
-// Dữ liệu mô phỏng
-const movieData = {
-  title: "Avengers: Endgame",
-  date: "15/06/2025",
-  time: "19:30",
-  cinema: "CineMax Vincom",
-  room: "Phòng 1",
-};
+// Dữ liệu từ localStorage
+let movieData = {};
+let roomData = {};
 
 const seatPrices = {
   normal: 100000,
@@ -18,42 +13,130 @@ const seatsPerRow = 14;
 let selectedSeats = [];
 let occupiedSeats = [];
 
-// Mô phỏng API call để lấy ghế đã đặt
+// Lấy dữ liệu từ localStorage
+function getDataFromStorage() {
+  try {
+    // Lấy thông tin phim từ localStorage
+    const storedMovieData = localStorage.getItem("selectedMovieData");
+    if (storedMovieData) {
+      movieData = JSON.parse(storedMovieData);
+      console.log("Dữ liệu phim từ localStorage:", movieData);
+    } else {
+      console.warn("Không tìm thấy dữ liệu phim trong localStorage");
+
+      // Thử lấy từ sessionStorage nếu có (fallback)
+      const sessionMovieData = sessionStorage.getItem("bookingInfo");
+      if (sessionMovieData) {
+        const sessionData = JSON.parse(sessionMovieData);
+        movieData = {
+          title: sessionData.movie?.tenphim || "Phim mặc định",
+          date: sessionData.date || new Date().toLocaleDateString("vi-VN"),
+          time: sessionData.showtime || "19:30",
+          cinema: sessionData.cinema || "CineMax Vincom",
+          movieId: sessionData.movie?.idPhim,
+        };
+        console.log("Đã lấy dữ liệu từ sessionStorage:", movieData);
+      } else {
+        // Dữ liệu mặc định nếu không có trong cả localStorage và sessionStorage
+        movieData = {
+          title: "Phim mặc định",
+          date: new Date().toLocaleDateString("vi-VN"),
+          time: "19:30",
+          cinema: "CineMax Vincom",
+        };
+        console.log("Sử dụng dữ liệu mặc định:", movieData);
+      }
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
+    // Dữ liệu mặc định
+    movieData = {
+      title: "Phim mặc định",
+      date: new Date().toLocaleDateString("vi-VN"),
+      time: "19:30",
+      cinema: "CineMax Vincom",
+    };
+  }
+}
+function cleanupBookingData() {
+  try {
+    localStorage.removeItem("selectedMovieData");
+    sessionStorage.removeItem("bookingInfo");
+    console.log("Đã xóa dữ liệu booking cũ");
+  } catch (error) {
+    console.error("Lỗi khi xóa dữ liệu:", error);
+  }
+}
+async function fetchRoomData() {
+  try {
+    // Chuyển đổi định dạng ngày nếu là dạng "Th 6, 07/06/2024"
+    let formattedDate = movieData.date;
+    if (movieData.date && movieData.date.includes("/")) {
+      const dateParts = movieData.date.split(", ")[1].split("/");
+      formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // yyyy-MM-dd
+    }
+
+    const params = new URLSearchParams({
+      tenphim: movieData.title || "",
+      suat: movieData.time || "",
+      ngay: formattedDate || "",
+    });
+
+    const response = await fetch(`http://localhost:8080/api/room?${params}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Dữ liệu phòng từ API:", data);
+
+    roomData = data;
+    return data;
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu phòng:", error);
+    roomData = { tenphong: "Phòng 1" }; // fallback
+    return roomData;
+  }
+}
+
+// Lấy danh sách ghế đã đặt từ API
 async function fetchOccupiedSeats() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Mô phỏng dữ liệu ghế đã đặt
-      const occupied = [
-        "A3",
-        "A4",
-        "A5",
-        "B7",
-        "B8",
-        "C1",
-        "C2",
-        "C12",
-        "C13",
-        "D5",
-        "D6",
-        "D9",
-        "D10",
-        "E3",
-        "E4",
-        "E11",
-        "E12",
-        "F6",
-        "F7",
-        "F8",
-        "G2",
-        "G3",
-        "G12",
-        "G13",
-        "H1",
-        "H14",
-      ];
-      resolve(occupied);
-    }, 2000); // Mô phỏng delay 2 giây
-  });
+  try {
+    // Chuyển đổi định dạng ngày nếu là dạng "Th 6, 07/06/2024"
+    let formattedDate = movieData.date;
+    if (movieData.date && movieData.date.includes("/")) {
+      const dateParts = movieData.date.split(", ")[1].split("/");
+      formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // yyyy-MM-dd
+    }
+
+    const params = new URLSearchParams({
+      tenphim: movieData.title || "",
+      suat: movieData.time || "",
+      ngay: formattedDate || "",
+    });
+
+    const response = await fetch(`http://localhost:8080/api/seat?${params}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Dữ liệu ghế đã đặt từ API:", data);
+
+    if (!data || data.length === 0) {
+      console.log("Tất cả ghế đều trống");
+      return [];
+    }
+
+    // Convert từ {hang: "A", cot: 1} sang "A1"
+    const occupiedSeatIds = data.map((seat) => `${seat.hang}${seat.cot}`);
+    console.log("Ghế đã đặt (converted IDs):", occupiedSeatIds);
+
+    return occupiedSeatIds;
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu ghế đã đặt:", error);
+    return [];
+  }
 }
 
 // Tạo layout ghế
@@ -157,11 +240,18 @@ function updateBookingSummary() {
 
 // Đánh dấu ghế đã đặt
 function markOccupiedSeats(occupiedSeatIds) {
+  if (!Array.isArray(occupiedSeatIds) || occupiedSeatIds.length === 0) {
+    console.log("Không có ghế nào đã được đặt");
+    return;
+  }
+
   occupiedSeatIds.forEach((seatId) => {
     const seatElement = document.querySelector(`[data-seat-id="${seatId}"]`);
     if (seatElement) {
       seatElement.classList.add("occupied");
       seatElement.classList.remove("available", "vip");
+    } else {
+      console.warn(`Không tìm thấy ghế với ID: ${seatId}`);
     }
   });
 }
@@ -176,19 +266,42 @@ function markAvailableSeats() {
   });
 }
 
+// Hiển thị thông tin phim và phòng
+function displayMovieInfo() {
+  try {
+    // Hiển thị thông tin phim từ localStorage
+    document.getElementById("movieTitle").textContent =
+      movieData.title || "Tên phim";
+    document.getElementById("selectedDate").textContent =
+      movieData.date || "Ngày chiếu";
+    document.getElementById("selectedTime").textContent =
+      movieData.time || "Giờ chiếu";
+    document.getElementById("cinemaName").textContent =
+      movieData.cinema || "Tên rạp";
+
+    // Hiển thị tên phòng từ API
+    document.getElementById("roomName").textContent =
+      roomData.tenphong || "Phòng chiếu";
+  } catch (error) {
+    console.error("Lỗi khi hiển thị thông tin phim:", error);
+  }
+}
+
 // Khởi tạo trang
 async function initializePage() {
-  // Hiển thị thông tin phim
-  document.getElementById("movieTitle").textContent = movieData.title;
-  document.getElementById("selectedDate").textContent = movieData.date;
-  document.getElementById("selectedTime").textContent = movieData.time;
-  document.getElementById("cinemaName").textContent = movieData.cinema;
-  document.getElementById("roomName").textContent = movieData.room;
-
-  // Tạo layout ghế
-  createSeatsLayout();
-
   try {
+    // Lấy dữ liệu từ localStorage
+    getDataFromStorage();
+
+    // Lấy thông tin phòng từ API
+    await fetchRoomData();
+
+    // Hiển thị thông tin phim và phòng
+    displayMovieInfo();
+
+    // Tạo layout ghế
+    createSeatsLayout();
+
     // Lấy dữ liệu ghế đã đặt từ API
     occupiedSeats = await fetchOccupiedSeats();
 
@@ -199,9 +312,12 @@ async function initializePage() {
     // Đánh dấu ghế đã đặt và ghế có sẵn
     markOccupiedSeats(occupiedSeats);
     markAvailableSeats();
+
+    console.log("Khởi tạo trang thành công");
   } catch (error) {
-    console.error("Lỗi khi tải dữ liệu ghế:", error);
-    alert("Không thể tải dữ liệu ghế. Vui lòng thử lại.");
+    console.error("Lỗi khi khởi tạo trang:", error);
+    document.getElementById("loadingSpinner").style.display = "none";
+    alert("Không thể tải dữ liệu. Vui lòng thử lại.");
   }
 }
 
@@ -210,12 +326,22 @@ document.getElementById("continueBtn").addEventListener("click", function () {
   if (selectedSeats.length > 0) {
     const bookingData = {
       movie: movieData,
+      room: roomData,
       selectedSeats: selectedSeats,
       totalPrice: document.getElementById("totalPrice").textContent,
+      timestamp: new Date().toISOString(),
     };
 
-    // Lưu thông tin vào memory (thay vì localStorage)
-    window.bookingData = bookingData;
+    // Lưu thông tin vào localStorage để sử dụng ở trang thanh toán
+    try {
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
+      console.log("Đã lưu thông tin đặt vé:", bookingData);
+
+      // Xóa dữ liệu booking cũ
+      cleanupBookingData();
+    } catch (error) {
+      console.error("Lỗi khi lưu thông tin đặt vé:", error);
+    }
 
     alert(
       `Đã chọn ${selectedSeats.length} ghế: ${selectedSeats.join(
@@ -225,10 +351,37 @@ document.getElementById("continueBtn").addEventListener("click", function () {
       } VND\n\nChuyển đến trang thanh toán...`
     );
 
-    // Ở đây bạn có thể chuyển hướng đến trang thanh toán
-    // window.location.href = '/payment';
+    // Chuyển hướng đến trang thanh toán
+    window.location.href = "/html/payment.html"; // Thay đổi đường dẫn theo cấu trúc thực tế
   }
 });
-
+function debugLocalStorage() {
+  console.log("=== DEBUG LOCALSTORAGE ===");
+  console.log("selectedMovieData:", localStorage.getItem("selectedMovieData"));
+  console.log("bookingData:", localStorage.getItem("bookingData"));
+  console.log(
+    "bookingInfo (sessionStorage):",
+    sessionStorage.getItem("bookingInfo")
+  );
+  console.log("=========================");
+}
 // Khởi tạo khi trang được tải
 window.addEventListener("load", initializePage);
+
+// Xử lý lỗi global
+window.addEventListener("error", function (event) {
+  console.error("Lỗi JavaScript:", event.error);
+});
+
+// Debug: Log localStorage khi trang load
+window.addEventListener("load", function () {
+  console.log("Tất cả dữ liệu trong localStorage:");
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const value = localStorage.getItem(key);
+    console.log(`${key}: ${value}`);
+  }
+});
+window.addEventListener("load", function () {
+  debugLocalStorage();
+});

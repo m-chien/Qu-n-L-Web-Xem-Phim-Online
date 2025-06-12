@@ -387,14 +387,24 @@ function bookMovie(movieId) {
   event.stopPropagation(); // Prevent card click event
   const movie = allMovies.find((m) => m.idPhim === movieId);
   if (movie) {
-    // Set the movie in the booking form
-    movieSelect.value = movieId;
-    movieSelect.dispatchEvent(new Event("change"));
+    // Tạo dữ liệu mặc định cho booking
+    const movieDataForBooking = {
+      title: movie.tenphim,
+      date: new Date().toLocaleDateString("vi-VN"),
+      time: "Chưa chọn",
+      cinema: "Chưa chọn",
+      movieId: movie.idPhim,
+      movieDetails: movie,
+    };
 
-    // Scroll to booking form
-    document
-      .querySelector(".quick-booking")
-      .scrollIntoView({ behavior: "smooth" });
+    // Lưu vào localStorage
+    localStorage.setItem(
+      "selectedMovieData",
+      JSON.stringify(movieDataForBooking)
+    );
+
+    // Chuyển hướng đến trang booking
+    window.location.href = "/html/datcho.html";
   }
 }
 
@@ -479,26 +489,29 @@ bookButton.addEventListener("click", function () {
   const selectedShowtime = showtimeSelect.value;
 
   if (selectedMovie) {
-    // Store booking info and redirect to booking page
-    const bookingInfo = {
-      movie: selectedMovie,
+    // Chuẩn bị dữ liệu để chuyển sang trang booking
+    const movieDataForBooking = {
+      title: selectedMovie.tenphim,
+      date: formatDateForDisplay(selectedDate),
+      time: selectedShowtime,
       cinema: selectedCinema,
-      date: selectedDate,
-      showtime: selectedShowtime,
+      movieId: selectedMovie.idPhim,
+      movieDetails: selectedMovie, // Lưu toàn bộ thông tin phim
     };
-    sessionStorage.setItem("bookingInfo", JSON.stringify(bookingInfo));
 
-    // Redirect to booking page or show success message
-    alert(
-      `Đặt vé thành công!\nPhim: ${
-        selectedMovie.tenphim
-      }\nRạp: ${selectedCinema}\nNgày: ${formatDateForDisplay(
-        selectedDate
-      )}\nSuất: ${selectedShowtime}`
+    // Lưu vào localStorage thay vì sessionStorage để trang booking có thể đọc được
+    localStorage.setItem(
+      "selectedMovieData",
+      JSON.stringify(movieDataForBooking)
     );
 
-    // Uncomment the line below if you have a booking page
-    // window.location.href = '/html/datve.html';
+    // Log để debug
+    console.log("Đã lưu dữ liệu phim vào localStorage:", movieDataForBooking);
+
+    // Chuyển hướng đến trang booking
+    window.location.href = "/html/datcho.html"; // Thay đổi đường dẫn theo cấu trúc thực tế của bạn
+  } else {
+    alert("Vui lòng chọn đầy đủ thông tin trước khi đặt vé!");
   }
 });
 

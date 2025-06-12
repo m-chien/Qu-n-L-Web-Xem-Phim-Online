@@ -15,8 +15,8 @@ create table nguoidung
 	email varchar(50) unique check(email like '[A-Za-z]%@gmail.com') not  null,
 	matkhau varchar(255) not null,
 	ngaytao Date default getdate(),
-	loaitaikhoan nvarchar(20) default 'khách hàng',
-	trangthai nvarchar(20) default 'active'
+	loaitaikhoan nvarchar(20) default N'Khách hàng',
+	trangthai nvarchar(20) default N'active'
 )
 create table nhanvien
 (
@@ -262,7 +262,7 @@ create table chitietdatve
 )
 alter table nguoidung
 	add constraint CK_trangthai_user
-		check ( trangthai = N'Active' or (trangthai = N'offline'))
+		check ( trangthai = N'active' or (trangthai = N'offline'))
 alter table NhanVien
 	add constraint CK_trangthai_nhanvien
 		check ( trangthai = N'Đang làm' or (trangthai = N'Nghỉ Việc'))
@@ -560,7 +560,8 @@ INSERT INTO LichChieu (idLichChieu, idPhim, idSuatChieu, idPhong, ngaychieu) VAL
 ('LC027', 'P0002', 'SC008', 'R0008', '2024-07-01'),
 ('LC028', 'P0003', 'SC009', 'R0009', '2024-07-05'),
 ('LC029', 'P0004', 'SC010', 'R0010', '2024-07-05'),
-('LC030', 'P0005', 'SC001', 'R0001', '2024-07-10');
+('LC030', 'P0005', 'SC001', 'R0001', '2024-07-10'),
+('LC031', 'P0001', 'SC003', 'R0002', '2024-06-07');
 -- 19. Bảng chitietdatve
 INSERT INTO ChiTietDatVe (idChiTietVe, idVe, idLichChieu, idChoNgoi, GiaVeDonLe, TrangThaiVe) VALUES
 ('CTV01', 'V0001', 'LC001', 'CG0001', 90000, N'Đã đặt'),
@@ -572,7 +573,12 @@ INSERT INTO ChiTietDatVe (idChiTietVe, idVe, idLichChieu, idChoNgoi, GiaVeDonLe,
 ('CTV07', 'V0005', 'LC002', 'CG0004', 95000, N'Đã đặt'),
 ('CTV08', 'V0005', 'LC002', 'CG0009', 95000, N'Đã đặt'),
 ('CTV09', 'V0009', 'LC009', 'CG0006', 100000, N'Đã đặt'),
-('CTV10', 'V0009', 'LC009', 'CG0007', 100000, N'Đã đặt');
+('CTV10', 'V0010', 'LC031', 'CG0012', 100000, N'Đã đặt'),
+('CTV11', 'V0010', 'LC031', 'CG0011', 100000, N'Đã đặt'),
+('CTV12', 'V0010', 'LC031', 'CG0013', 100000, N'Đã đặt'),
+('CTV13', 'V0010', 'LC031', 'CG0014', 100000, N'Đã đặt'),
+('CTV14', 'V0010', 'LC031', 'CG0010', 100000, N'Đã đặt'),
+('CTV15', 'V0010', 'LC031', 'CG0015', 100000, N'Đã đặt');
 --chọn phim
 select * from phim where phim.ngayphathanh <= getdate()+30
 --chọn chọn ngày đi sau khi chọn phim
@@ -584,7 +590,7 @@ where l.idPhim = p.idPhim
 	and l.idSuatChieu = s.idSuatChieu
 	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
 	and l.ngaychieu = '2024-06-07'
---lấy ra phòng sau khi đã chọn phim, ngày đi và thời gian chiếu
+--lấy ra phòng sau khi đã chọn phim, ngày đi và thời gian chiếu (chỉ áp dụng cho trường hợp chỉ có 1 phòng chiếu)
 select ph.* from lichchieu l, phim p, suatchieu s, phong ph
 where l.idPhim = p.idPhim  
 	and l.idSuatChieu = s.idSuatChieu 
@@ -592,8 +598,25 @@ where l.idPhim = p.idPhim
 	and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
 	and l.ngaychieu = '2024-06-07'
 	and s.tgianchieu = '16:00:00'
---lấy ra lịch chiếu từ các thuộc tính đã chọn
-select distinct l.* from lichchieu l, phim p, suatchieu s, phong ph
+--nếu như có nhiều hơn 2 phòng có cùng các thuộc tính như vậy thì phải lọc ra phòng có số lượng đặt chỗ ít nhất
+SELECT TOP 1 
+    l.idPhong
+FROM lichchieu l
+JOIN phong p ON p.idPhong = l.idPhong
+JOIN suatchieu s ON s.idSuatChieu = l.idSuatChieu
+JOIN phim ph ON ph.idPhim = l.idPhim
+LEFT JOIN chitietdatve ct 
+    ON ct.idLichChieu = l.idLichChieu 
+   AND ct.TrangThaiVe = N'Đã đặt'
+WHERE 
+    ph.tenphim = N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
+    AND l.ngaychieu = '2024-06-07'
+    AND s.tgianchieu = '16:00:00'
+GROUP BY 
+    l.idLichChieu, l.idPhong
+ORDER BY COUNT(ct.idChoNgoi) ASC
+--lấy ra lịch chiếu từ các thuộc tính đã chọn (chỉ áp dụng cho trường hợp chỉ có 1 phòng chiếu)
+select l.* from lichchieu l, phim p, suatchieu s, phong ph
 where l.idPhim = p.idPhim  
 	and l.idSuatChieu = s.idSuatChieu 
 	and l.idPhong = ph.idPhong
@@ -601,23 +624,30 @@ where l.idPhim = p.idPhim
 	and l.ngaychieu = '2024-06-07'
 	and s.tgianchieu = '16:00:00'
 --lấy tất cả các ghế ngồi đã được đặt từ các thuộc tính đã chọn
-select ch.*, c.*
-from chitietdatve c join chongoi ch on c.idChoNgoi = ch.idChoNgoi
-where c.idLichChieu = (
-			select l.idLichChieu from lichchieu l, phim p, suatchieu s
-			where l.idPhim = p.idPhim  
-				and l.idSuatChieu = s.idSuatChieu 
-				and p.tenphim =N'Lật Mặt 7: Một Chuyến Phiêu Lưu' 
-				and l.ngaychieu = '2024-06-07'
-				and s.tgianchieu = '16:00:00')
+SELECT ch.*
+FROM chitietdatve c
+JOIN chongoi ch ON c.idChoNgoi = ch.idChoNgoi
+WHERE c.idLichChieu = (
+    SELECT TOP 1 l.idLichChieu
+    FROM lichchieu l
+    JOIN phim p ON l.idPhim = p.idPhim
+    JOIN suatchieu s ON l.idSuatChieu = s.idSuatChieu
+    LEFT JOIN chitietdatve ct ON ct.idLichChieu = l.idLichChieu AND ct.TrangThaiVe = N'Đã đặt'
+    WHERE 
+        p.tenphim = N'Lật Mặt 7: Một Chuyến Phiêu Lưu'
+        AND l.ngaychieu = '2024-06-07'
+        AND s.tgianchieu = '16:00:00'
+    GROUP BY l.idLichChieu
+    ORDER BY COUNT(ct.idChoNgoi) asc
+)
 --thêm bản ghi cho vé vừa mới đặt
 insert into ve values
 ('V0011','U0001',getdate(),0,N'Đang chờ thanh toán');
 --trước khi insert chitietdatve người dùng sẽ lấy danh sách ghế đã chọn từ trên giao diện sau đó với mỗi ghế sẽ select ra 1 giá rồi sau đó
 --mới insert vào bảng chitietdatve
 insert into chitietdatve values
-('CTV11', 'V0011', 'LC001', 'CG0006', 100000, N'Đã đặt'),
-('CTV12', 'V0011', 'LC001', 'CG0005', 100000, N'Đã đặt');
+('CTV16', 'V0011', 'LC001', 'CG0006', 100000, N'Đã đặt'),
+('CTV17', 'V0011', 'LC001', 'CG0005', 100000, N'Đã đặt');
 --chọn mua thêm đồ ăn đồ uống nếu muốn
 insert into ve_food values
 ('V0011', 'F0001',2),

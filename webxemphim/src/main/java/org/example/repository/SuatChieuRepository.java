@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface SuatChieuRepository extends JpaRepository<suatchieu, String> {
-    @Query(value = "select s.tgianchieu from lichchieu l, phim p, suatchieu s\n" +
+    @Query(value = "select distinct s.tgianchieu from lichchieu l, phim p, suatchieu s\n" +
             "where l.idPhim = p.idPhim  \n" +
             "\tand l.idSuatChieu = s.idSuatChieu\n" +
             "\tand p.idPhim = :idPhim \n" +
