@@ -3,6 +3,8 @@ package org.example.controller;
 import org.example.dto.request.ApiResponse;
 import org.example.model.food;
 import org.example.service.FoodService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,11 +20,11 @@ public class FoodController {
         this.foodService = foodService;
     }
     @GetMapping
-    public ApiResponse<List<food>> getAlFood()
+    public ResponseEntity<ApiResponse<List<food>>>  getAlFood()
     {
         ApiResponse<List<food>> ans = new ApiResponse<>();
         ans.setResult(foodService.getAllFood());
         ans.setMessage("tải thành công");
-        return ans;
+        return ResponseEntity.ok(ans);
     }
 }

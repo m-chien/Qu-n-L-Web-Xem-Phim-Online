@@ -16,7 +16,18 @@ body {
   margin: 0 auto;
   padding: 0 20px;
 }
+.user-menu {
+  position: relative;
+}
 
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #ff6b35;
+  cursor: pointer;
+  object-fit: cover;
+}
 /* Header */
 .header {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);

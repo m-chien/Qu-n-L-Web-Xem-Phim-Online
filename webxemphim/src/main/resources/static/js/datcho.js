@@ -89,7 +89,7 @@ async function fetchRoomData() {
 
     const data = await response.json();
     console.log("Dữ liệu phòng từ API:", data);
-
+    localStorage.setItem("Room", data);
     roomData = data;
     return data;
   } catch (error) {
@@ -201,7 +201,7 @@ function handleSeatClick(event) {
     seat.classList.add("selected");
     selectedSeats.push(seatId);
   }
-
+  console.log("Ghế được chọn:", selectedSeats);
   updateBookingSummary();
 }
 
@@ -352,7 +352,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
     );
 
     // Chuyển hướng đến trang thanh toán
-    window.location.href = "/html/payment.html"; // Thay đổi đường dẫn theo cấu trúc thực tế
+    window.location.href = "/html/food.html"; // Thay đổi đường dẫn theo cấu trúc thực tế
   }
 });
 function debugLocalStorage() {

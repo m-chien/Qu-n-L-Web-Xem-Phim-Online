@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đặt Thức Ăn - Galaxy Cinema</title>
+    <link rel="stylesheet" href="/css/food.css" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <a href="/html/trangchu.html" class="nav-brand">
+          <i class="fas fa-film"></i>
+          ChienCINEMA
+        </a>
+        <div class="nav-links">
+          <a href="#"><i class="fas fa-home"></i> Trang chủ</a>
+          <a href="#"><i class="fas fa-video"></i> Phim</a>
+          <a href="#"><i class="fas fa-building"></i> Rạp</a>
+          <a href="#"><i class="fas fa-tags"></i> Khuyến mãi</a>
+          <a href="#"><i class="fas fa-phone"></i> Liên hệ</a>
+        </div>
+        <div class="user-menu">
+          <img
+            src="/images/user-circle (1).png"
+            alt="Avatar"
+            class="user-avatar"
+          />
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>🍿 Galaxy Cinema - Đặt Thức Ăn & Đồ Uống</h1>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-title">Tiến Trình Đặt Vé</div>
+        <div class="progress-bar">
+          <div class="progress-line"></div>
+          <div class="progress-step">
+            <div class="step-circle completed">✓</div>
+            <div class="step-label">Chọn Phim</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle completed">✓</div>
+            <div class="step-label">Chọn Ghế</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle active">3</div>
+            <div class="step-label active">Đồ Ăn & Đồ Uống</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle">4</div>
+            <div class="step-label">Thanh Toán</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-circle">5</div>
+            <div class="step-label">Xác Nhận</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Left Column - Food Items -->
+        <div class="food-section">
+          <h2>🍿 Chọn Thức Ăn & Đồ Uống</h2>
+          <div id="loading" class="loading">
+            <p>Đang tải danh sách sản phẩm...</p>
+          </div>
+          <div id="error-message" class="error-message" style="display: none">
+            <p>Lỗi khi tải dữ liệu. Vui lòng thử lại!</p>
+            <button onclick="loadFoodItems()" class="retry-btn">Thử lại</button>
+          </div>
+          <div id="food-grid" class="food-grid" style="display: none">
+            <!-- Demo food items -->
+            <div class="food-item">
+              <img
+                src="https://via.placeholder.com/280x160/ff6b35/ffffff?text=Popcorn"
+                alt="Bỏng ngô"
+                class="food-image"
+              />
+              <div class="food-content">
+                <div class="food-name">Bỏng Ngô Caramel</div>
+                <div class="food-description">
+                  Bỏng ngô thơm ngon với vị caramel đặc trưng
+                </div>
+                <div class="food-price">65.000₫</div>
+                <div class="quantity-control">
+                  <div class="quantity-buttons">
+                    <button class="btn" onclick="updateQuantity(1, -1)">
+                      -
+                    </button>
+                    <span class="quantity" id="qty-1">0</span>
+                    <button class="btn" onclick="updateQuantity(1, 1)">
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="food-item">
+              <img
+                src="https://via.placeholder.com/280x160/f7931e/ffffff?text=Drink"
+                alt="Nước uống"
+                class="food-image"
+              />
+              <div class="food-content">
+                <div class="food-name">Coca Cola (Size L)</div>
+                <div class="food-description">
+                  Nước ngọt Coca Cola size lớn mát lạnh
+                </div>
+                <div class="food-price">45.000₫</div>
+                <div class="quantity-control">
+                  <div class="quantity-buttons">
+                    <button class="btn" onclick="updateQuantity(2, -1)">
+                      -
+                    </button>
+                    <span class="quantity" id="qty-2">0</span>
+                    <button class="btn" onclick="updateQuantity(2, 1)">
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+          <!-- Movie Information Table -->
+          <div class="movie-info">
+            <h3>📽️ Thông Tin Đặt Vé</h3>
+            <table class="info-table">
+              <tr>
+                <td>🎬 Tên Phim</td>
+                <td id="movie-title"><strong>John Wick: Ballerina</strong></td>
+              </tr>
+              <tr>
+                <td>🏢 Rạp Chiếu</td>
+                <td id="cinema-name">Galaxy Cinema Đà Nẵng</td>
+              </tr>
+              <tr>
+                <td>📅 Ngày & Giờ</td>
+                <td id="date-time">Thứ Năm, 12/06/2025 - 22:00</td>
+              </tr>
+              <tr>
+                <td>🎭 Phòng Chiếu</td>
+                <td id="room-name">Phòng 3 - 2D</td>
+              </tr>
+              <tr>
+                <td>💺 Ghế Đã Chọn</td>
+                <td>
+                  <span class="highlight" id="selected-seats"
+                    >I7 (Ghế VIP)</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>💰 Giá Vé</td>
+                <td><span class="highlight" id="total-price">95.000₫</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Cart Section -->
+          <div class="cart-section">
+            <h2>🛒 Giỏ Hàng</h2>
+            <div id="cart-items">
+              <div class="empty-cart">
+                <i
+                  class="fas fa-shopping-cart"
+                  style="font-size: 2rem; color: #666; margin-bottom: 10px"
+                ></i>
+                <p>Giỏ hàng trống</p>
+                <p style="font-size: 0.9rem; margin-top: 5px">
+                  Chọn món ăn để thêm vào giỏ hàng
+                </p>
+              </div>
+            </div>
+            <div id="cart-total" class="cart-total" style="display: none">
+              <div class="total-row">
+                <span>Tiền vé:</span>
+                <span id="ticket-price-display"></span>
+              </div>
+              <div class="total-row">
+                <span>Tiền đồ ăn:</span>
+                <span id="food-total">0₫</span>
+              </div>
+              <div class="total-row total-final">
+                <span>Tổng cộng:</span>
+                <span id="total">95.000₫</span>
+              </div>
+              <button class="checkout-btn" onclick="checkout()">
+                💳 Tiếp Tục Thanh Toán
+              </button>
+              <button class="skip-btn" onclick="skipFood()">
+                ⏭️ Bỏ Qua Đồ Ăn
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/food.js"></script>
+  </body>
+</html>

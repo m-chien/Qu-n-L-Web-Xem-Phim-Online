@@ -423,16 +423,16 @@ INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai) VALUES
 
 -- 8. Bảng Food
 INSERT INTO Food (idFood, TenDoAn, MoTa, GiaBan, TrangThai, soluongtonkho, url_anh) VALUES
-('F0001', N'Bắp rang bơ caramel', N'Bắp rang bơ vị caramel thơm ngon.', 60000, N'Còn hàng', 500, 'https://placehold.co/100x100/e0e0e0/black?text=Popcorn+C'),
-('F0002', N'Coca-Cola (lon)', N'Nước ngọt có ga giải khát.', 30000, N'Còn hàng', 800, 'https://placehold.co/100x100/e0e0e0/black?text=Coca'),
-('F0003', N'Snack khoai tây', N'Snack khoai tây giòn rụm.', 45000, N'Còn hàng', 300, 'https://placehold.co/100x100/e0e0e0/black?text=Snack'),
-('F0004', N'Combo bắp nước nhỏ', N'1 bắp nhỏ + 1 nước nhỏ.', 85000, N'Còn hàng', 200, 'https://placehold.co/100x100/e0e0e0/black?text=Combo+N'),
-('F0005', N'Combo bắp nước lớn', N'1 bắp lớn + 2 nước lớn.', 130000, N'Còn hàng', 150, 'https://placehold.co/100x100/e0e0e0/black?text=Combo+L'),
-('F0006', N'Hot dog', N'Bánh mì kẹp xúc xích nóng.', 70000, N'Còn hàng', 100, 'https://placehold.co/100x100/e0e0e0/black?text=Hotdog'),
-('F0007', N'Nước lọc đóng chai', N'Nước uống tinh khiết.', 20000, N'Còn hàng', 1000, 'https://placehold.co/100x100/e0e0e0/black?text=Water'),
-('F0008', N'Kẹo dẻo', N'Kẹo dẻo nhiều màu sắc.', 35000, N'Còn hàng', 400, 'https://placehold.co/100x100/e0e0e0/black?text=Candy'),
-('F0009', N'Pizza mini', N'Pizza cỡ nhỏ với nhiều vị.', 90000, N'Còn hàng', 80, 'https://placehold.co/100x100/e0e0e0/black?text=Pizza'),
-('F0100', N'Kem ly', N'Kem mát lạnh nhiều hương vị.', 55000, N'Còn hàng', 120, 'https://placehold.co/100x100/e0e0e0/black?text=IceCream');
+('F0001', N'Bắp rang bơ caramel', N'Bắp rang bơ vị caramel thơm ngon.', 60000, N'Còn hàng', 500, '/images/popcorn.jpg'),
+('F0002', N'Coca-Cola (lon)', N'Nước ngọt có ga giải khát.', 30000, N'Còn hàng', 800, '/images/coca.jpg'),
+('F0003', N'Snack khoai tây', N'Snack khoai tây giòn rụm.', 45000, N'Còn hàng', 300, '/images/snack.jpg'),
+('F0004', N'Combo bắp nước nhỏ', N'1 bắp nhỏ + 1 nước nhỏ.', 85000, N'Còn hàng', 200, '/images/combobapnuoc.jpg'),
+('F0005', N'Combo bắp nước lớn', N'1 bắp lớn + 2 nước lớn.', 130000, N'Còn hàng', 150, '/images/bapnuoclon.jpg'),
+('F0006', N'Hot dog', N'Bánh mì kẹp xúc xích nóng.', 70000, N'Còn hàng', 100, '/images/hotdog.jpg'),
+('F0007', N'Nước lọc đóng chai', N'Nước uống tinh khiết.', 20000, N'Còn hàng', 1000, '/images/nuocloc.jpg'),
+('F0008', N'Kẹo dẻo', N'Kẹo dẻo nhiều màu sắc.', 35000, N'Còn hàng', 400, '/images/haribo.jpg'),
+('F0009', N'Pizza mini', N'Pizza cỡ nhỏ với nhiều vị.', 90000, N'Còn hàng', 80, '/images/pizza.jpg'),
+('F0100', N'Kem ly', N'Kem mát lạnh nhiều hương vị.', 55000, N'Còn hàng', 120, '/images/kem.jpg');
 
 -- 18. Bảng ve_food (ChiTietDoAn)
 INSERT INTO Ve_Food (idVe, idFood,soluong) VALUES

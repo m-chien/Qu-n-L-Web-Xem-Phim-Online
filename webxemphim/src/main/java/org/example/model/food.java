@@ -25,6 +25,7 @@ public class food {
     BigDecimal giaban;
     @Column(name = "TrangThai")
     String trangthai;
+    @Column(name = "soluongtonkho")
     int soluonngtonkho;
     String url_anh;
 }
