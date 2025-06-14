@@ -16745,20 +16745,35 @@
 											"top": 207,
 											"width": 160.39453125,
 											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGXZ9jr3Oj00t4=",
+											"_parent": {
+												"$ref": "AAAAAAGWRFrlWcYVTdc="
+											},
+											"model": {
+												"$ref": "AAAAAAGXZ9jryujxUTA="
+											},
+											"font": "Arial;13;0",
+											"left": 517,
+											"top": 222,
+											"width": 160.39453125,
+											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 512,
 									"top": 127,
 									"width": 170.39453125,
-									"height": 98
+									"height": 113
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 512,
 							"top": 104,
 							"width": 170.39453125,
-							"height": 121,
+							"height": 136,
 							"nameLabel": {
 								"$ref": "AAAAAAGWRFrlWcYUBms="
 							},
@@ -17474,7 +17489,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 606,
-									"top": 301,
+									"top": 308,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -17491,7 +17506,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 607,
-									"top": 243,
+									"top": 258,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -17525,7 +17540,7 @@
 								"$ref": "AAAAAAGWRFrlWcYTdck="
 							},
 							"lineStyle": 2,
-							"points": "592:224;592:392",
+							"points": "592:239;592:392",
 							"nameLabel": {
 								"$ref": "AAAAAAGWRF+mh8cGwcA="
 							},
@@ -20560,7 +20575,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 531,
-									"top": 243,
+									"top": 258,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -20594,7 +20609,7 @@
 								"$ref": "AAAAAAGWRFrlWcYTdck="
 							},
 							"lineStyle": 2,
-							"points": "516:224;516:324;379:324",
+							"points": "516:239;516:324;379:324",
 							"nameLabel": {
 								"$ref": "AAAAAAGXRQDzSWlIr5c="
 							},
@@ -20958,6 +20973,15 @@
 								"$ref": "AAAAAAGWRFrlWcYRDmo="
 							},
 							"name": "LoaiTaiKhoan",
+							"length": 0
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGXZ9jryujxUTA=",
+							"_parent": {
+								"$ref": "AAAAAAGWRFrlWcYRDmo="
+							},
+							"name": "avatar_url",
 							"length": 0
 						}
 					]

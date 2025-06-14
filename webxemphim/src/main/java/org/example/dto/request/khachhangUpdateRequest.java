@@ -9,8 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class khachhangUpdateRequest {
-    String diachiKh;
+    String idUser;
+    String hoten;
     String sdt;
-    String email;
-    String matkhau;
+    String ngaysinh;
+    String gioitinh;
 }

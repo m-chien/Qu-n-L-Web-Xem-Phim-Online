@@ -1,29 +1,27 @@
-package org.example.model;
+package org.example.dto.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "nguoidung")
-public class nguoidung {
-    @Id
+public class KhachHangResponse {
     String idUser;
     String email;
     String matkhau;
     LocalDate ngaytao;
     String loaitaikhoan;
     String trangthai;
-    @Column(name = "avatar_url")
     String avatar_url;
+    String idKhachhang;
+    String hoten;
+    String sdt;
+    LocalDate ngaysinh;
+    String gioitinh;
+
 }

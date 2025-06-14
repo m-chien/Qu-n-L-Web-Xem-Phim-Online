@@ -54,4 +54,28 @@ public class JwtService {
             throw new RuntimeException(e);
         }
     }
+    public String extractUsername(String token) throws JOSEException, ParseException {
+        try {
+            // Parse the signed JWT
+            SignedJWT signedJWT = SignedJWT.parse(token);
+
+            // Get the JWT claims set
+            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
+            // Extract the subject (username/email) from the token
+            // Thường thì subject chứa username hoặc email của user
+            String email = claimsSet.getSubject();
+
+            if (email == null || email.trim().isEmpty()) {
+                throw new RuntimeException("Username không tồn tại trong token");
+            }
+
+            return email;
+
+        } catch (ParseException e) {
+            throw new ParseException("Token không hợp lệ", 0);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể lấy thông tin user từ token");
+        }
+    }
 }

@@ -36,6 +36,7 @@
     </header>
 
     <!-- Main Content -->
+    <!-- Main Content -->
     <main class="main-content">
       <h1 class="page-title">Tài Khoản Của Tôi</h1>
 
@@ -49,8 +50,8 @@
               class="profile-avatar"
               id="profileAvatar"
             />
-            <div class="profile-name">Nguyễn Văn A</div>
-            <div class="profile-email">nguyenvana@email.com</div>
+            <div class="profile-name" id="profileName">Đang tải...</div>
+            <div class="profile-email" id="profileEmail">Đang tải...</div>
             <span class="member-badge">VIP Member</span>
           </div>
 
@@ -88,7 +89,7 @@
                   type="text"
                   id="firstName"
                   name="firstName"
-                  value="Nguyễn Văn"
+                  value=""
                   required
                 />
               </div>
@@ -98,7 +99,7 @@
                   type="text"
                   id="lastName"
                   name="lastName"
-                  value="A"
+                  value=""
                   required
                 />
               </div>
@@ -108,35 +109,27 @@
                   type="email"
                   id="email"
                   name="email"
-                  value="nguyenvana@email.com"
+                  value=""
                   required
+                  readonly
+                  style="background-color: #1c1d1e; cursor: not-allowed"
                 />
               </div>
               <div class="form-group">
                 <label for="phone">Số điện thoại</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value="0123456789"
-                  required
-                />
+                <input type="tel" id="phone" name="phone" value="" required />
               </div>
               <div class="form-group">
                 <label for="birthDate">Ngày sinh</label>
-                <input
-                  type="date"
-                  id="birthDate"
-                  name="birthDate"
-                  value="1990-01-01"
-                />
+                <input type="date" id="birthDate" name="birthDate" value="" />
               </div>
               <div class="form-group">
                 <label for="gender">Giới tính</label>
                 <select id="gender" name="gender">
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-                  <option value="other">Khác</option>
+                  <option value="">Chọn giới tính</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
                 </select>
               </div>
               <div class="form-group full-width">
@@ -145,9 +138,7 @@
                   id="address"
                   name="address"
                   placeholder="Nhập địa chỉ của bạn"
-                >
-123 Đường ABC, Quận 1, TP.HCM</textarea
-                >
+                ></textarea>
               </div>
               <div class="form-group full-width">
                 <button type="submit" class="btn-primary">

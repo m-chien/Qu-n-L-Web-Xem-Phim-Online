@@ -46,6 +46,7 @@ public class UserService {
                 .ngaytao(LocalDate.now())
                 .loaitaikhoan("Khách hàng")
                 .trangthai("active")
+                .avatar_url("/images/user-circle (1).png")
                 .build();
         nguoidung1.setMatkhau(passwordEncoder.encode(userRequest.getMatkhau()));
         String idkhachhang = generateNewCustomerId();
@@ -72,6 +73,7 @@ public class UserService {
         var token = jwtService.generateToken(nguoidung1.getEmail());
         return AuthenticationResponse.builder()
                 .token(token)
+                .user(nguoidungrepository.findCustom(nguoidung1.getEmail()))
                 .build();
     }
     private String generateNewUserId() {

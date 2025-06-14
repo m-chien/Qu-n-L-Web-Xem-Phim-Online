@@ -11,23 +11,6 @@ body {
   background-color: #0a0a0a;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-.user-menu {
-  position: relative;
-}
-
-.user-avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 2px solid #ff6b35;
-  cursor: pointer;
-  object-fit: cover;
-}
 /* Header */
 .header {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -42,6 +25,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
+  min-height: 70px; /* Thêm min-height */
+  width: 100%; /* Đảm bảo full width */
 }
 
 .nav-brand {
@@ -98,6 +83,14 @@ body {
   width: 100%;
 }
 
+/* AUTH CONTAINER */
+.auth-container {
+  display: flex;
+  align-items: center;
+  min-width: 200px; /* Thêm min-width */
+}
+
+/* NAV ACTIONS - Trạng thái chưa đăng nhập */
 .nav-actions {
   display: flex;
   gap: 1rem;
@@ -132,6 +125,41 @@ body {
 .btn-register:hover {
   background: #e55a2b;
   transform: translateY(-2px);
+}
+
+/* USER MENU - Trạng thái đã đăng nhập */
+.user-menu {
+  position: relative !important;
+  /*display: flex !important;*/
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  white-space: nowrap !important; /* Quan trọng */
+}
+
+.user-menu:hover {
+  background: rgba(255, 107, 53, 0.1);
+}
+
+.user-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  border: 2px solid #ff6b35;
+  object-fit: cover;
+  flex-shrink: 0 !important; /* Không cho co lại */
+}
+
+.name_user {
+  color: #ff6b35 !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important; /* Không xuống hàng */
+  margin: 0 !important;
+  line-height: 1 !important;
 }
 
 .mobile-menu-toggle {
@@ -389,6 +417,8 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+  margin-right: 16rem;
+  margin-left: 16rem;
 }
 
 .movie-card {

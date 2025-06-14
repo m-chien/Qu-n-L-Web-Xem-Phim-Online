@@ -16,7 +16,8 @@ create table nguoidung
 	matkhau varchar(255) not null,
 	ngaytao Date default getdate(),
 	loaitaikhoan nvarchar(20) default N'Khách hàng',
-	trangthai nvarchar(20) default N'active'
+	trangthai nvarchar(20) default N'active',
+	avatar_url VARCHAR(255)
 )
 create table nhanvien
 (
@@ -288,17 +289,17 @@ alter table ChiTietDatVe
 		or (TrangThaiVe = N'Đã hủy') 
 		or (TrangThaiVe = N'Đã hoàn tiền'))
 -- 1. Bảng nguoidung
-INSERT INTO nguoidung (idUser, email, matkhau, ngaytao, loaitaikhoan, trangthai) VALUES
-('U0001', 'anh.nguyen@gmail.com', 'hashedpass123abc', '2023-01-05', N'Khách hàng', N'active'),
-('U0002', 'binh.le@gmail.com', 'hashedpass456def', '2023-02-10', N'Khách hàng', N'active'),
-('U0003', 'cuong.tran@gmail.com', 'hashedpass789ghi', '2023-03-15', N'Khách hàng', N'active'),
-('U0004', 'duyen.pham@gmail.com', 'hashedpassabcjkl', '2023-04-20', N'Khách hàng', N'active'),
-('U0005', 'em.hoang@gmail.com', 'hashedpassdefmno', '2023-05-25', N'Khách hàng', N'active'),
-('U0006', 'thao.nguyen@gmail.com', 'hashedpassghipqr', '2023-06-01', N'Nhân viên', N'active'),
-('U0007', 'long.tran@gmail.com', 'hashedpassjklstu', '2023-07-07', N'Nhân viên', N'active'),
-('U0008', 'minh.vo@gmail.com', 'hashedpassvwyxyz', '2023-08-12', N'Admin', N'active'),
-('U0009', 'ngoc.phan@gmail.com', 'hashedpass1a2b3c', '2023-09-18', N'Khách hàng', N'active'),
-('U0010', 'huy.do@gmail.com', 'hashedpass4d5e6f', '2023-10-23', N'Khách hàng', N'active');
+INSERT INTO nguoidung (idUser, email, matkhau, ngaytao, loaitaikhoan, trangthai,avatar_url) VALUES
+('U0001', 'anh.nguyen@gmail.com', 'hashedpass123abc', '2023-01-05', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0002', 'binh.le@gmail.com', 'hashedpass456def', '2023-02-10', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0003', 'cuong.tran@gmail.com', 'hashedpass789ghi', '2023-03-15', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0004', 'duyen.pham@gmail.com', 'hashedpassabcjkl', '2023-04-20', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0005', 'em.hoang@gmail.com', 'hashedpassdefmno', '2023-05-25', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0006', 'thao.nguyen@gmail.com', 'hashedpassghipqr', '2023-06-01', N'Nhân viên', N'active','/images/user-circle (1).png'),
+('U0007', 'long.tran@gmail.com', 'hashedpassjklstu', '2023-07-07', N'Nhân viên', N'active','/images/user-circle (1).png'),
+('U0008', 'minh.vo@gmail.com', 'hashedpassvwyxyz', '2023-08-12', N'Admin', N'active','/images/user-circle (1).png'),
+('U0009', 'ngoc.phan@gmail.com', 'hashedpass1a2b3c', '2023-09-18', N'Khách hàng', N'active','/images/user-circle (1).png'),
+('U0010', 'huy.do@gmail.com', 'hashedpass4d5e6f', '2023-10-23', N'Khách hàng', N'active','/images/user-circle (1).png');
 
 -- 9. Bảng NhanVien
 INSERT INTO NhanVien (idNhanVien, idUser, hoten, sdt, emaillienhe, gioitinh, chucVu, Luong, trangthai) VALUES
@@ -682,4 +683,6 @@ where idVe = 'V0011'
 --           );
 select * from chongoi where idPhong = 'R0001'
 select * from nguoidung
-select * from khachhang
+select * from khachhang where idUser = 'U0011'
+select n.*,k.idKhachhang,k.hoten,k.sdt,k.ngaysinh,k.gioitinh
+from nguoidung n join khachhang k on n.idUser =k.idUser

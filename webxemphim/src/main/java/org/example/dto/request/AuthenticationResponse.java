@@ -3,6 +3,7 @@ package org.example.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
     String token;
+    KhachHangResponse user;
 }

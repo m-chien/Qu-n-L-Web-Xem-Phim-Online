@@ -114,17 +114,16 @@ async function handleLogin(event) {
   event.preventDefault();
 
   const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const rememberMe = document.getElementById("rememberMe").checked;
+  const password = document.getElementById("loginPassword").value.trim();
 
   // Validation
   if (!email || !password) {
-    showModal("errorModal", "Vui lòng điền đầy đủ thông tin");
+    showModal("errorModal", "Vui lòng điền đầy đủ thông tin.");
     return;
   }
 
   if (!validateEmail(email)) {
-    showModal("errorModal", "Email không hợp lệ");
+    showModal("errorModal", "Email không hợp lệ.");
     return;
   }
 
@@ -133,33 +132,28 @@ async function handleLogin(event) {
 
     const loginData = {
       email: email,
-      password: password,
-      rememberMe: rememberMe,
+      matkhau: password,
     };
 
     const response = await makeRequest(AUTH_ENDPOINTS.login, loginData);
 
-    // Store authentication data
-    if (response.token) {
-      if (rememberMe) {
-        localStorage.setItem("authToken", response.token);
-        localStorage.setItem("userData", JSON.stringify(response.user));
-      } else {
-        sessionStorage.setItem("authToken", response.token);
-        sessionStorage.setItem("userData", JSON.stringify(response.user));
-      }
+    // Store authentication data in sessionStorage
+    if (response.code === 1000 && response.result?.token) {
+      sessionStorage.setItem("authToken", response.result.token);
+      sessionStorage.setItem("user", JSON.stringify(response.result.user));
+      hideLoading();
+      showModal("successModal", "Đăng nhập thành công.");
+      // Redirect after modal closes
+      setTimeout(() => {
+        window.location.href = "/html/trangchu.html";
+      }, 1000);
+    } else {
+      hideLoading();
+      showModal("errorModal", response.message);
     }
-
-    hideLoading();
-    showModal("successModal", "Đăng nhập thành công!");
-
-    // Redirect after modal closes
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 2000);
   } catch (error) {
     hideLoading();
-    showModal("errorModal", error.message || "Đăng nhập thất bại");
+    showModal("errorModal", error.message || "Đăng nhập thất bại.");
   }
 }
 
@@ -184,71 +178,78 @@ async function handleRegister(event) {
     !password ||
     !confirmPassword
   ) {
-    showModal("errorModal", "Vui lòng điền đầy đủ thông tin");
+    showModal("errorModal", "Vui lòng điền đầy đủ thông tin.");
     return;
   }
 
   if (!validateName(firstName) || !validateName(lastName)) {
-    showModal("errorModal", "Họ và tên phải có ít nhất 2 ký tự");
+    showModal("errorModal", "Họ và tên phải có ít nhất 2 ký tự.");
     return;
   }
 
   if (!validateEmail(email)) {
-    showModal("errorModal", "Email không hợp lệ");
+    showModal("errorModal", "Email không hợp lệ.");
     return;
   }
 
   if (!validatePhone(phone)) {
-    showModal("errorModal", "Số điện thoại không hợp lệ");
+    showModal("errorModal", "Số điện thoại không hợp lệ.");
     return;
   }
 
   if (!validatePassword(password)) {
     showModal(
       "errorModal",
-      "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số"
+      "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số."
     );
     return;
   }
 
   if (password !== confirmPassword) {
-    showModal("errorModal", "Mật khẩu xác nhận không khớp");
+    showModal("errorModal", "Mật khẩu xác nhận không khớp.");
     return;
   }
 
   if (!agreeTerms) {
-    showModal("errorModal", "Vui lòng đồng ý với điều khoản sử dụng");
+    showModal("errorModal", "Vui lòng đồng ý với điều khoản sử dụng.");
     return;
   }
 
   try {
     showLoading();
 
+    // Gộp firstName + lastName
     const registerData = {
-      firstName: firstName,
-      lastName: lastName,
+      hoten: `${firstName} ${lastName}`,
       email: email,
-      phone: phone,
-      password: password,
+      sdt: phone,
+      matkhau: password,
     };
 
     const response = await makeRequest(AUTH_ENDPOINTS.register, registerData);
 
-    hideLoading();
-    showModal(
-      "successModal",
-      "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản."
-    );
+    if (response.code === 1000) {
+      hideLoading();
+      showModal(
+        "successModal",
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản."
+      );
 
-    // Switch to login form after successful registration
-    setTimeout(() => {
-      container.classList.remove("right-panel-active");
-      registerForm.reset();
-      closeModal("successModal");
-    }, 3000);
+      // Sau khi đăng kí, chuyển sang form đăng nhập
+      setTimeout(() => {
+        container.classListRemove("right-panel-active");
+
+        registerForm.reset();
+        closeModal("successModal");
+      }, 3000);
+    } else {
+      // Nếu có lỗi từ phía server
+      hideLoading();
+      showModal("errorModal", response.message);
+    }
   } catch (error) {
     hideLoading();
-    showModal("errorModal", error.message || "Đăng ký thất bại");
+    showModal("errorModal", error.message || "Đăng ký thất bại.");
   }
 }
 
