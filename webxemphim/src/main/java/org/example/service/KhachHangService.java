@@ -39,7 +39,7 @@ public class KhachHangService {
                 throw new RuntimeException("Token không hợp lệ hoặc đã hết hạn");
             }
             //giải mã token ra để lấy email
-            String userEmail = jwtService.extractUsername(token);
+            String userEmail = jwtService.extractemail(token);
 
             // tìm người dùng từ email đã giải mã
             nguoidung tokenUser = userRepository.findByEmail(userEmail);

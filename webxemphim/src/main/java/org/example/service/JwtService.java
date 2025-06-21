@@ -54,7 +54,7 @@ public class JwtService {
             throw new RuntimeException(e);
         }
     }
-    public String extractUsername(String token) throws JOSEException, ParseException {
+    public String extractemail(String token) throws JOSEException, ParseException {
         try {
             // Parse the signed JWT
             SignedJWT signedJWT = SignedJWT.parse(token);

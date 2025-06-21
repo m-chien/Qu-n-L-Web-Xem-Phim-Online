@@ -15,6 +15,7 @@ function loadUserData() {
       // Update avatar if available
       if (user.avatar_url) {
         document.getElementById("profileAvatar").src = user.avatar_url;
+        document.getElementById("user-avatar").src = user.avatar_url;
       }
 
       // Split full name into first and last name
@@ -61,6 +62,174 @@ function loadUserData() {
     showNotification("Lỗi khi tải thông tin người dùng.", "error");
   }
 }
+
+// Load booking history from API
+async function loadBookingHistory() {
+  try {
+    const token = sessionStorage.getItem("authToken");
+
+    if (!token) {
+      console.log("No auth token found");
+      return;
+    }
+
+    const response = await fetch("http://localhost:8080/api/ticket/lich-su", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const bookingData = await response.json();
+    console.log("Booking history loaded:", bookingData);
+
+    // Update the booking history section
+    displayBookingHistory(bookingData);
+  } catch (error) {
+    console.error("Error loading booking history:", error);
+    showNotification("Lỗi khi tải lịch sử đặt vé.", "error");
+
+    // Show empty state or default message
+    const bookingHistoryContainer = document.querySelector(".booking-history");
+    bookingHistoryContainer.innerHTML = `
+      <div class="empty-bookings">
+        <i class="fas fa-ticket-alt" style="font-size: 48px; color: #666; margin-bottom: 16px;"></i>
+        <p>Không thể tải lịch sử đặt vé. Vui lòng thử lại sau.</p>
+      </div>
+    `;
+  }
+}
+
+// Display booking history
+function displayBookingHistory(bookings) {
+  const bookingHistoryContainer = document.querySelector(".booking-history");
+
+  if (!bookings || bookings.length === 0) {
+    bookingHistoryContainer.innerHTML = `
+      <div class="empty-bookings">
+        <i class="fas fa-ticket-alt" style="font-size: 48px; color: #666; margin-bottom: 16px;"></i>
+        <p style="color:rgb(206, 206, 206)">Bạn chưa có lịch sử đặt vé nào.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Clear existing content
+  bookingHistoryContainer.innerHTML = "";
+
+  // Create booking items
+  bookings.forEach((booking, index) => {
+    const bookingItem = createBookingItem(booking, index);
+    bookingHistoryContainer.appendChild(bookingItem);
+  });
+}
+
+// Create individual booking item
+function createBookingItem(booking, index) {
+  const bookingDiv = document.createElement("div");
+  bookingDiv.className = "booking-item";
+
+  // Format date
+  const bookingDate = new Date(booking.ngayDat);
+  const formattedDate = bookingDate.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const formattedTime = bookingDate.toLocaleTimeString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // Format price
+  const formattedPrice = new Intl.NumberFormat("vi-VN").format(
+    booking.tongGiaTriDonHang
+  );
+
+  // Determine status class and button
+  let statusClass = "status-confirmed";
+  let statusText = booking.trangthai;
+  let actionButton = "";
+
+  switch (booking.trangthai.toLowerCase()) {
+    case "đã thanh toán":
+      statusClass = "status-confirmed";
+      actionButton =
+        '<button class="btn-secondary" onclick="viewBookingDetail(' +
+        index +
+        ')">Xem chi tiết</button>';
+      break;
+    case "chờ xác nhận":
+      statusClass = "status-pending";
+      actionButton =
+        '<button class="btn-secondary" onclick="cancelBooking(' +
+        index +
+        ')">Hủy vé</button>';
+      break;
+    case "đã hủy":
+      statusClass = "status-cancelled";
+      actionButton = "";
+      break;
+    default:
+      statusClass = "status-confirmed";
+      actionButton =
+        '<button class="btn-secondary" onclick="viewBookingDetail(' +
+        index +
+        ')">Xem chi tiết</button>';
+  }
+
+  bookingDiv.innerHTML = `
+    <img
+      src="${booking.url_poster}"
+      alt="Movie Poster"
+      class="movie-poster"
+      onerror="this.src='/images/default-movie-poster.jpg'"
+    />
+    <div class="booking-info">
+      <h3>${booking.tenphim}</h3>
+      <div class="booking-details">
+        <i class="fas fa-calendar"></i> ${formattedDate} - ${formattedTime}
+      </div>
+      <div class="booking-details">
+        <i class="fas fa-chair"></i> Ghế: ${booking.danhSachGhe}
+      </div>
+      <div class="booking-details">
+        <i class="fas fa-credit-card"></i> Tổng: ${formattedPrice} VNĐ
+      </div>
+    </div>
+    <div class="booking-actions">
+      <span class="booking-status ${statusClass}">${statusText}</span>
+      ${actionButton}
+    </div>
+  `;
+
+  return bookingDiv;
+}
+
+// View booking detail function
+function viewBookingDetail(index) {
+  showNotification("Đang chuyển đến trang chi tiết đặt vé...", "success");
+  // You can add more logic here to navigate to detail page
+  console.log("View detail for booking index:", index);
+}
+
+// Cancel booking function
+function cancelBooking(index) {
+  if (confirm("Bạn có chắc chắn muốn hủy vé này?")) {
+    // Here you would typically call an API to cancel the booking
+    // For now, we'll just show a success message
+    showNotification("Yêu cầu hủy vé đã được gửi thành công!", "success");
+
+    // Optionally reload the booking history
+    // loadBookingHistory();
+  }
+}
+
 // Menu navigation
 document.querySelectorAll(".menu-item").forEach((item) => {
   item.addEventListener("click", function (e) {
@@ -82,6 +251,11 @@ document.querySelectorAll(".menu-item").forEach((item) => {
     // Show selected section
     const sectionId = this.getAttribute("data-section");
     document.getElementById(sectionId).classList.add("active");
+
+    // Load booking history when bookings section is selected
+    if (sectionId === "bookings") {
+      loadBookingHistory();
+    }
   });
 });
 
@@ -277,19 +451,61 @@ function closeModal(modalId) {
 function openChangePasswordModal() {
   openModal("changePasswordModal");
 }
+//cập nhật avatar
+async function uploadAvatar() {
+  const fileInput = document.getElementById("avatarInput");
+  const file = fileInput.files[0];
 
-function uploadAvatar() {
-  const file = document.getElementById("avatarInput").files[0];
   if (!file) {
     showNotification("Vui lòng chọn ảnh để tải lên!", "error");
     return;
   }
 
-  // Simulate upload
-  setTimeout(() => {
-    showNotification("Ảnh đại diện đã được cập nhật thành công!", "success");
-    closeModal("avatarModal");
-  }, 1500);
+  const token = sessionStorage.getItem("authToken");
+  if (!token) {
+    showNotification("Bạn chưa đăng nhập!", "error");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/upAva", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        // KHÔNG thêm Content-Type vì browser sẽ tự gán multipart boundary
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showNotification(data.message || "Cập nhật thành công!", "success");
+
+      // Cập nhật ảnh trên giao diện
+      if (data.result) {
+        document.getElementById("profileAvatar").src = data.result;
+        document.querySelector(".user-avatar").src = data.result;
+      }
+      // 👇 Cập nhật lại sessionStorage
+      const user = JSON.parse(sessionStorage.getItem("user")) || {};
+      user.avatar_url = data.result; // gán avatar mới
+      sessionStorage.setItem("user", JSON.stringify(user));
+      const avatarUrl = user.avatar_url + "?t=" + new Date().getTime();
+      document.getElementById("profileAvatar").src = avatarUrl;
+      document.getElementById("user-avatar").src = avatarUrl;
+
+      closeModal("avatarModal");
+    } else {
+      showNotification(data.message || "Có lỗi xảy ra", "error");
+    }
+  } catch (err) {
+    console.error("Lỗi khi upload:", err);
+    showNotification("Không thể kết nối tới máy chủ", "error");
+  }
 }
 
 // Notification function
@@ -311,27 +527,6 @@ window.addEventListener("click", function (e) {
   if (e.target.classList.contains("modal")) {
     e.target.style.display = "none";
   }
-});
-
-// Booking actions
-document.querySelectorAll(".booking-item .btn-secondary").forEach((btn) => {
-  btn.addEventListener("click", function () {
-    const action = this.textContent.trim();
-    if (action === "Xem chi tiết") {
-      showNotification("Đang chuyển đến trang chi tiết đặt vé...", "success");
-    } else if (action === "Hủy vé") {
-      if (confirm("Bạn có chắc chắn muốn hủy vé này?")) {
-        showNotification("Yêu cầu hủy vé đã được gửi thành công!", "success");
-        this.closest(".booking-item").querySelector(
-          ".booking-status"
-        ).textContent = "Đã hủy";
-        this.closest(".booking-item").querySelector(
-          ".booking-status"
-        ).className = "booking-status status-cancelled";
-        this.style.display = "none";
-      }
-    }
-  });
 });
 
 // Initialize page

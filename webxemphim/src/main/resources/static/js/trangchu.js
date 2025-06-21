@@ -23,6 +23,23 @@ const errorModal = document.getElementById("error-modal");
 const errorMessage = document.getElementById("error-message");
 const heroBg = document.getElementById("hero-bg");
 
+// Modal Functions
+function showModal(modalId, message) {
+  const modal = document.getElementById(modalId);
+  const messageElement = modal.querySelector(".modal-body p");
+  messageElement.textContent = message;
+  modal.style.display = "block";
+}
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = "none";
+}
+// Close modal when clicking outside
+window.addEventListener("click", (event) => {
+  if (event.target.classList.contains("modal")) {
+    event.target.style.display = "none";
+  }
+});
+
 // Utility Functions
 function showError(message) {
   errorMessage.textContent = message;
@@ -85,7 +102,10 @@ async function fetchMovies() {
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
-    showError("Không thể tải danh sách phim. Vui lòng thử lại sau.");
+    showModal(
+      "errorModal",
+      "Không thể tải danh sách phim. Vui lòng thử lại sau."
+    );
     return [];
   }
 }
@@ -105,7 +125,7 @@ async function fetchScheduleDates(movieId) {
     }
   } catch (error) {
     console.error("Error fetching schedule dates:", error);
-    showError("Không thể tải ngày chiếu. Vui lòng thử lại sau.");
+    showModal("errorModal", "Không thể tải ngày chiếu. Vui lòng thử lại sau.");
     return [];
   }
 }
@@ -125,7 +145,7 @@ async function fetchShowtimes(movieId, date) {
     }
   } catch (error) {
     console.error("Error fetching showtimes:", error);
-    showError("Không thể tải suất chiếu. Vui lòng thử lại sau.");
+    showModal("errorModal", "Không thể tải suất chiếu. Vui lòng thử lại sau.");
     return [];
   }
 }
@@ -404,7 +424,7 @@ function bookMovie(movieId) {
     );
 
     // Chuyển hướng đến trang booking
-    window.location.href = "/html/chitietphim.html";
+    window.location.href = `/html/chitietphim.html?id=${movieId}`;
   }
 }
 
@@ -412,7 +432,10 @@ function notifyMovie(movieId) {
   event.stopPropagation(); // Prevent card click event
   const movie = allMovies.find((m) => m.idPhim === movieId);
   if (movie) {
-    alert(`Đã đặt thông báo cho phim: ${movie.tenphim}`);
+    showModal(
+      "successModal",
+      `Đã đặt thông báo thành công cho phim: ${movie.tenphim}. Chúng tôi sẽ thông báo cho bạn khi có lịch chiếu!`
+    );
   }
 }
 
@@ -483,6 +506,11 @@ showtimeSelect.addEventListener("change", function () {
 });
 
 bookButton.addEventListener("click", function () {
+  const token = sessionStorage.getItem("authToken");
+  if (!token) {
+    showModal("errorModal", "Vui lòng đăng nhập trước khi thực hiện đặt phim");
+    return;
+  }
   const selectedMovie = allMovies.find((m) => m.idPhim === movieSelect.value);
   const selectedCinema = cinemaSelect.options[cinemaSelect.selectedIndex].text;
   const selectedDate = dateSelect.value;
@@ -511,7 +539,7 @@ bookButton.addEventListener("click", function () {
     // Chuyển hướng đến trang booking
     window.location.href = "/html/datcho.html"; // Thay đổi đường dẫn theo cấu trúc thực tế của bạn
   } else {
-    alert("Vui lòng chọn đầy đủ thông tin trước khi đặt vé!");
+    showModal("errorModal", "Vui lòng chọn đầy đủ thông tin trước khi đặt vé!");
   }
 });
 
@@ -622,8 +650,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Hiện ảnh nếu có
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user) {
-      if (user.avatarURL) {
-        document.querySelector("#userAvatar").src = user.avatarURL;
+      if (user.avatar_url) {
+        document.getElementById("userAvatar").src = user.avatar_url;
       }
       if (user.hoten) {
         document.querySelector("#name_user").innerText = user.hoten;

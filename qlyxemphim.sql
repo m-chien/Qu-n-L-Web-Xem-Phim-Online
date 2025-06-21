@@ -686,3 +686,44 @@ select * from nguoidung
 select * from khachhang where idUser = 'U0011'
 select n.*,k.idKhachhang,k.hoten,k.sdt,k.ngaysinh,k.gioitinh
 from nguoidung n join khachhang k on n.idUser =k.idUser
+select * from thanhtoan
+
+--lịch sử đặt vé
+SELECT p.url_poster,
+	   p.tenphim,
+       v.NgayDat,
+       STRING_AGG(ch.hang + CAST(ch.cot AS NVARCHAR(10)), ', ') AS DanhSachGhe,
+	   v.TongGiaTriDonHang,
+	   v.trangthai
+FROM chitietdatve c
+JOIN ve v ON c.idVe = v.idVe
+JOIN lichchieu l ON c.idLichChieu = l.idLichChieu
+JOIN phim p ON l.idPhim = p.idPhim
+JOIN chongoi ch ON ch.idChoNgoi = c.idChoNgoi
+where v.idUser = 'U0001'
+GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang,v.idUser,v.trangthai,p.url_poster;
+
+--xem chi tiết lịch sử đã đặt sau khi chọn 1 phim từ lịch sử
+SELECT p.url_poster,
+	   p.tenphim,
+	   p.mo_ta,
+       v.NgayDat,
+	   v.trangthai,
+	   l.ngaychieu,
+       STRING_AGG(ch.hang + CAST(ch.cot AS NVARCHAR(10)), ', ') AS DanhSachGhe,
+	   v.TongGiaTriDonHang
+FROM chitietdatve c
+JOIN ve v ON c.idVe = v.idVe
+JOIN lichchieu l ON c.idLichChieu = l.idLichChieu
+JOIN phim p ON l.idPhim = p.idPhim
+JOIN chongoi ch ON ch.idChoNgoi = c.idChoNgoi
+join phong ph on l.idPhong = ph.idPhong
+where v.idVe = 'V0001'
+GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang,v.idUser,v.trangthai,p.url_poster;
+
+
+--tính điểm đánh giá cũng như số lần đánh giá của 1 bộ phim
+select p.idPhim,p.tenphim,COUNT(diemdanhgia) as N'Số lượt đánh gía',AVG(diemdanhgia)/2 as N'Điểm đánh giá trung bình'
+from danhgia d join phim p on p.idPhim = d.idPhim
+where p.idPhim = 'P0001'
+group by p.idPhim,p.tenphim

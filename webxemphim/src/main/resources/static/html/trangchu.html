@@ -21,7 +21,7 @@
         <ul class="nav-menu">
           <li><a href="#" class="nav-link active">Trang chủ</a></li>
           <li><a href="#" class="nav-link">Phim</a></li>
-          <li><a href="#" class="nav-link">Rạp</a></li>
+          <li><a href="/html/timkiem.html" class="nav-link">Khám Phá</a></li>
           <li><a href="#" class="nav-link">Khuyến mãi</a></li>
           <li><a href="#" class="nav-link">Tin tức</a></li>
         </ul>
@@ -237,7 +237,41 @@
         <p id="error-message"></p>
       </div>
     </div>
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+      <div class="modal-content success">
+        <div class="modal-header">
+          <i class="fas fa-check-circle"></i>
+          <h3>Thành công!</h3>
+        </div>
+        <div class="modal-body">
+          <p id="successMessage">Đăng nhập thành công!</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal" onclick="closeModal('successModal')">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
 
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+      <div class="modal-content error">
+        <div class="modal-header">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Lỗi!</h3>
+        </div>
+        <div class="modal-body">
+          <p id="errorMessage">Có lỗi xảy ra!</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal" onclick="closeModal('errorModal')">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
     <script src="/js/trangchu.js"></script>
   </body>
 </html>
