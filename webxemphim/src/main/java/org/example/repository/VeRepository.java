@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface VeRepository extends JpaRepository< ve,String> {
-    @Query(value = "SELECT p.url_poster, p.tenphim, v.NgayDat, " +
+    @Query(value = "SELECT v.idVe, p.url_poster, p.tenphim, v.NgayDat, " +
             "STRING_AGG(ch.hang + CAST(ch.cot AS VARCHAR(10)), ', ') AS DanhSachGhe, " +
             "v.TongGiaTriDonHang, v.trangthai " +
             "FROM chitietdatve c " +
@@ -19,7 +19,7 @@ public interface VeRepository extends JpaRepository< ve,String> {
             "JOIN phim p ON l.idPhim = p.idPhim " +
             "JOIN chongoi ch ON ch.idChoNgoi = c.idChoNgoi " +
             "WHERE v.idUser = :Iduser " +
-            "GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang, v.idUser, v.trangthai, p.url_poster",
+            "GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang, v.idUser, v.trangthai, p.url_poster, v.idVe",
             nativeQuery = true)
     List<LichSuVeResponse> findVe(@Param("Iduser")String idUser);
 }

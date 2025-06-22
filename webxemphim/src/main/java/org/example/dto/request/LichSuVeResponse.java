@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface LichSuVeResponse {
+    String getIdVe();
     String getUrl_poster();
     String getTenphim();
     LocalDateTime getNgayDat();

@@ -63,6 +63,9 @@ function loadUserData() {
   }
 }
 
+// Global variable to store booking data
+let bookingsData = [];
+
 // Load booking history from API
 async function loadBookingHistory() {
   try {
@@ -87,6 +90,9 @@ async function loadBookingHistory() {
 
     const bookingData = await response.json();
     console.log("Booking history loaded:", bookingData);
+
+    // Store booking data globally
+    bookingsData = bookingData;
 
     // Update the booking history section
     displayBookingHistory(bookingData);
@@ -211,11 +217,37 @@ function createBookingItem(booking, index) {
   return bookingDiv;
 }
 
-// View booking detail function
+// View booking detail function - Updated to redirect with idve
 function viewBookingDetail(index) {
-  showNotification("Đang chuyển đến trang chi tiết đặt vé...", "success");
-  // You can add more logic here to navigate to detail page
-  console.log("View detail for booking index:", index);
+  try {
+    // Get the booking data from the stored array
+    const booking = bookingsData[index];
+
+    if (!booking) {
+      showNotification("Không tìm thấy thông tin vé.", "error");
+      return;
+    }
+
+    // Get the ticket ID from the booking object
+    const ticketId = booking.idVe;
+
+    if (!ticketId) {
+      showNotification("Không tìm thấy ID vé.", "error");
+      console.error("Booking data:", booking);
+      return;
+    }
+
+    // Show loading notification
+    showNotification("Đang chuyển đến trang chi tiết đặt vé...", "success");
+
+    // Redirect to chitietdatve page with idve parameter
+    setTimeout(() => {
+      window.location.href = `/html/chitietdatve.html?idve=${ticketId}`;
+    }, 500);
+  } catch (error) {
+    console.error("Error viewing booking detail:", error);
+    showNotification("Có lỗi xảy ra khi xem chi tiết vé.", "error");
+  }
 }
 
 // Cancel booking function
@@ -451,6 +483,7 @@ function closeModal(modalId) {
 function openChangePasswordModal() {
   openModal("changePasswordModal");
 }
+
 //cập nhật avatar
 async function uploadAvatar() {
   const fileInput = document.getElementById("avatarInput");

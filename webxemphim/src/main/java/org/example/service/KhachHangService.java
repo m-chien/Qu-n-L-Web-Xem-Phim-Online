@@ -3,7 +3,6 @@ package org.example.service;
 import com.nimbusds.jose.JOSEException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.example.dto.request.IntroSpectRequest;
 import org.example.dto.request.IntroSpectResponse;
 import org.example.dto.request.khachhangUpdateRequest;
@@ -78,12 +77,7 @@ public class KhachHangService {
                     throw new RuntimeException("Giới tính không hợp lệ. Vui lòng chọn Nam, Nữ hoặc Khác");
                 }
             }
-
-            // Save updated khach hang
-            khachhang savedKhachHang = khachHangRepository.save(khachHang);
-
-
-            return savedKhachHang;
+            return khachHangRepository.save(khachHang);
 
         } catch (JOSEException | ParseException e) {
             throw new RuntimeException("Token không hợp lệ");

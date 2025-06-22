@@ -689,7 +689,8 @@ from nguoidung n join khachhang k on n.idUser =k.idUser
 select * from thanhtoan
 
 --lịch sử đặt vé
-SELECT p.url_poster,
+SELECT v.idVe,
+	   p.url_poster,
 	   p.tenphim,
        v.NgayDat,
        STRING_AGG(ch.hang + CAST(ch.cot AS NVARCHAR(10)), ', ') AS DanhSachGhe,
@@ -701,29 +702,146 @@ JOIN lichchieu l ON c.idLichChieu = l.idLichChieu
 JOIN phim p ON l.idPhim = p.idPhim
 JOIN chongoi ch ON ch.idChoNgoi = c.idChoNgoi
 where v.idUser = 'U0001'
-GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang,v.idUser,v.trangthai,p.url_poster;
+GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang,v.idUser,v.trangthai,p.url_poster,v.idVe;
 
---xem chi tiết lịch sử đã đặt sau khi chọn 1 phim từ lịch sử
-SELECT p.url_poster,
-	   p.tenphim,
-	   p.mo_ta,
-       v.NgayDat,
-	   v.trangthai,
-	   l.ngaychieu,
-       STRING_AGG(ch.hang + CAST(ch.cot AS NVARCHAR(10)), ', ') AS DanhSachGhe,
-	   v.TongGiaTriDonHang
-FROM chitietdatve c
-JOIN ve v ON c.idVe = v.idVe
-JOIN lichchieu l ON c.idLichChieu = l.idLichChieu
-JOIN phim p ON l.idPhim = p.idPhim
-JOIN chongoi ch ON ch.idChoNgoi = c.idChoNgoi
-join phong ph on l.idPhong = ph.idPhong
-where v.idVe = 'V0001'
-GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang,v.idUser,v.trangthai,p.url_poster;
-
-
---tính điểm đánh giá cũng như số lần đánh giá của 1 bộ phim
-select p.idPhim,p.tenphim,COUNT(diemdanhgia) as N'Số lượt đánh gía',AVG(diemdanhgia)/2 as N'Điểm đánh giá trung bình'
+--xem chi tiết phim
+--lấy ra phim từ vé đã đặt
+select distinct p.url_poster,p.tenphim,p.mo_ta,p.thoiluong
+from chitietdatve ct
+	join lichchieu l on l.idLichChieu = ct.idLichChieu
+	join phim p on p.idPhim = l.idPhim
+where ct.idVe = 'V0001'
+--lấy ra thể loại
+select distinct t.tentheloai
+from chitietdatve ct
+	join lichchieu l on l.idLichChieu = ct.idLichChieu
+	join phim p on p.idPhim = l.idPhim
+	join theloai_phim tl on tl.idPhim = p.idPhim
+	join theloai t on t.idTheLoai = tl.idTheLoai
+where ct.idVe = 'V0001'
+--tính điểm đánh giá cũng như số lần đánh giá của 1 bộ phim 
+select COUNT(diemdanhgia) as N'Số lượt đánh gía',AVG(diemdanhgia)/2 as N'Điểm đánh giá trung bình'
 from danhgia d join phim p on p.idPhim = d.idPhim
 where p.idPhim = 'P0001'
-group by p.idPhim,p.tenphim
+--lấy các thông tin về lịch chiếu
+select distinct l.ngaychieu, s.tgianchieu
+from chitietdatve ct
+	join lichchieu l on l.idLichChieu = ct.idLichChieu
+	join suatchieu s on s.idSuatChieu = l.idSuatChieu
+where ct.idVe = 'V0001' 
+--lấy thông tin về chỗ ngồi
+select ch.hang + CAST(ch.cot AS NVARCHAR(10)) AS TenGhe
+from chitietdatve ct
+	join chongoi ch on ch.idChoNgoi = ct.idChoNgoi
+where ct.idVe = 'V0001' 
+--lấy thông tin về vé đã đặt
+SELECT DISTINCT 
+    v.idVe,
+    v.trangthai,
+    v.TongGiaTriDonHang AS N'Tổng tiền',
+    ct.GiaVeDonLe AS N'Tiền vé',
+    (
+        SELECT SUM(vf.SoLuong * f.giaban)
+        FROM ve_food vf
+        JOIN Food f ON vf.idFood = f.idFood
+        WHERE vf.idVe = v.idVe
+    ) AS N'Tiền đồ ăn'
+
+FROM chitietdatve ct
+JOIN ve v ON v.idVe = ct.idVe
+WHERE ct.idVe = 'V0001';
+--lấy thông tin thanh toán
+select t.phuongthucthanhtoan,t.ngayThanhToan	
+from ve v join thanhtoan t on v.idVe = t.idVe
+where v.idVe = 'V0001'
+--lấy thông tin của phòng chiếu
+select distinct p.tenphong
+from chitietdatve ct
+	join lichchieu l on l.idLichChieu = ct.idLichChieu
+	join phong p on p.idPhong = l.idPhong
+where ct.idVe = 'V0001'
+--proceduce của chitietdatve
+go
+--drop PROCEDURE sp_ChiTietDatVe
+CREATE PROCEDURE sp_ChiTietDatVe
+    @idVe NVARCHAR(20)
+AS
+BEGIN
+    -- 1. Lấy thông tin phim từ vé đã đặt
+    SELECT DISTINCT 
+        p.url_poster,
+        p.tenphim,
+        p.mo_ta,
+        p.thoiluong
+    FROM chitietdatve ct
+    JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
+    JOIN phim p ON p.idPhim = l.idPhim
+    WHERE ct.idVe = @idVe;
+	--lấy ra thể loại
+	select distinct t.tentheloai
+	from chitietdatve ct
+		join lichchieu l on l.idLichChieu = ct.idLichChieu
+		join phim p on p.idPhim = l.idPhim
+		join theloai_phim tl on tl.idPhim = p.idPhim
+		join theloai t on t.idTheLoai = tl.idTheLoai
+	where ct.idVe = @idVe
+    -- 2. Tính điểm đánh giá và số lượt đánh giá của phim
+    SELECT 
+        COUNT(d.diemdanhgia) AS [Số lượt đánh giá],
+        AVG(CAST(d.diemdanhgia AS FLOAT)) / 2 AS [Điểm đánh giá trung bình]
+    FROM danhgia d
+    JOIN phim p ON p.idPhim = d.idPhim
+    WHERE p.idPhim = (
+        SELECT TOP 1 p.idPhim
+        FROM chitietdatve ct
+        JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
+        JOIN phim p ON p.idPhim = l.idPhim
+        WHERE ct.idVe = @idVe
+    )
+    -- 3. Lấy thông tin lịch chiếu (ngày + giờ)
+    SELECT DISTINCT 
+        l.ngaychieu, 
+        s.tgianchieu
+    FROM chitietdatve ct
+    JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
+    JOIN suatchieu s ON s.idSuatChieu = l.idSuatChieu
+    WHERE ct.idVe = @idVe;
+
+    -- 4. Lấy thông tin chỗ ngồi
+    SELECT 
+        ch.hang + CAST(ch.cot AS NVARCHAR(10)) AS TenGhe
+    FROM chitietdatve ct
+    JOIN chongoi ch ON ch.idChoNgoi = ct.idChoNgoi
+    WHERE ct.idVe = @idVe;
+
+    -- 5. Lấy thông tin vé đã đặt
+    SELECT DISTINCT 
+        v.idVe,
+        v.trangthai,
+        v.TongGiaTriDonHang AS [Tổng tiền],
+        ct.GiaVeDonLe AS [Tiền vé],
+        (
+            SELECT SUM(vf.SoLuong * f.giaban)
+            FROM ve_food vf
+            JOIN Food f ON vf.idFood = f.idFood
+            WHERE vf.idVe = v.idVe
+        ) AS [Tiền đồ ăn]
+    FROM chitietdatve ct
+    JOIN ve v ON v.idVe = ct.idVe
+    WHERE ct.idVe = @idVe;
+
+    -- 6. Lấy thông tin thanh toán
+    SELECT 
+        t.phuongthucthanhtoan,
+        t.ngayThanhToan
+    FROM ve v 
+    JOIN thanhtoan t ON v.idVe = t.idVe
+    WHERE v.idVe = @idVe;
+	--lấy thông tin của phòng chiếu
+	select distinct p.tenphong
+	from chitietdatve ct
+		join lichchieu l on l.idLichChieu = ct.idLichChieu
+		join phong p on p.idPhong = l.idPhong
+	where ct.idVe = @idVe
+END;
+EXEC sp_ChiTietDatVe 'V0001';

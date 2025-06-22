@@ -469,3 +469,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+//cuộn xuống phần đặt phim
+const scrollButton = document.getElementById("btn-book-movie");
+const targetSection = document.getElementById("booking-section");
+scrollButton.addEventListener("click", () => {
+  targetSection.scrollIntoView({
+    behavior: "smooth", // Hiệu ứng cuộn mượt mà
+    block: "start", // Cuộn sao cho đầu phần tử đích hiển thị ở đầu viewport
+  });
+});
