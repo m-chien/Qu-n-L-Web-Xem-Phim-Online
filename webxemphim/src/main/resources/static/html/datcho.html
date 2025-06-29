@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chọn Ghế Ngồi - CineMax</title>
     <link rel="stylesheet" href="/css/datcho.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header class="header">
@@ -25,6 +29,7 @@
             src="/images/user-circle (1).png"
             alt="Avatar"
             class="user-avatar"
+            id="user-avatar"
           />
         </div>
       </nav>
@@ -60,7 +65,9 @@
       </div>
       <div class="movie-header">
         <div class="movie-info">
-          <div class="movie-poster">POSTER</div>
+          <div class="movie-poster">
+            <img id="posterImage" src="" alt="Movie Poster" />
+          </div>
           <div class="movie-details">
             <h1 id="movieTitle">Avengers: Endgame</h1>
             <div class="movie-meta">

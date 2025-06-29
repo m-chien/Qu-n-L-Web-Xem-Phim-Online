@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.request.*;
 import org.example.exception.AppException;
 import org.example.exception.ErrorCode;
+import org.example.exception.UnauthorizedException;
 import org.example.model.khachhang;
 import org.example.model.nguoidung;
 import org.example.repository.KhachHangRepository;
@@ -119,7 +120,7 @@ public class UserService {
         IntroSpectResponse introSpectResponse = jwtService.introspect(introSpectRequest);
         //giải mã xong, kiểm tra nếu còn hạn thì làm tiếp không thì sai
         if (!introSpectResponse.isValid()) {
-            throw new RuntimeException("Token không hợp lệ hoặc đã hết hạn");
+            throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn");
         }
         //giải mã token ra để lấy email
         String userEmail = jwtService.extractemail(token);

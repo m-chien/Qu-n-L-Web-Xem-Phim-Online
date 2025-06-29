@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LichChieuRepository extends JpaRepository<lichchieu, String> {
@@ -16,4 +17,9 @@ public interface LichChieuRepository extends JpaRepository<lichchieu, String> {
             "where l.idPhim = p.idPhim  " +
                     "and p.idPhim = :phimId")
     List<LocalDate> findNgaychieuByIdphim(@Param("phimId") String idphim);
+    @Query(value = "select idLichChieu from lichchieu where idPhong = :phong and idSuatChieu = :suatchieu and ngaychieu = :ngaychieu")
+    Optional<String> findIdByIdSuatChieuAndIdPhongAndNgaychieu(
+            @Param("suatchieu") String idsuatchieu,
+            @Param("phong")  String idphong,
+            @Param("ngaychieu")  LocalDate ngaychieu);
 }

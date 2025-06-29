@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,5 +22,10 @@ public class LichChieuService {
                 .sorted()
                 .collect(Collectors.toList());
         return dates;
+    }
+    public String getIdlichchieuByIdsuatchieuAndIdphong(String idsuatchieu,String idphong,LocalDate ngaychieu)
+    {
+        return lichChieuRepository.findIdByIdSuatChieuAndIdPhongAndNgaychieu(idsuatchieu,idphong,ngaychieu).orElseThrow(
+                () -> new NoSuchElementException("không tìm thấy lịch chiếu!!"));
     }
 }

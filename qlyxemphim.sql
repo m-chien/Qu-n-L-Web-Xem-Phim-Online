@@ -845,3 +845,8 @@ BEGIN
 	where ct.idVe = @idVe
 END;
 EXEC sp_ChiTietDatVe 'V0001';
+select * from chongoi where idphong = 'R0008'
+select idLichChieu from lichchieu where idPhong = 'R0008' and idSuatChieu ='SC008' and ngaychieu ='2024-06-08'
+delete from ve where idVe = 'V0012'
+select * from chitietdatve
+select * from ve

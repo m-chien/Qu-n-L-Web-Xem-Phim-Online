@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.dto.request.BookingRequest;
 import org.example.model.chongoi;
 import org.example.service.ChoNgoiService;
 import org.springframework.http.ResponseEntity;

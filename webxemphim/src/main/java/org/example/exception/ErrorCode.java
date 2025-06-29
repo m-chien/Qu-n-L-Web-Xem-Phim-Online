@@ -26,7 +26,8 @@ public enum ErrorCode {
     Sdt_Duplicate(1005,"SDT cannot be Duplicate!!!!"),
     Id_Not_Found(1001," Id not found "),
     Wrong_Password(1004,"Password is wronged"),
-    GOOGLE_LOGIN_FAILED(1001,"wrong" );
+    GOOGLE_LOGIN_FAILED(1001,"wrong" ),
+    Seat_Holder(1005,"your seat has been resereved");
     private int code;
     private String message;
 

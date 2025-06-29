@@ -34,6 +34,7 @@ function getDataFromStorage() {
           time: sessionData.showtime || "19:30",
           cinema: sessionData.cinema || "CineMax Vincom",
           movieId: sessionData.movie?.idPhim,
+          poster: sessionData.movie?.url_anh,
         };
         console.log("Đã lấy dữ liệu từ sessionStorage:", movieData);
       } else {
@@ -109,30 +110,40 @@ async function fetchOccupiedSeats() {
       formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // yyyy-MM-dd
     }
 
+    // Lấy thông tin phòng
+    const room = await fetchRoomData();
+    const idPhong = room.idphong || room.idPhong || room.maPhong;
+
+    // Tạo query params
+    const redisParams = new URLSearchParams({
+      suatchieu: movieData.time || "",
+      idphong: idPhong,
+      ngaydat: formattedDate || "",
+    });
     const params = new URLSearchParams({
       tenphim: movieData.title || "",
       suat: movieData.time || "",
       ngay: formattedDate || "",
     });
 
-    const response = await fetch(`http://localhost:8080/api/seat?${params}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // Gọi cả 2 API song song
+    const [heldRes, bookedRes] = await Promise.all([
+      fetch(`http://localhost:8080/api/booking/ghe?${redisParams}`),
+      fetch(`http://localhost:8080/api/seat?${params}`),
+    ]);
+
+    if (!heldRes.ok || !bookedRes.ok) {
+      throw new Error(`Lỗi response: ${heldRes.status} / ${bookedRes.status}`);
     }
 
-    const data = await response.json();
-    console.log("Dữ liệu ghế đã đặt từ API:", data);
+    const heldData = await heldRes.json(); // từ Redis
+    const bookedData = await bookedRes.json(); // từ DB
 
-    if (!data || data.length === 0) {
-      console.log("Tất cả ghế đều trống");
-      return [];
-    }
+    const heldSeatIds = heldData.map((seat) => `${seat.hang}${seat.cot}`);
+    const bookedSeatIds = bookedData.map((seat) => `${seat.hang}${seat.cot}`);
+    const allOccupied = [...new Set([...bookedSeatIds, ...heldSeatIds])];
 
-    // Convert từ {hang: "A", cot: 1} sang "A1"
-    const occupiedSeatIds = data.map((seat) => `${seat.hang}${seat.cot}`);
-    console.log("Ghế đã đặt (converted IDs):", occupiedSeatIds);
-
-    return occupiedSeatIds;
+    return allOccupied;
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu ghế đã đặt:", error);
     return [];
@@ -244,7 +255,7 @@ function markOccupiedSeats(occupiedSeatIds) {
     console.log("Không có ghế nào đã được đặt");
     return;
   }
-
+  console.log("Ghế bị chiếm (seatId):", occupiedSeatIds);
   occupiedSeatIds.forEach((seatId) => {
     const seatElement = document.querySelector(`[data-seat-id="${seatId}"]`);
     if (seatElement) {
@@ -282,6 +293,10 @@ function displayMovieInfo() {
     // Hiển thị tên phòng từ API
     document.getElementById("roomName").textContent =
       roomData.tenphong || "Phòng chiếu";
+    const posterImg = document.getElementById("posterImage");
+    if (posterImg) {
+      posterImg.src = movieData.movieDetails.url_anh || "/images/default.jpg"; // Đường dẫn ảnh mặc định nếu thiếu
+    }
   } catch (error) {
     console.error("Lỗi khi hiển thị thông tin phim:", error);
   }
@@ -312,7 +327,11 @@ async function initializePage() {
     // Đánh dấu ghế đã đặt và ghế có sẵn
     markOccupiedSeats(occupiedSeats);
     markAvailableSeats();
-
+    setInterval(async () => {
+      const updatedOccupiedSeats = await fetchOccupiedSeats();
+      markOccupiedSeats(updatedOccupiedSeats);
+      markAvailableSeats();
+    }, 10000); // hoặc 5000 ms nếu muốn nhanh hơn
     console.log("Khởi tạo trang thành công");
   } catch (error) {
     console.error("Lỗi khi khởi tạo trang:", error);
@@ -321,40 +340,120 @@ async function initializePage() {
   }
 }
 
-// Xử lý nút tiếp tục
-document.getElementById("continueBtn").addEventListener("click", function () {
-  if (selectedSeats.length > 0) {
-    const bookingData = {
-      movie: movieData,
-      room: roomData,
-      selectedSeats: selectedSeats,
-      totalPrice: document.getElementById("totalPrice").textContent,
-      timestamp: new Date().toISOString(),
-    };
+// // Xử lý nút tiếp tục
+// document.getElementById("continueBtn").addEventListener("click", function () {
+//   if (selectedSeats.length > 0) {
+//     const bookingData = {
+//       movie: movieData,
+//       room: roomData,
+//       selectedSeats: selectedSeats,
+//       totalPrice: document.getElementById("totalPrice").textContent,
+//       timestamp: new Date().toISOString(),
+//     };
 
-    // Lưu thông tin vào localStorage để sử dụng ở trang thanh toán
-    try {
-      localStorage.setItem("bookingData", JSON.stringify(bookingData));
-      console.log("Đã lưu thông tin đặt vé:", bookingData);
+//     // Lưu thông tin vào localStorage để sử dụng ở trang thanh toán
+//     try {
+//       localStorage.setItem("bookingData", JSON.stringify(bookingData));
+//       console.log("Đã lưu thông tin đặt vé:", bookingData);
 
-      // Xóa dữ liệu booking cũ
-      cleanupBookingData();
-    } catch (error) {
-      console.error("Lỗi khi lưu thông tin đặt vé:", error);
+//       // Xóa dữ liệu booking cũ
+//       cleanupBookingData();
+//     } catch (error) {
+//       console.error("Lỗi khi lưu thông tin đặt vé:", error);
+//     }
+
+//     alert(
+//       `Đã chọn ${selectedSeats.length} ghế: ${selectedSeats.join(
+//         ", "
+//       )}\nTổng tiền: ${
+//         bookingData.totalPrice
+//       } VND\n\nChuyển đến trang thanh toán...`
+//     );
+
+//     // Chuyển hướng đến trang thanh toán
+//     window.location.href = "/html/food.html"; // Thay đổi đường dẫn theo cấu trúc thực tế
+//   }
+// });
+
+document
+  .getElementById("continueBtn")
+  .addEventListener("click", async function () {
+    if (selectedSeats.length > 0) {
+      try {
+        let token = sessionStorage.getItem("authToken");
+
+        const continueBtn = document.getElementById("continueBtn");
+        const originalText = continueBtn.textContent;
+        continueBtn.textContent = "Đang xử lý...";
+        continueBtn.disabled = true;
+
+        // Chuyển đổi ngày từ dạng "Th 7, 08/06/2024" sang "2024-06-08"
+        const convertToLocalDate = (dateStr) => {
+          const datePart = dateStr.split(", ")[1]; // Lấy "08/06/2024"
+          const [day, month, year] = datePart.split("/");
+          return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        };
+
+        const response = await fetch("/api/booking/giuGhe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            idPhim: movieData.movieId,
+            idPhong: roomData.idPhong,
+            selectedSeats: selectedSeats,
+            totalPrice: document
+              .getElementById("totalPrice")
+              .textContent.replace(/[^\d]/g, ""),
+            bookingDate: convertToLocalDate(movieData.date),
+            showTime: movieData.time,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Giữ ghế thành công:", result);
+
+        const bookingResult = result.result;
+
+        // ✅ Tạo đối tượng bookingData kết hợp với movie title và date
+        const bookingData = {
+          ...bookingResult,
+          movieTitle: movieData.title,
+          movieCinema: movieData.cinema,
+          movieDate: movieData.date,
+          movieTime: movieData.time,
+          room: roomData,
+        };
+
+        // ✅ Lưu vào localStorage để sử dụng sau này
+        localStorage.setItem("bookingData", JSON.stringify(bookingData));
+
+        alert(
+          `Đã chọn ${
+            bookingData.selectedSeats.length
+          } ghế: ${bookingData.selectedSeats.join(", ")}\n` +
+            `Tổng tiền: ${bookingData.totalPrice} VND\n\nChuyển đến trang chọn đồ ăn...`
+        );
+
+        // Chuyển đến trang tiếp theo
+        window.location.href = "/html/food.html";
+      } catch (error) {
+        console.error("Lỗi khi giữ ghế:", error);
+        alert("Có lỗi xảy ra khi giữ ghế. Vui lòng thử lại!");
+        document.getElementById("continueBtn").textContent = originalText;
+        document.getElementById("continueBtn").disabled = false;
+      }
+    } else {
+      alert("Vui lòng chọn ít nhất một ghế!");
     }
+  });
 
-    alert(
-      `Đã chọn ${selectedSeats.length} ghế: ${selectedSeats.join(
-        ", "
-      )}\nTổng tiền: ${
-        bookingData.totalPrice
-      } VND\n\nChuyển đến trang thanh toán...`
-    );
-
-    // Chuyển hướng đến trang thanh toán
-    window.location.href = "/html/food.html"; // Thay đổi đường dẫn theo cấu trúc thực tế
-  }
-});
 function debugLocalStorage() {
   console.log("=== DEBUG LOCALSTORAGE ===");
   console.log("selectedMovieData:", localStorage.getItem("selectedMovieData"));
@@ -385,3 +484,29 @@ window.addEventListener("load", function () {
 window.addEventListener("load", function () {
   debugLocalStorage();
 });
+//check login
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("sessionStorage content!", sessionStorage);
+  const token = sessionStorage.getItem("authToken");
+
+  if (token) {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      if (user.avatar_url) {
+        document.getElementById("user-avatar").src = user.avatar_url;
+      }
+    }
+  } else {
+    alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi truy cập trang");
+    window.location.href = "/html/trangchu.html";
+  }
+});
+// document.addEventListener("DOMContentLoaded", function () {
+//   const navBrand = document.querySelector(".nav-brand");
+
+//   if (navBrand) {
+//     navBrand.addEventListener("click", function () {
+//       localStorage.clear(); // Xoá toàn bộ localStorage
+//     });
+//   }
+// });

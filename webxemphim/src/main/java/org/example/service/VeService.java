@@ -5,13 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.request.IntroSpectRequest;
 import org.example.dto.request.IntroSpectResponse;
 import org.example.dto.request.LichSuVeResponse;
+import org.example.exception.UnauthorizedException;
 import org.example.model.khachhang;
 import org.example.model.nguoidung;
+import org.example.model.ve;
 import org.example.repository.VeRepository;
 import org.example.repository.nguoidungRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,6 +26,7 @@ public class VeService {
     private final VeRepository veRepository;
     private final nguoidungRepository userRepository;
     private final JwtService jwtService;
+    private final JdbcTemplate jdbcTemplate;
 
     public List<LichSuVeResponse> GetAllLichSuVe(String token) throws ParseException, JOSEException {
         // giải mã đoạn token được gửi về
@@ -29,7 +36,7 @@ public class VeService {
         IntroSpectResponse introSpectResponse = jwtService.introspect(introSpectRequest);
         //giải mã xong, kiểm tra nếu còn hạn thì làm tiếp không thì sai
         if (!introSpectResponse.isValid()) {
-            throw new RuntimeException("Token không hợp lệ hoặc đã hết hạn");
+            throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn");
         }
         //giải mã token ra để lấy email
         String userEmail = jwtService.extractemail(token);
@@ -37,4 +44,25 @@ public class VeService {
         nguoidung tokenUser = userRepository.findByEmail(userEmail);
         return veRepository.findVe(tokenUser.getIdUser());
     }
+    public String AddVe(String iduser, BigDecimal giatien)
+    {
+        String idve = generateNextIdVe();
+        ve ve = new ve(idve,iduser, LocalDateTime.now(),giatien,"Đang chờ thanh toán");
+        veRepository.save(ve);
+        return idve;
+    }
+    public synchronized String generateNextIdVe() {
+        String prefix = "V";
+        String sql = "SELECT MAX(idVe) FROM ve";
+        String maxId = jdbcTemplate.queryForObject(sql, String.class);
+
+        int nextNumber = 1;
+        if (maxId != null) {
+            String numberPart = maxId.replace(prefix, "");
+            nextNumber = Integer.parseInt(numberPart) + 1;
+        }
+
+        return prefix + String.format("%04d", nextNumber);
+    }
+
 }

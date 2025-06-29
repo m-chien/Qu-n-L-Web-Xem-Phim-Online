@@ -1,532 +1,254 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chi Tiết Vé - ChienCINEMA</title>
-  <link rel="stylesheet" href="/css/chitietdatve.css" />
-  <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
-</head>
-<body>
-<div class="container">
-  <div class="header">
-    <a href="taikhoan.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i>
-      Quay lại
-    </a>
-    <h1>Chi Tiết Vé Đã Đặt</h1>
-    <div class="booking-id" id="bookingId">Mã đặt vé: #BK001234567</div>
-  </div>
-
-  <div class="ticket-content">
-    <!-- Movie Information -->
-    <div class="movie-section">
-      <img
-              id="moviePoster"
-              src="/images/johnwick_ballerina.jpg"
-              alt="Movie Poster"
-              class="movie-poster"
-      />
-      <div class="movie-info">
-        <h2 class="movie-title" id="movieTitle">Avengers: Endgame</h2>
-        <span class="movie-genre" id="movie-genre">Hành động • Khoa học viễn tưởng</span>
-        <div class="movie-rating">
-          <div class="stars" id="ratingStars">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star-half-alt"></i>
-          </div>
-          <span class="rating-text" id="ratingText">4.5/5 (2,847 đánh giá)</span>
-        </div>
-        <p class="movie-description" id="movieDescription">
-          Sau những sự kiện tàn khốc của Avengers: Infinity War, vũ trụ đang
-          trong tình trạng hỗn loạn. Với sự trợ giúp của các đồng minh còn
-          lại, các Avengers phải tập hợp một lần nữa để hoàn tác những hành
-          động của Thanos và khôi phục trật tự vũ trụ.
-        </p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi Tiết Vé - ChienCINEMA</title>
+    <link rel="stylesheet" href="/css/chitietdatve.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="taikhoan.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Quay lại
+        </a>
+        <h1>Chi Tiết Vé Đã Đặt</h1>
+        <div class="booking-id" id="bookingId">Mã đặt vé: #BK001234567</div>
       </div>
-    </div>
 
-    <!-- Booking Status -->
-    <div style="text-align: center">
+      <div class="ticket-content">
+        <!-- Movie Information -->
+        <div class="movie-section">
+          <img
+            id="moviePoster"
+            src="/images/johnwick_ballerina.jpg"
+            alt="Movie Poster"
+            class="movie-poster"
+          />
+          <div class="movie-info">
+            <h2 class="movie-title" id="movieTitle">Avengers: Endgame</h2>
+            <span class="movie-genre" id="movie-genre"
+              >Hành động • Khoa học viễn tưởng</span
+            >
+            <div class="movie-rating">
+              <div class="stars" id="ratingStars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="rating-text" id="ratingText"
+                >4.5/5 (2,847 đánh giá)</span
+              >
+            </div>
+            <p class="movie-description" id="movieDescription">
+              Sau những sự kiện tàn khốc của Avengers: Infinity War, vũ trụ đang
+              trong tình trạng hỗn loạn. Với sự trợ giúp của các đồng minh còn
+              lại, các Avengers phải tập hợp một lần nữa để hoàn tác những hành
+              động của Thanos và khôi phục trật tự vũ trụ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Booking Status -->
+        <div style="text-align: center">
           <span class="status-badge status-confirmed" id="bookingStatus">
             <i class="fas fa-check-circle"></i> Đã xác nhận
           </span>
-    </div>
+        </div>
 
-    <!-- Booking Details -->
-    <div class="details-grid">
-      <div class="detail-card">
-        <div class="detail-title">
-          <i class="fas fa-calendar-alt"></i>
-          Thông tin suất chiếu
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Ngày chiếu:</span>
-          <span class="detail-value" id="showDate">Thứ 7, 15/06/2024</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Giờ chiếu:</span>
-          <span class="detail-value" id="showTime">19:30</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Thời lượng:</span>
-          <span class="detail-value" id="duration">181 phút</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Phòng chiếu:</span>
-          <span class="detail-value" id="room">Phòng 3 - IMAX</span>
-        </div>
-      </div>
+        <!-- Booking Details -->
+        <div class="details-grid">
+          <div class="detail-card">
+            <div class="detail-title">
+              <i class="fas fa-calendar-alt"></i>
+              Thông tin suất chiếu
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Ngày chiếu:</span>
+              <span class="detail-value" id="showDate">Thứ 7, 15/06/2024</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Giờ chiếu:</span>
+              <span class="detail-value" id="showTime">19:30</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Thời lượng:</span>
+              <span class="detail-value" id="duration">181 phút</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Phòng chiếu:</span>
+              <span class="detail-value" id="room">Phòng 3 - IMAX</span>
+            </div>
+          </div>
 
-      <div class="detail-card">
-        <div class="detail-title">
-          <i class="fas fa-map-marker-alt"></i>
-          Thông tin rạp
+          <div class="detail-card">
+            <div class="detail-title">
+              <i class="fas fa-map-marker-alt"></i>
+              Thông tin rạp
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Rạp chiếu:</span>
+              <span class="detail-value">Galaxy Đà Nẵng</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Địa chỉ:</span>
+              <span class="detail-value">478 Điện Biên Phủ, TP. Đà Nẵng</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Điện thoại:</span>
+              <span class="detail-value">1900-2224</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Định dạng:</span>
+              <span class="detail-value">IMAX 3D</span>
+            </div>
+          </div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">Rạp chiếu:</span>
-          <span class="detail-value">Galaxy Đà Nẵng</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Địa chỉ:</span>
-          <span class="detail-value">478 Điện Biên Phủ, TP. Đà Nẵng</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Điện thoại:</span>
-          <span class="detail-value">1900-2224</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">Định dạng:</span>
-          <span class="detail-value">IMAX 3D</span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Seats Information -->
-    <div class="seats-visual">
-      <div class="detail-title" style="margin-bottom: 20px">
-        <i class="fas fa-chair"></i>
-        Thông tin ghế ngồi
-      </div>
-      <div class="screen">MÀN HÌNH</div>
-      <div class="seats-container" id="seatsContainer">
-        <div class="seat">A1</div>
-        <div class="seat">A2</div>
-      </div>
-      <p style="margin-top: 15px; color: #666; font-style: italic">
-        Ghế VIP - Hàng A (Gần màn hình)
-      </p>
-    </div>
+        <!-- Seats Information -->
+        <div class="seats-visual">
+          <div class="detail-title" style="margin-bottom: 20px">
+            <i class="fas fa-chair"></i>
+            Thông tin ghế ngồi
+          </div>
+          <div class="screen">MÀN HÌNH</div>
+          <div class="seats-container" id="seatsContainer">
+            <div class="seat">A1</div>
+            <div class="seat">A2</div>
+          </div>
+          <p style="margin-top: 15px; color: #666; font-style: italic">
+            Ghế VIP - Hàng A (Gần màn hình)
+          </p>
+        </div>
 
-    <!-- Payment Summary -->
-    <div class="payment-summary">
-      <div class="payment-title">
-        <i class="fas fa-receipt"></i>
-        Chi tiết thanh toán
-      </div>
-      <div class="payment-item">
-        <span>Tiền vé:</span>
-        <span id="ticketPrice">180,000 VNĐ</span>
-      </div>
-      <div class="payment-item">
-        <span>Tiền đồ ăn:</span>
-        <span id="foodPrice">20,000 VNĐ</span>
-      </div>
-      <div class="payment-item">
-        <span>Phí đặt vé online:</span>
-        <span>0 VNĐ</span>
-      </div>
-      <div class="payment-item payment-total">
-        <span>Tổng cộng:</span>
-        <span id="totalPrice">200,000 VNĐ</span>
-      </div>
-      <div
-              class="payment-item"
-              style="
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+          <div class="payment-title">
+            <i class="fas fa-receipt"></i>
+            Chi tiết thanh toán
+          </div>
+          <div class="payment-item">
+            <span>Tiền vé:</span>
+            <span id="ticketPrice">180,000 VNĐ</span>
+          </div>
+          <div class="payment-item">
+            <span>Tiền đồ ăn:</span>
+            <span id="foodPrice">20,000 VNĐ</span>
+          </div>
+          <div class="payment-item">
+            <span>Phí đặt vé online:</span>
+            <span>0 VNĐ</span>
+          </div>
+          <div class="payment-item payment-total">
+            <span>Tổng cộng:</span>
+            <span id="totalPrice">200,000 VNĐ</span>
+          </div>
+          <div
+            class="payment-item"
+            style="
               border-top: none;
               margin-top: 10px;
               font-size: 0.9rem;
               opacity: 0.9;
             "
-      >
-        <span>Phương thức:</span>
-        <span id="paymentMethod">Ví MoMo</span>
-      </div>
-      <div
-              class="payment-item"
-              style="
+          >
+            <span>Phương thức:</span>
+            <span id="paymentMethod">Ví MoMo</span>
+          </div>
+          <div
+            class="payment-item"
+            style="
               border-top: none;
               margin-top: 5px;
               font-size: 0.9rem;
               opacity: 0.9;
             "
+          >
+            <span>Thời gian thanh toán:</span>
+            <span id="paymentTime">14/06/2024 14:25</span>
+          </div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="qr-section">
+          <div class="detail-title" style="margin-bottom: 20px">
+            <i class="fas fa-qrcode"></i>
+            Mã QR check-in
+          </div>
+          <div class="qr-code">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <p style="color: #666; font-size: 0.9rem">
+            Xuất trình mã QR này tại quầy để nhận vé
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button class="btn btn-primary" onclick="downloadTicket()">
+            <i class="fas fa-download"></i>
+            Tải vé PDF
+          </button>
+          <button class="btn btn-secondary" onclick="shareTicket()">
+            <i class="fas fa-share-alt"></i>
+            Chia sẻ
+          </button>
+          <button class="btn btn-secondary" onclick="addToCalendar()">
+            <i class="fas fa-calendar-plus"></i>
+            Thêm vào lịch
+          </button>
+          <button class="btn btn-danger" onclick="cancelTicket()">
+            <i class="fas fa-times"></i>
+            Hủy vé
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+      <span id="notificationText"></span>
+    </div>
+
+    <!-- Loading overlay -->
+    <div
+      id="loadingOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          text-align: center;
+        "
       >
-        <span>Thời gian thanh toán:</span>
-        <span id="paymentTime">14/06/2024 14:25</span>
+        <i
+          class="fas fa-spinner fa-spin"
+          style="font-size: 2rem; margin-bottom: 10px"
+        ></i>
+        <p>Đang tải thông tin vé...</p>
       </div>
     </div>
 
-    <!-- QR Code -->
-    <div class="qr-section">
-      <div class="detail-title" style="margin-bottom: 20px">
-        <i class="fas fa-qrcode"></i>
-        Mã QR check-in
-      </div>
-      <div class="qr-code">
-        <i class="fas fa-qrcode"></i>
-      </div>
-      <p style="color: #666; font-size: 0.9rem">
-        Xuất trình mã QR này tại quầy để nhận vé
-      </p>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="actions">
-      <button class="btn btn-primary" onclick="downloadTicket()">
-        <i class="fas fa-download"></i>
-        Tải vé PDF
-      </button>
-      <button class="btn btn-secondary" onclick="shareTicket()">
-        <i class="fas fa-share-alt"></i>
-        Chia sẻ
-      </button>
-      <button class="btn btn-secondary" onclick="addToCalendar()">
-        <i class="fas fa-calendar-plus"></i>
-        Thêm vào lịch
-      </button>
-      <button class="btn btn-danger" onclick="cancelTicket()">
-        <i class="fas fa-times"></i>
-        Hủy vé
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Notification -->
-<div id="notification" class="notification">
-  <span id="notificationText"></span>
-</div>
-
-<!-- Loading overlay -->
-<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-  <div style="background: white; padding: 20px; border-radius: 10px; text-align: center;">
-    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
-    <p>Đang tải thông tin vé...</p>
-  </div>
-</div>
-
-<script>
-  // Global variable to store ticket data
-  let ticketData = null;
-
-  // Get ticket ID from URL parameter
-  function getTicketIdFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('idve');
-  }
-
-  // Format currency
-  function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
-  }
-
-  // Format date
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
-    const dayName = days[date.getDay()];
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${dayName}, ${day}/${month}/${year}`;
-  }
-
-  // Format time
-  function formatTime(timeString) {
-    return timeString.substring(0, 5); // Extract HH:MM from HH:MM:SS
-  }
-
-  // Format datetime for payment
-  function formatDateTime(dateTimeString) {
-    const date = new Date(dateTimeString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
-  }
-
-  // Generate star rating HTML
-  function generateStarRating(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-    let starsHtml = '';
-
-    // Full stars
-    for (let i = 0; i < fullStars; i++) {
-      starsHtml += '<i class="fas fa-star"></i>';
-    }
-
-    // Half star
-    if (hasHalfStar) {
-      starsHtml += '<i class="fas fa-star-half-alt"></i>';
-    }
-
-    // Empty stars
-    for (let i = 0; i < emptyStars; i++) {
-      starsHtml += '<i class="far fa-star"></i>';
-    }
-
-    return starsHtml;
-  }
-
-  // Update page with ticket data
-  function updatePageWithTicketData(data) {
-    const result = data.result;
-
-    // Update booking ID
-    document.getElementById('bookingId').textContent = `Mã đặt vé: #${result.veInfo.idVe}`;
-
-    // Update movie information
-    document.getElementById('moviePoster').src = result.phimInfo.urlPoster;
-    document.getElementById('moviePoster').alt = result.phimInfo.tenPhim;
-    const theloaiList = result.theloai.filter(t => t !== null); // tránh null
-    document.getElementById('movie-genre').textContent = theloaiList.join(" • ");
-    document.getElementById('movieTitle').textContent = result.phimInfo.tenPhim;
-    document.getElementById('movieDescription').textContent = result.phimInfo.moTa;
-
-    // Update rating
-    const avgRating = result.danhGia.diemDanhGiaTrungBinh;
-    const reviewCount = result.danhGia.soLuotDanhGia;
-    document.getElementById('ratingStars').innerHTML = generateStarRating(avgRating);
-    document.getElementById('ratingText').textContent = `${avgRating}/5 (${reviewCount} đánh giá)`;
-
-    // Update show information
-    document.getElementById('showDate').textContent = formatDate(result.lichChieu.ngayChieu);
-    document.getElementById('showTime').textContent = formatTime(result.lichChieu.tgianChieu);
-    document.getElementById('duration').textContent = `${result.phimInfo.thoiLuong} phút`;
-    document.getElementById('room').textContent = `${result.phong}`;
-
-    // Update booking status
-    const statusElement = document.getElementById('bookingStatus');
-    const status = result.veInfo.trangThai;
-    let statusClass = 'status-confirmed';
-    let statusIcon = 'fas fa-check-circle';
-
-    if (status === 'Đã hủy') {
-      statusClass = 'status-cancelled';
-      statusIcon = 'fas fa-times-circle';
-    } else if (status === 'Chờ thanh toán') {
-      statusClass = 'status-pending';
-      statusIcon = 'fas fa-clock';
-    }
-
-    statusElement.className = `status-badge ${statusClass}`;
-    statusElement.innerHTML = `<i class="${statusIcon}"></i> ${status}`;
-
-    // Update seats
-    const seatsContainer = document.getElementById('seatsContainer');
-    seatsContainer.innerHTML = '';
-    result.danhSachGhe.forEach(seat => {
-      const seatElement = document.createElement('div');
-      seatElement.className = 'seat';
-      seatElement.textContent = seat;
-      seatsContainer.appendChild(seatElement);
-    });
-
-    // Update payment information
-    document.getElementById('ticketPrice').textContent = formatCurrency(result.veInfo.tienVe);
-    document.getElementById('foodPrice').textContent = formatCurrency(result.veInfo.tienDoAn);
-    document.getElementById('totalPrice').textContent = formatCurrency(result.veInfo.tongTien);
-
-    // Update payment method
-    const paymentMethod = result.thanhToan.phuongThucThanhToan === 'online' ? 'Thanh toán online' : 'Thanh toán tại quầy';
-    document.getElementById('paymentMethod').textContent = paymentMethod;
-    document.getElementById('paymentTime').textContent = formatDateTime(result.thanhToan.ngayThanhToan);
-
-    // Store data globally for other functions
-    ticketData = result;
-  }
-
-  // Fetch ticket details from API
-  async function fetchTicketDetails(ticketId) {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'flex';
-
-    try {
-      const response = await fetch(`http://localhost:8080/api/ve/chi-tiet/${ticketId}`);
-      const data = await response.json();
-
-      if (data.code === 1000) {
-        updatePageWithTicketData(data);
-        showNotification('Đã tải thông tin vé thành công!', 'success');
-      } else {
-        throw new Error(data.message || 'Có lỗi xảy ra khi tải dữ liệu');
-      }
-    } catch (error) {
-      console.error('Error fetching ticket details:', error);
-      showNotification('Không thể tải thông tin vé. Vui lòng thử lại!', 'error');
-    } finally {
-      loadingOverlay.style.display = 'none';
-    }
-  }
-
-  // Initialize page
-  document.addEventListener('DOMContentLoaded', function() {
-    const ticketId = getTicketIdFromUrl();
-
-    if (!ticketId) {
-      showNotification('Không tìm thấy mã vé. Vui lòng thử lại!', 'error');
-      setTimeout(() => {
-        window.location.href = '/html/taikhoan.html';
-      }, 2000);
-      return;
-    }
-
-    // Fetch ticket details
-    fetchTicketDetails(ticketId);
-
-    // Animate cards on scroll
-    const cards = document.querySelectorAll(".detail-card");
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.style.transform = "translateY(0)";
-          entry.target.style.opacity = "1";
-        }
-      });
-    });
-
-    cards.forEach((card) => {
-      card.style.transform = "translateY(20px)";
-      card.style.opacity = "0";
-      card.style.transition = "all 0.6s ease";
-      observer.observe(card);
-    });
-  });
-
-  // Show notification
-  function showNotification(message, type = "success") {
-    const notification = document.getElementById("notification");
-    const notificationText = document.getElementById("notificationText");
-
-    notificationText.textContent = message;
-    notification.className = `notification ${type}`;
-    notification.classList.add("show");
-
-    setTimeout(() => {
-      notification.classList.remove("show");
-    }, 3000);
-  }
-
-  // Download ticket
-  function downloadTicket() {
-    showNotification("Đang tải vé PDF...");
-    // Simulate download
-    setTimeout(() => {
-      showNotification("Vé đã được tải thành công!");
-    }, 2000);
-  }
-
-  // Share ticket
-  function shareTicket() {
-    if (navigator.share) {
-      const movieTitle = ticketData ? ticketData.phimInfo.tenPhim : 'phim';
-      navigator.share({
-        title: `Vé xem phim ${movieTitle}`,
-        text: `Tôi vừa đặt vé xem phim ${movieTitle} tại CGV Vincom Center`,
-        url: window.location.href,
-      });
-    } else {
-      // Fallback for browsers that don't support Web Share API
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        showNotification("Đã sao chép link vé vào clipboard!");
-      });
-    }
-  }
-
-  // Add to calendar
-  function addToCalendar() {
-    if (!ticketData) {
-      showNotification("Chưa có thông tin vé để thêm vào lịch!", "error");
-      return;
-    }
-
-    const movieTitle = ticketData.phimInfo.tenPhim;
-    const showDate = ticketData.lichChieu.ngayChieu;
-    const showTime = ticketData.lichChieu.tgianChieu;
-    const duration = ticketData.phimInfo.thoiLuong;
-    const seats = ticketData.danhSachGhe.join(', ');
-    const phongdat = ticketData.phong;
-
-    // Calculate end time
-    const startDateTime = new Date(`${showDate}T${showTime}`);
-    const endDateTime = new Date(startDateTime.getTime() + (duration * 60000));
-
-    const formatDateForCalendar = (date) => {
-      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    };
-
-    const eventDetails = {
-      title: `Xem phim: ${movieTitle}`,
-      start: formatDateForCalendar(startDateTime),
-      end: formatDateForCalendar(endDateTime),
-      description: `Xem phim tại GalaXy Đà Nẵng - ${phongdat} - Ghế ${seats}`,
-      location: "478 Điện Biên Phủ, Quận Thanh Khê, TP. Đà Nẵng",
-    };
-
-    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      eventDetails.title
-    )}&dates=${eventDetails.start}/${
-      eventDetails.end
-    }&details=${encodeURIComponent(
-      eventDetails.description
-    )}&location=${encodeURIComponent(eventDetails.location)}`;
-
-    window.open(googleCalendarUrl, "_blank");
-    showNotification("Đã mở Google Calendar để thêm sự kiện!");
-  }
-
-  // Cancel ticket
-  function cancelTicket() {
-    if (!ticketData) {
-      showNotification("Chưa có thông tin vé để hủy!", "error");
-      return;
-    }
-
-    if (ticketData.veInfo.trangThai === 'Đã hủy') {
-      showNotification("Vé này đã được hủy trước đó!", "warning");
-      return;
-    }
-
-    if (
-      confirm(
-        "Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể hoàn tác."
-      )
-    ) {
-      showNotification("Đang xử lý yêu cầu hủy vé...", "warning");
-      // Simulate cancellation process
-      setTimeout(() => {
-        showNotification(
-          "Vé đã được hủy thành công. Tiền sẽ được hoàn trả trong 3-5 ngày làm việc.",
-          "success"
-        );
-        // Update status
-        setTimeout(() => {
-          window.location.href = "/html/taikhoan.html";
-        }, 2000);
-      }, 3000);
-    }
-  }
-</script>
-</body>
+    <script src="/js/chitietdatve.js"></script>
+  </body>
 </html>

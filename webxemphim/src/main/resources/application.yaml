@@ -21,5 +21,8 @@ spring:
       enabled: true
       force: true
   time-zone: Asia/Ho_Chi_Minh
+  redis:
+    host: localhost
+    port: 6379
 jwt:
   secretKey: "fvM5429XdKnajoAwXqMnhWNgVXFoAaGqS8gcs1lorUlt3n2EAwhKv5Yf+3ektFC7"

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SuatChieuRepository extends JpaRepository<suatchieu, String> {
@@ -18,4 +19,11 @@ public interface SuatChieuRepository extends JpaRepository<suatchieu, String> {
             "\tand p.idPhim = :idPhim \n" +
             "\tand l.ngaychieu = :Ngaychieu")
     List<LocalTime> findTgianchieuByIdphimAndNgaychieu(@Param("idPhim") String idphim, @Param("Ngaychieu")LocalDate ngaychieu);
+
+    @Query(
+            value = "SELECT idSuatChieu FROM suatchieu WHERE CONVERT(varchar, tgianchieu, 108) = CONVERT(varchar, :tgianchieu, 108)",
+            nativeQuery = true
+    )
+    Optional<String> findIdByTgianchieu(@Param("tgianchieu") LocalTime tgianchieu);
+
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,5 +26,10 @@ public class SuatChieuService {
                 .collect(Collectors.toList());
         if (suatchieu.isEmpty()) throw new AppException(ErrorCode.Not_Found);
         return suatchieu;
+    }
+    public String getIdsuatchieubyTgianchieu(LocalTime tgianchieu)
+    {
+        return suatChieuRepository.findIdByTgianchieu(tgianchieu)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy suất chiếu với thời gian: " + tgianchieu));
     }
 }

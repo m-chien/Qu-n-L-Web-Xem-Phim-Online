@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.dto.request.BookingRequest;
 import org.example.model.phong;
 import org.example.service.PhongService;
 import org.springframework.http.HttpStatus;

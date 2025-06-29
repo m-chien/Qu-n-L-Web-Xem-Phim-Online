@@ -1,6 +1,8 @@
 package org.example.service;
 
 import org.example.dto.ChiTietDatVeDTO.*;
+import org.example.model.chitietdatve;
+import org.example.repository.ChiTietDatVeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlParameter;
@@ -19,6 +21,8 @@ public class ChiTietDatVeService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private ChiTietDatVeRepository chiTietDatVeRepository;
 
     public ChiTietDatVeResponseDTO getChiTietDatVe(String idVe) {
         try {
@@ -139,4 +143,24 @@ public class ChiTietDatVeService {
             return false;
         }
     }
+    public void AddChitietdatve(String idve, String idlichchieu, String idchongoi, BigDecimal giave)
+    {
+        chitietdatve chitietdatve = new chitietdatve(generateNextIdChiTietVe(),idve,idlichchieu,idchongoi,giave,"Đã Đặt");
+        chiTietDatVeRepository.saveAndFlush(chitietdatve);
+    }
+    public synchronized String generateNextIdChiTietVe() {
+        String prefix = "CTV";
+        String sql = "SELECT MAX(idChiTietVe) FROM chitietdatve";
+        String maxId = jdbcTemplate.queryForObject(sql, String.class);
+
+        int nextNumber = 1;
+        if (maxId != null) {
+            String numberPart = maxId.replace(prefix, "");
+            nextNumber = Integer.parseInt(numberPart) + 1;
+        }
+
+        return prefix + String.format("%02d", nextNumber);
+    }
+
+
 }

@@ -4,9 +4,129 @@ const FOOD_API_ENDPOINT = `${API_BASE_URL}/Food`;
 
 let foodItems = [];
 let cart = [];
-// XÓA BỎ hoặc comment dòng này để ticketPrice không còn là giá tĩnh
+// XÓa BỎ hoặc comment dòng này để ticketPrice không còn là giá tĩnh
 // const ticketPrice = 95000;
 let dynamicTicketPrice = 0; // Thêm biến này để lưu giá vé động từ localStorage
+let countdownInterval = null;
+let remainingTime = 0; // Thời gian còn lại tính bằng giây
+
+async function loadRemainingTime() {
+  try {
+    let token = sessionStorage.getItem("authToken");
+    // Lấy idlichchieu từ localStorage (giả sử có trong bookingData)
+    const bookingDataJSON = localStorage.getItem("bookingData");
+    let idlichchieu; // Default value
+
+    if (bookingDataJSON) {
+      const bookingData = JSON.parse(bookingDataJSON);
+      idlichchieu = bookingData.idlichchieu;
+    }
+
+    const response = await fetch(
+      `http://localhost:8080/api/booking/remainTime?idlichchieu=${idlichchieu}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const remainingMilliseconds = await response.json(); // Vì backend trả Long
+    const seconds = Math.max(0, Math.floor(remainingMilliseconds));
+
+    remainingTime = seconds;
+    startCountdown();
+  } catch (error) {
+    console.error("Error loading remaining time:", error);
+    // Hiển thị thông báo lỗi
+    document.getElementById("ttl-remain").innerHTML = `
+      <div style="color: #dc3545; padding: 10px; text-align: center; border: 1px solid #dc3545; border-radius: 5px; background: rgba(220, 53, 69, 0.1);">
+        <i class="fas fa-exclamation-triangle"></i> Không thể tải thời gian còn lại
+      </div>
+    `;
+  }
+}
+
+// Hàm bắt đầu countdown
+function startCountdown() {
+  // Clear interval cũ nếu có
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+  }
+
+  // Cập nhật hiển thị ngay lập tức
+  updateCountdownDisplay();
+
+  // Bắt đầu countdown
+  countdownInterval = setInterval(() => {
+    remainingTime--;
+
+    if (remainingTime <= 0) {
+      clearInterval(countdownInterval);
+      handleTimeExpired();
+    } else {
+      updateCountdownDisplay();
+    }
+  }, 1000);
+}
+
+// Hàm cập nhật hiển thị countdown
+function updateCountdownDisplay() {
+  const ttlRemainElement = document.getElementById("ttl-remain");
+
+  if (remainingTime <= 0) {
+    ttlRemainElement.innerHTML = `
+      <div style="color: #dc3545; padding: 15px; text-align: center; border: 2px solid #dc3545; border-radius: 10px; background: rgba(220, 53, 69, 0.1);">
+        <i class="fas fa-clock" style="font-size: 1.5rem; margin-bottom: 5px;"></i>
+        <div style="font-weight: bold; font-size: 1.1rem;">Hết thời gian giữ ghế!</div>
+      </div>
+    `;
+    return;
+  }
+
+  const minutes = Math.floor(remainingTime / 60);
+  const seconds = remainingTime % 60;
+
+  // Thay đổi màu sắc dựa trên thời gian còn lại
+  let colorClass = "success";
+  let bgColor = "rgba(40, 167, 69, 0.1)";
+  let borderColor = "#28a745";
+
+  if (remainingTime <= 60) {
+    // Dưới 1 phút
+    colorClass = "danger";
+    bgColor = "rgba(220, 53, 69, 0.1)";
+    borderColor = "#dc3545";
+  } else if (remainingTime <= 300) {
+    // Dưới 5 phút
+    colorClass = "warning";
+    bgColor = "rgba(255, 193, 7, 0.1)";
+    borderColor = "#ffc107";
+  }
+
+  ttlRemainElement.innerHTML = `
+    <div style="color: ${borderColor}; padding: 15px; text-align: center; border: 2px solid ${borderColor}; border-radius: 10px; background: ${bgColor};">
+      <i class="fas fa-clock" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+      <div style="font-weight: bold; font-size: 1.2rem; margin-bottom: 5px;">
+        ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}
+      </div>
+      <div style="font-size: 0.9rem; opacity: 0.8;">Thời gian giữ ghế</div>
+    </div>
+  `;
+}
+
+// Hàm xử lý khi hết thời gian
+function handleTimeExpired() {
+  alert("Thời gian giữ ghế đã hết! Bạn sẽ được chuyển về trang chọn ghế.");
+  // Có thể chuyển hướng về trang chọn ghế hoặc trang chủ
+  window.location.href = "/html/datcho.html"; // Thay đổi URL phù hợp
+}
 
 // Format currency
 function formatCurrency(amount) {
@@ -272,7 +392,7 @@ function updateCart() {
   document.getElementById("total").textContent = formatCurrency(grandTotal);
 }
 
-// Checkout function
+// Checkout function - UPDATED to show payment section
 function checkout() {
   if (cart.length === 0) {
     if (
@@ -280,56 +400,191 @@ function checkout() {
         "Bạn chưa chọn đồ ăn nào. Bạn có muốn tiếp tục thanh toán chỉ với vé xem phim không?"
       )
     ) {
-      proceedToPayment();
+      showPaymentSection();
+      // Ẩn 2 nút
+      document.querySelector(".checkout-btn").style.display = "none";
+      document.querySelector(".skip-btn").style.display = "none";
+      // Cập nhật progress-line
+      const progressLine = document.querySelector(".progress-line");
+      if (progressLine) {
+        progressLine.style.width = "73%";
+      }
     }
   } else {
-    proceedToPayment();
+    showPaymentSection();
   }
 }
 
-// Skip food function
+// Skip food function - UPDATED to show payment section
 function skipFood() {
   if (
     confirm("Bạn có chắc chắn muốn bỏ qua việc đặt đồ ăn và đồ uống không?")
   ) {
-    proceedToPayment();
+    showPaymentSection();
+
+    // Ẩn 2 nút
+    document.querySelector(".checkout-btn").style.display = "none";
+    document.querySelector(".skip-btn").style.display = "none";
+    // Cập nhật progress-line
+    const progressLine = document.querySelector(".progress-line");
+    if (progressLine) {
+      progressLine.style.width = "73%";
+    }
   }
 }
 
-// Proceed to payment
-function proceedToPayment() {
-  // Store cart data for next step
+// NEW FUNCTION: Show payment section and hide food section
+function showPaymentSection() {
+  // Hide food section
+  const foodSection = document.querySelector(".food-section");
+  if (foodSection) {
+    foodSection.style.display = "none";
+  }
+
+  // Show payment section
+  const paymentSection = document.getElementById("payment-section");
+  if (paymentSection) {
+    paymentSection.style.display = "block";
+  }
+
+  // Update progress bar to show payment step is active
+  updateProgressBar(4); // Payment is step 4
+
+  // Show notification
+  showNotification("Chuyển đến bước thanh toán", "success");
+}
+
+// NEW FUNCTION: Go back to food selection
+function goBackToFood() {
+  // Show food section
+  const foodSection = document.querySelector(".food-section");
+  if (foodSection) {
+    foodSection.style.display = "block";
+  }
+
+  // Hide payment section
+  const paymentSection = document.getElementById("payment-section");
+  if (paymentSection) {
+    paymentSection.style.display = "none";
+  }
+  // Show the two buttons
+  const checkoutBtn = document.querySelector(".checkout-btn");
+  const skipBtn = document.querySelector(".skip-btn");
+
+  if (checkoutBtn) {
+    checkoutBtn.style.display = "inline-block"; // hoặc "block"
+  }
+
+  if (skipBtn) {
+    skipBtn.style.display = "inline-block";
+  }
+  // Cập nhật progress-line
+  const progressLine = document.querySelector(".progress-line");
+  if (progressLine) {
+    progressLine.style.width = "50%";
+  }
+  // Update progress bar to show food step is active again
+  updateProgressBar(3); // Food is step 3
+
+  showNotification("Quay lại chọn đồ ăn", "success");
+}
+
+// NEW FUNCTION: Update progress bar
+function updateProgressBar(activeStep) {
+  // Reset all steps
+  const steps = document.querySelectorAll(".progress-step");
+  steps.forEach((step, index) => {
+    const circle = step.querySelector(".step-circle");
+    const label = step.querySelector(".step-label");
+
+    circle.classList.remove("active", "completed");
+    label.classList.remove("active");
+
+    if (index + 1 < activeStep) {
+      circle.classList.add("completed");
+      circle.textContent = "✓";
+    } else if (index + 1 === activeStep) {
+      circle.classList.add("active");
+      label.classList.add("active");
+      circle.textContent = activeStep;
+    } else {
+      circle.textContent = index + 1;
+    }
+  });
+}
+
+// NEW FUNCTION: Process payment
+function processPayment() {
+  const selectedPayment = document.querySelector(
+    'input[name="payment"]:checked'
+  );
+
+  if (!selectedPayment) {
+    alert("Vui lòng chọn phương thức thanh toán!");
+    return;
+  }
+
+  // Store order data
   const orderData = {
-    movie: "John Wick: Ballerina", // Đây vẫn là tĩnh, có thể cập nhật từ localStorage nếu cần
-    cinema: "Galaxy Cinema Đà Nẵng", // Tĩnh
-    date: "Thứ Năm, 12/06/2025 - 22:00", // Tĩnh
-    room: "Phòng 3 - 2D", // Tĩnh
-    seat: "I7 (Ghế VIP)", // Tĩnh
-    ticketPrice: dynamicTicketPrice, // Sử dụng dynamicTicketPrice
+    movie: document.getElementById("movie-title").textContent,
+    cinema: document.getElementById("cinema-name").textContent,
+    date: document.getElementById("date-time").textContent,
+    room: document.getElementById("room-name").textContent,
+    seat: document.getElementById("selected-seats").textContent,
+    ticketPrice: dynamicTicketPrice,
     foodItems: cart,
     foodTotal: cart.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     ),
     grandTotal:
-      dynamicTicketPrice + // Sử dụng dynamicTicketPrice
+      dynamicTicketPrice +
       cart.reduce((total, item) => total + item.price * item.quantity, 0),
+    paymentMethod: selectedPayment.value,
   };
 
-  // In a real application, you would navigate to the payment page
-  console.log("Order data:", orderData);
+  console.log("Processing payment with data:", orderData);
 
-  // Show success message for demo
-  alert(
-    `Đang chuyển đến trang thanh toán...\n\nTổng tiền: ${formatCurrency(
-      orderData.grandTotal
-    )}\n- Tiền vé: ${formatCurrency(
-      orderData.ticketPrice
-    )}\n- Tiền đồ ăn: ${formatCurrency(orderData.foodTotal)}`
-  );
+  // Show loading and process payment
+  const proceedBtn = document.querySelector(".proceed-btn");
+  const originalText = proceedBtn.innerHTML;
+  proceedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+  proceedBtn.disabled = true;
 
-  // Simulate navigation to payment page
-  window.location.href = "#payment-page";
+  // Simulate payment processing
+  setTimeout(() => {
+    alert(
+      `Thanh toán thành công!\n\nPhương thức: ${getPaymentMethodName(
+        selectedPayment.value
+      )}\nTổng tiền: ${formatCurrency(orderData.grandTotal)}`
+    );
+
+    // Reset button
+    proceedBtn.innerHTML = originalText;
+    proceedBtn.disabled = false;
+
+    // Update progress to confirmation step
+    updateProgressBar(5);
+
+    // In real app, redirect to confirmation page
+    // window.location.href = '/html/confirmation.html';
+  }, 2000);
+}
+
+// Helper function to get payment method name
+function getPaymentMethodName(value) {
+  const methods = {
+    momo: "Ví MoMo",
+    banking: "Internet Banking",
+    card: "Thẻ Tín Dụng",
+    cash: "Thanh Toán Tại Quầy",
+  };
+  return methods[value] || value;
+}
+
+// Proceed to payment - DEPRECATED, replaced by showPaymentSection
+function proceedToPayment() {
+  showPaymentSection();
 }
 
 // Show notification for cart updates
@@ -339,7 +594,7 @@ function showNotification(message, type = "success") {
   notification.className = `notification ${type}`;
   notification.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 100px;
             right: 20px;
             background: ${type === "success" ? "#28a745" : "#dc3545"};
             color: white;
@@ -450,7 +705,8 @@ function init() {
 
   // Enhance loading animation
   enhanceLoadingAnimation();
-
+  // Load remaining time - THÊM DÒNG NÀY
+  loadRemainingTime();
   // Load food items from API
   loadFoodItems()
     .then(() => {
@@ -479,12 +735,8 @@ function loadTicketPriceFromLocalStorage() {
   if (bookingDataJSON) {
     try {
       const bookingData = JSON.parse(bookingDataJSON);
-      // Giả định bookingData.totalPrice là tiền vé bạn muốn dùng cho dynamicTicketPrice
-      // Cần đảm bảo chuyển đổi từ chuỗi "400.000" sang số 400000
-      const priceString = bookingData.totalPrice
-        ? bookingData.totalPrice.replace(/\./g, "")
-        : "0";
-      dynamicTicketPrice = parseFloat(priceString) || 0;
+      console.log(bookingData);
+      dynamicTicketPrice = parseFloat(bookingData.totalPrice) || 0;
       console.log(
         `Ticket price loaded from localStorage: ${dynamicTicketPrice}`
       );
@@ -665,16 +917,16 @@ function updateBookingInfo() {
   // 5. Gán dữ liệu vào các phần tử tương ứng
   if (movieTitleElem) {
     movieTitleElem.textContent =
-      bookingData.movie?.title ||
+      bookingData.movieTitle ||
       bookingData.movie?.movieDetails?.tenphim ||
       "Không rõ";
   }
   if (cinemaNameElem) {
-    cinemaNameElem.textContent = bookingData.movie?.cinema || "Không rõ";
+    cinemaNameElem.textContent = bookingData.movieCinema || "Không rõ";
   }
   if (dateTimeElem) {
-    dateTimeElem.textContent = `${bookingData.movie?.date || ""} - ${
-      bookingData.movie?.time || ""
+    dateTimeElem.textContent = `${bookingData.movieDate || ""} - ${
+      bookingData.movieTime || ""
     }`;
   }
   if (roomNameElem) {
@@ -688,13 +940,7 @@ function updateBookingInfo() {
 
   // Cập nhật TIỀN VÉ RIÊNG BIỆT từ bookingData.totalPrice (hoặc một trường khác nếu có)
   if (ticketPriceDisplayElem) {
-    // Chuyển đổi chuỗi "400.000" thành số và định dạng lại tiền tệ
-    // Lưu ý: bookingData.totalPrice của bạn hiện đang chứa tổng tiền của booking.
-    // Nếu "Tiền vé" là một phần của tổng đó, bạn cần có một trường riêng biệt trong bookingData cho nó.
-    // Tạm thời, tôi sẽ giả định rằng bookingData.totalPrice là TIỀN VÉ trong ngữ cảnh này.
-    const rawTicketPrice = bookingData.totalPrice
-      ? parseFloat(bookingData.totalPrice.replace(/\./g, ""))
-      : 0;
+    const rawTicketPrice = Number(bookingData.totalPrice) || 0;
     ticketPriceDisplayElem.textContent = formatCurrency(rawTicketPrice);
   }
 
@@ -702,9 +948,7 @@ function updateBookingInfo() {
   // Lưu ý: Phần này sẽ được hàm updateCart() cập nhật lại sau
   // nhưng chúng ta vẫn có thể gán giá trị ban đầu ở đây.
   if (totalPriceElem) {
-    const rawGrandTotal = bookingData.totalPrice
-      ? parseFloat(bookingData.totalPrice.replace(/\./g, ""))
-      : 0;
+    const rawGrandTotal = Number(bookingData.totalPrice) || 0;
     totalPriceElem.textContent = formatCurrency(rawGrandTotal);
   }
 
@@ -714,3 +958,43 @@ function updateBookingInfo() {
 // Add event listener for updateBookingInfo to run on DOMContentLoaded
 // It's already there at the bottom, ensure it's called after dynamicTicketPrice is set.
 document.addEventListener("DOMContentLoaded", updateBookingInfo);
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("sessionStorage content!", sessionStorage);
+  const token = sessionStorage.getItem("authToken");
+
+  if (token) {
+    document.querySelector(".btn-login").style.display = "none";
+    document.querySelector(".btn-register").style.display = "none";
+
+    document.querySelector(".user-menu").style.display = "flex";
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      if (user.avatar_url) {
+        document.getElementById("userAvatar").src = user.avatar_url;
+      }
+      if (user.hoten) {
+        document.querySelector("#name_user").innerText = user.hoten;
+      }
+    }
+  } else {
+    // Chưa đăng nhập
+    document.querySelector(".btn-login").style.display = "inline-block";
+    document.querySelector(".btn-register").style.display = "inline-block";
+
+    document.querySelector(".user-menu").style.display = "none";
+    alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi truy cập trang");
+    window.location.href = "/html/trangchu.html";
+  }
+});
+// Thêm cleanup khi user rời khỏi trang
+window.addEventListener("beforeunload", function (e) {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+  }
+
+  if (cart.length > 0) {
+    e.preventDefault();
+    e.returnValue =
+      "Bạn có các món đã chọn trong giỏ hàng. Bạn có chắc chắn muốn rời khỏi trang?";
+  }
+});

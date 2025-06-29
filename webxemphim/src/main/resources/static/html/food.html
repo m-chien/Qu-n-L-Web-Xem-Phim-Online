@@ -5,36 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đặt Thức Ăn - Galaxy Cinema</title>
     <link rel="stylesheet" href="/css/food.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
+    <!-- Header -->
     <header class="header">
       <nav class="navbar">
         <a href="/html/trangchu.html" class="nav-brand">
           <i class="fas fa-film"></i>
-          ChienCINEMA
+          <span>ChienCINEMA</span>
         </a>
-        <div class="nav-links">
-          <a href="#"><i class="fas fa-home"></i> Trang chủ</a>
-          <a href="#"><i class="fas fa-video"></i> Phim</a>
-          <a href="/html/timkiem.html"
-            ><i class="fas fa-building"></i> Khám Phá</a
-          >
-          <a href="#"><i class="fas fa-tags"></i> Khuyến mãi</a>
-          <a href="#"><i class="fas fa-phone"></i> Liên hệ</a>
+        <ul class="nav-menu">
+          <li><a href="#" class="nav-link active">Trang chủ</a></li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li><a href="/html/timkiem.html" class="nav-link">Khám Phá</a></li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#" class="nav-link">Tin tức</a></li>
+        </ul>
+        <div class="auth-container">
+          <!-- Trạng thái chưa đăng nhập -->
+          <div class="nav-actions" id="nav-actions">
+            <button class="btn-login">Đăng nhập</button>
+            <button class="btn-register">Đăng ký</button>
+          </div>
+          <!-- Trạng thái đã đăng nhập -->
+          <div class="user-menu" id="user-menu" style="display: none">
+            <img
+              src="/images/user-circle (1).png"
+              alt="Avatar"
+              class="user-avatar"
+              id="userAvatar"
+            />
+            <p class="name_user" id="name_user">ChienCINEMA</p>
+          </div>
         </div>
-        <div class="user-menu">
-          <img
-            src="/images/user-circle (1).png"
-            alt="Avatar"
-            class="user-avatar"
-          />
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
         </div>
       </nav>
     </header>
 
     <div class="container">
       <div class="page-header">
-        <h1>🍿 Galaxy Cinema - Đặt Thức Ăn & Đồ Uống</h1>
+        <h1>🍿 Đặt Thức Ăn & Đồ Uống</h1>
       </div>
 
       <!-- Progress Bar -->
@@ -80,11 +96,7 @@
           <div id="food-grid" class="food-grid" style="display: none">
             <!-- Demo food items -->
             <div class="food-item">
-              <img
-                src="https://via.placeholder.com/280x160/ff6b35/ffffff?text=Popcorn"
-                alt="Bỏng ngô"
-                class="food-image"
-              />
+              <img alt="Bỏng ngô" class="food-image" />
               <div class="food-content">
                 <div class="food-name">Bỏng Ngô Caramel</div>
                 <div class="food-description">
@@ -106,11 +118,7 @@
             </div>
 
             <div class="food-item">
-              <img
-                src="https://via.placeholder.com/280x160/f7931e/ffffff?text=Drink"
-                alt="Nước uống"
-                class="food-image"
-              />
+              <img alt="Nước uống" class="food-image" />
               <div class="food-content">
                 <div class="food-name">Coca Cola (Size L)</div>
                 <div class="food-description">
@@ -132,9 +140,59 @@
             </div>
           </div>
         </div>
+        <!-- Payment Section -->
+        <div class="payment-section" id="payment-section" style="display: none">
+          <h2>💳 Thanh Toán</h2>
 
+          <div class="payment-methods">
+            <h3>Chọn Phương Thức Thanh Toán</h3>
+            <div class="payment-options">
+              <label class="payment-option">
+                <input type="radio" name="payment" value="momo" checked />
+                <div class="payment-card">
+                  <i class="fab fa-cc-paypal" style="color: #e91e63"></i>
+                  <span>Ví MoMo</span>
+                </div>
+              </label>
+
+              <label class="payment-option">
+                <input type="radio" name="payment" value="banking" />
+                <div class="payment-card">
+                  <i class="fas fa-university" style="color: #2196f3"></i>
+                  <span>Internet Banking</span>
+                </div>
+              </label>
+
+              <label class="payment-option">
+                <input type="radio" name="payment" value="card" />
+                <div class="payment-card">
+                  <i class="fas fa-credit-card" style="color: #ff9800"></i>
+                  <span>Thẻ Tín Dụng</span>
+                </div>
+              </label>
+
+              <label class="payment-option">
+                <input type="radio" name="payment" value="cash" />
+                <div class="payment-card">
+                  <i class="fas fa-qrcode" style="color: #4caf50"></i>
+                  <span>QR Code</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="payment-actions">
+            <button class="back-btn" onclick="goBackToFood()">
+              <i class="fas fa-arrow-left"></i> Quay Lại
+            </button>
+            <button class="proceed-btn" onclick="processPayment()">
+              <i class="fas fa-check"></i> Xác Nhận Thanh Toán
+            </button>
+          </div>
+        </div>
         <!-- Right Column -->
         <div class="right-column">
+          <div class="ttl-remain" id="ttl-remain"></div>
           <!-- Movie Information Table -->
           <div class="movie-info">
             <h3>📽️ Thông Tin Đặt Vé</h3>
