@@ -26,3 +26,9 @@ spring:
     port: 6379
 jwt:
   secretKey: "fvM5429XdKnajoAwXqMnhWNgVXFoAaGqS8gcs1lorUlt3n2EAwhKv5Yf+3ektFC7"
+vnpay:
+  pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  returnUrl: http://localhost:8080/api/payment/vnpay/return
+  tmnCode: 9HNFNXSV
+  hashSecret: 0WEEBEXGR25JRP5V15LSCWISX4WJW6EL
+  apiUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html

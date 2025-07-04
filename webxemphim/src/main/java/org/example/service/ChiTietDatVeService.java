@@ -66,12 +66,15 @@ public class ChiTietDatVeService {
             List<Map<String, Object>> danhGiaResults = (List<Map<String, Object>>) out.get("#result-set-3");
             if (danhGiaResults != null && !danhGiaResults.isEmpty()) {
                 Map<String, Object> danhGiaData = danhGiaResults.get(0);
-                DanhGiaDTO danhGia = new DanhGiaDTO(
-                        (int) danhGiaData.get("Số lượt đánh giá"),
-                        (double) danhGiaData.get("Điểm đánh giá trung bình")
-                );
+                Integer soLuot = (Integer) danhGiaData.get("Số lượt đánh giá");
+
+                Object diemObj = danhGiaData.get("Điểm đánh giá trung bình");
+                Double diemTB = (diemObj != null) ? ((Number) diemObj).doubleValue() : 0.0;
+
+                DanhGiaDTO danhGia = new DanhGiaDTO(soLuot, diemTB);
                 response.setDanhGia(danhGia);
             }
+
 
             // Xử lý result set 3: Lịch chiếu
             List<Map<String, Object>> lichChieuResults = (List<Map<String, Object>>) out.get("#result-set-4");
@@ -163,4 +166,17 @@ public class ChiTietDatVeService {
     }
 
 
+    public List<chitietdatve> getChiTietDatVeByidve(String idve) {
+        return chiTietDatVeRepository.findAllByIdVe(idve);
+    }
+
+    public void updatechitietdatve(chitietdatve chitietdatve) {
+        chitietdatve.setTrangthaive("Đã thanh toán");
+        chiTietDatVeRepository.save(chitietdatve);
+    }
+
+    public void updatechitietdatveFaile(chitietdatve chitietdatve1) {
+        chitietdatve1.setTrangthaive("Đã hủy");
+        chiTietDatVeRepository.save(chitietdatve1);
+    }
 }

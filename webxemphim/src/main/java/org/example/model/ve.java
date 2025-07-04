@@ -24,4 +24,5 @@ public class ve {
     @Column(name = "TongGiaTriDonHang")
     BigDecimal tongGiaTriDonHang;
     String trangthai;
+    LocalDateTime ngayhethan;
 }

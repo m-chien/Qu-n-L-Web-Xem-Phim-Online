@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ủng Hộ - Donate</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/donate.css" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <a href="/html/trangchu.html" class="nav-brand">
+          <i class="fas fa-film"></i>
+          <span>ChienCINEMA</span>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="/html/trangchu.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li><a href="/html/timkiem.html" class="nav-link">Khám Phá</a></li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li>
+            <a href="/html/donate.html" class="nav-link active">Donate</a>
+          </li>
+        </ul>
+        <div class="auth-container">
+          <div class="nav-actions" id="nav-actions">
+            <button class="btn-login">Đăng nhập</button>
+            <button class="btn-register">Đăng ký</button>
+          </div>
+          <div class="user-menu" id="user-menu" style="display: none">
+            <img
+              src="/images/user-circle (1).png"
+              alt="Avatar"
+              class="user-avatar"
+              id="userAvatar"
+            />
+            <p class="name_user" id="name_user">ChienCINEMA</p>
+          </div>
+        </div>
+        <div class="mobile-menu-toggle" id="mobileMenuToggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <div class="main-content-wrapper">
+      <div class="container">
+        <div id="donateForm">
+          <h1 class="title">Ủng Hộ<span class="heart">🤑</span></h1>
+          <p class="subtitle">
+            Sự ủng hộ của bạn là động lực để chiến ăn chơi tiếp!
+          </p>
+
+          <div class="amount-section">
+            <div class="amount-label">Chọn số tiền bạn muốn ủng hộ:</div>
+
+            <div class="amount-buttons">
+              <button class="amount-btn" data-amount="10000">10,000₫</button>
+              <button class="amount-btn" data-amount="20000">20,000₫</button>
+              <button class="amount-btn" data-amount="50000">50,000₫</button>
+              <button class="amount-btn" data-amount="100000">100,000₫</button>
+              <button class="amount-btn" data-amount="200000">200,000₫</button>
+              <button class="amount-btn" data-amount="500000">500,000₫</button>
+            </div>
+
+            <div class="custom-amount">
+              <input
+                type="number"
+                class="custom-input"
+                placeholder="Hoặc nhập số tiền khác (VNĐ)"
+                min="1000"
+                step="1000"
+              />
+            </div>
+          </div>
+
+          <button class="donate-btn" onclick="generateQR()">
+            🎁 Tạo Mã QR Thanh Toán
+          </button>
+        </div>
+
+        <div class="qr-section" id="qrSection">
+          <div class="qr-title">Quét mã QR để thanh toán</div>
+          <div class="qr-container">
+            <img class="qr-image" id="qrImage" src="" alt="QR Code" />
+          </div>
+          <div class="amount-display" id="amountDisplay"></div>
+          <button class="back-btn" onclick="goBack()">
+            ← Chọn lại số tiền
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/donate.js"></script>
+  </body>
+</html>

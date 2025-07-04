@@ -20,4 +20,6 @@ public class BookingRequest {
     private BigDecimal totalPrice;
     private LocalDate bookingDate;
     private LocalTime showTime;
+    private List<FoodBooking> foodList;
+    private String iduser;
 }

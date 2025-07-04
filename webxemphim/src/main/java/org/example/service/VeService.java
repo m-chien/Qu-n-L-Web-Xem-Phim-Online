@@ -47,8 +47,8 @@ public class VeService {
     public String AddVe(String iduser, BigDecimal giatien)
     {
         String idve = generateNextIdVe();
-        ve ve = new ve(idve,iduser, LocalDateTime.now(),giatien,"Đang chờ thanh toán");
-        veRepository.save(ve);
+        ve ve = new ve(idve,iduser, LocalDateTime.now(),giatien,"Đang chờ thanh toán",LocalDateTime.now().plusMinutes(15));
+        veRepository.saveAndFlush(ve);
         return idve;
     }
     public synchronized String generateNextIdVe() {
@@ -65,4 +65,17 @@ public class VeService {
         return prefix + String.format("%04d", nextNumber);
     }
 
+    public ve getVebyId(String idve) {
+        return veRepository.findById(idve).orElseThrow(() -> new RuntimeException("không có vé"));
+    }
+
+    public void updateVe(ve v) {
+        v.setTrangthai("Đã thanh toán");
+        veRepository.save(v);
+    }
+
+    public void updateVeFaile(ve v) {
+        v.setTrangthai("Đã hủy");
+        veRepository.save(v);
+    }
 }

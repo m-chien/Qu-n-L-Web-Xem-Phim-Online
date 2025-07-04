@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.exception.AppException;
 import org.example.model.chongoi;
 import org.example.repository.ChoNgoiRepository;
+import org.example.repository.LoaiGheRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChoNgoiService {
     private final ChoNgoiRepository choNgoiRepository;
+    private final LoaiGheService loaiGheService;
     private final JdbcTemplate jdbcTemplate;
 
     public List<chongoi> GetChoNgoiByPhong(String tenphim, LocalTime suatchieu, LocalDate ngaychieu)
@@ -55,7 +58,10 @@ public class ChoNgoiService {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
 
-
+    public BigDecimal getSeatPricebyId(String seat) {
+        String idloaighe = choNgoiRepository.findIdLoaiGhebyIdChoNgoi(seat);
+        return loaiGheService.findGiaById(idloaighe);
     }
 }

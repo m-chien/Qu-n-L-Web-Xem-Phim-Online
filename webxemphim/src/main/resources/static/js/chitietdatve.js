@@ -75,6 +75,11 @@ function generateStarRating(rating) {
 
 // Update page with ticket data
 function updatePageWithTicketData(data) {
+  if (!data || !data.result || !data.result.veInfo) {
+      console.error("❌ Dữ liệu không hợp lệ từ API:", data);
+      showNotification("Dữ liệu trả về không đầy đủ. Vui lòng thử lại!", "error");
+      return;
+    }
   const result = data.result;
 
   // Update booking ID

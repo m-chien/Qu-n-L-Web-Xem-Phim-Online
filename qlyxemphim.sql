@@ -135,6 +135,7 @@ create table ve
     NgayDat DATETIME DEFAULT GETDATE(),
     TongGiaTriDonHang MONEY NOT NULL,
     trangthai NVARCHAR(30) DEFAULT N'Đang chờ thanh toán',
+	ngayhethan Datetime
 )
 CREATE TABLE Food
 (
@@ -148,10 +149,10 @@ CREATE TABLE Food
 )
 create table ve_food
 (
+	idvefood char(5) primary key,
 	idVe char(5),
 	idFood char(5),
 	soluong int,
-	primary key (idVe, idFood),
 	foreign key (idVe) references ve(idVe)
 			on update
 				cascade
@@ -244,7 +245,6 @@ create table chitietdatve
     idChoNgoi char(6) NOT NULL,
     GiaVeDonLe MONEY NOT NULL,
     TrangThaiVe NVARCHAR(30) DEFAULT N'Đã đặt',
-	unique(idLichChieu,idChoNgoi),
 	foreign key (idVe) references ve(idVe)
 			on update
 				cascade
@@ -410,17 +410,17 @@ INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
 ('TL001', 'P0017'), ('TL001', 'P0018'), ('TL003', 'P0018');
 set dateformat ymd
 -- 16. Bảng ve (DonHangVe)
-INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai) VALUES
-('V0001', 'U0001', GETDATE(), 270000, N'Đã thanh toán'),
-('V0002', 'U0002', GETDATE(), 100000, N'Đã thanh toán'),
-('V0003', 'U0003', GETDATE(), 85000, N'Đã thanh toán'),
-('V0004', 'U0004', GETDATE(), 120000, N'Đang chờ thanh toán'),
-('V0005', 'U0005', GETDATE(), 180000, N'Đã thanh toán'),
-('V0006', 'U0009', GETDATE(), 90000, N'Đã thanh toán'),
-('V0007', 'U0010', GETDATE(), 95000, N'Đang chờ thanh toán'),
-('V0008', 'U0001', GETDATE(), 360000, N'Đã thanh toán'),
-('V0009', 'U0002', GETDATE(), 200000, N'Đã thanh toán'),
-('V0010', 'U0003', GETDATE(), 170000, N'Đã thanh toán');
+INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai,ngayhethan) VALUES
+('V0001', 'U0001', GETDATE(), 270000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0002', 'U0002', GETDATE(), 100000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0003', 'U0003', GETDATE(), 85000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0004', 'U0004', GETDATE(), 120000, N'Đang chờ thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0005', 'U0005', GETDATE(), 180000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0006', 'U0009', GETDATE(), 90000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0007', 'U0010', GETDATE(), 95000, N'Đang chờ thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0008', 'U0001', GETDATE(), 360000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0009', 'U0002', GETDATE(), 200000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE())),
+('V0010', 'U0003', GETDATE(), 170000, N'Đã thanh toán',DATEADD(minute, 15, GETDATE()));
 
 -- 8. Bảng Food
 INSERT INTO Food (idFood, TenDoAn, MoTa, GiaBan, TrangThai, soluongtonkho, url_anh) VALUES
@@ -436,15 +436,15 @@ INSERT INTO Food (idFood, TenDoAn, MoTa, GiaBan, TrangThai, soluongtonkho, url_a
 ('F0100', N'Kem ly', N'Kem mát lạnh nhiều hương vị.', 55000, N'Còn hàng', 120, '/images/kem.jpg');
 
 -- 18. Bảng ve_food (ChiTietDoAn)
-INSERT INTO Ve_Food (idVe, idFood,soluong) VALUES
-('V0001', 'F0004',1), ('V0001', 'F0002',1), -- Combo và Coca
-('V0002', 'F0001',1), -- Bắp
-('V0003', 'F0002',2), ('V0003', 'F0003',2), -- Coca và Snack
-('V0005', 'F0005',2), ('V0005', 'F0007',6), -- Combo lớn và nước lọc
-('V0006', 'F0001',3), ('V0006', 'F0002',4),
-('V0008', 'F0004',2), ('V0008', 'F0002',3), ('V0008', 'F0003',5),
-('V0009', 'F0001',6), ('V0009', 'F0002',1), ('V0009', 'F0007',2),
-('V0010', 'F0001',2), ('V0010', 'F0002',2);
+INSERT INTO Ve_Food (idvefood,idVe, idFood,soluong) VALUES
+('VF001','V0001', 'F0004',1), ('VF002','V0001', 'F0002',1),
+('VF003','V0002', 'F0001',1),
+('VF004','V0003', 'F0002',2), ('VF010','V0003', 'F0003',2),
+('VF005','V0005', 'F0005',2), ('VF011','V0005', 'F0007',6),
+('VF006','V0006', 'F0001',3), ('VF012','V0006', 'F0002',4),
+('VF007','V0008', 'F0004',2), ('VF013','V0008', 'F0002',3), ('VF016','V0008', 'F0003',5),
+('VF008','V0009', 'F0001',6), ('VF014','V0009', 'F0002',1), ('VF017','V0009', 'F0007',2),
+('VF009','V0010', 'F0001',2), ('VF015','V0010', 'F0002',2);
 set dateformat ymd
 INSERT INTO ThanhToan (idThanhToan, idVe, phuongthucthanhtoan, trangthai, soTienThanhToan, ngayThanhToan) VALUES
 ('TT001', 'V0001', N'online', N'Thành công', 270000, GETDATE()),
@@ -635,24 +635,24 @@ WHERE c.idLichChieu = (
     JOIN suatchieu s ON l.idSuatChieu = s.idSuatChieu
     LEFT JOIN chitietdatve ct ON ct.idLichChieu = l.idLichChieu AND ct.TrangThaiVe = N'Đã đặt'
     WHERE 
-        p.tenphim = N'Lật Mặt 7: Một Chuyến Phiêu Lưu'
-        AND l.ngaychieu = '2024-06-07'
-        AND s.tgianchieu = '16:00:00'
+        p.tenphim = N'Bố Già'
+        AND l.ngaychieu = '2024-06-08'
+        AND s.tgianchieu = '08:30:00'
     GROUP BY l.idLichChieu
     ORDER BY COUNT(ct.idChoNgoi) asc
-)
+) and (c.TrangThaiVe = N'Đã đặt' or c.TrangThaiVe = N'Đã thanh toán')
 --thêm bản ghi cho vé vừa mới đặt
 insert into ve values
-('V0011','U0001',getdate(),0,N'Đang chờ thanh toán');
+('V0011','U0001',getdate(),0,N'Đang chờ thanh toán',DATEADD(minute, 15, GETDATE()));
 --trước khi insert chitietdatve người dùng sẽ lấy danh sách ghế đã chọn từ trên giao diện sau đó với mỗi ghế sẽ select ra 1 giá rồi sau đó
 --mới insert vào bảng chitietdatve
 insert into chitietdatve values
 ('CTV16', 'V0011', 'LC001', 'CG0006', 100000, N'Đã đặt'),
 ('CTV17', 'V0011', 'LC001', 'CG0005', 100000, N'Đã đặt');
 --chọn mua thêm đồ ăn đồ uống nếu muốn
-insert into ve_food values
-('V0011', 'F0001',2),
-('V0011', 'F0003',2);
+--insert into ve_food values
+--('V0011', 'F0001',2),
+--('V0011', 'F0003',2);
 --tính tổng só tiền phải trả sau khi đặt chỗ và mua đồ ăn
 update ve
 set TongGiaTriDonHang = ISNULL((SELECT SUM(c.GiaVeDonLe)
@@ -760,7 +760,6 @@ from chitietdatve ct
 	join lichchieu l on l.idLichChieu = ct.idLichChieu
 	join phong p on p.idPhong = l.idPhong
 where ct.idVe = 'V0001'
---proceduce của chitietdatve
 go
 --drop PROCEDURE sp_ChiTietDatVe
 CREATE PROCEDURE sp_ChiTietDatVe
@@ -777,15 +776,17 @@ BEGIN
     JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
     JOIN phim p ON p.idPhim = l.idPhim
     WHERE ct.idVe = @idVe;
-	--lấy ra thể loại
-	select distinct t.tentheloai
-	from chitietdatve ct
-		join lichchieu l on l.idLichChieu = ct.idLichChieu
-		join phim p on p.idPhim = l.idPhim
-		join theloai_phim tl on tl.idPhim = p.idPhim
-		join theloai t on t.idTheLoai = tl.idTheLoai
-	where ct.idVe = @idVe
-    -- 2. Tính điểm đánh giá và số lượt đánh giá của phim
+
+    -- 2. Lấy thể loại
+    SELECT DISTINCT t.tentheloai
+    FROM chitietdatve ct
+    JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
+    JOIN phim p ON p.idPhim = l.idPhim
+    JOIN theloai_phim tl ON tl.idPhim = p.idPhim
+    JOIN theloai t ON t.idTheLoai = tl.idTheLoai
+    WHERE ct.idVe = @idVe;
+
+    -- 3. Tính điểm đánh giá
     SELECT 
         COUNT(d.diemdanhgia) AS [Số lượt đánh giá],
         AVG(CAST(d.diemdanhgia AS FLOAT)) / 2 AS [Điểm đánh giá trung bình]
@@ -797,8 +798,9 @@ BEGIN
         JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
         JOIN phim p ON p.idPhim = l.idPhim
         WHERE ct.idVe = @idVe
-    )
-    -- 3. Lấy thông tin lịch chiếu (ngày + giờ)
+    );
+
+    -- 4. Lịch chiếu
     SELECT DISTINCT 
         l.ngaychieu, 
         s.tgianchieu
@@ -807,46 +809,58 @@ BEGIN
     JOIN suatchieu s ON s.idSuatChieu = l.idSuatChieu
     WHERE ct.idVe = @idVe;
 
-    -- 4. Lấy thông tin chỗ ngồi
+    -- 5. Ghế
     SELECT 
         ch.hang + CAST(ch.cot AS NVARCHAR(10)) AS TenGhe
     FROM chitietdatve ct
     JOIN chongoi ch ON ch.idChoNgoi = ct.idChoNgoi
     WHERE ct.idVe = @idVe;
 
-    -- 5. Lấy thông tin vé đã đặt
-    SELECT DISTINCT 
-        v.idVe,
-        v.trangthai,
-        v.TongGiaTriDonHang AS [Tổng tiền],
-        ct.GiaVeDonLe AS [Tiền vé],
-        (
-            SELECT SUM(vf.SoLuong * f.giaban)
-            FROM ve_food vf
-            JOIN Food f ON vf.idFood = f.idFood
-            WHERE vf.idVe = v.idVe
-        ) AS [Tiền đồ ăn]
-    FROM chitietdatve ct
-    JOIN ve v ON v.idVe = ct.idVe
-    WHERE ct.idVe = @idVe;
+   -- 6. Gộp: Thông tin vé + tiền vé + tiền đồ ăn
+	SELECT DISTINCT 
+		v.idVe,
+		v.trangthai,
+		v.TongGiaTriDonHang AS [Tổng tiền],
+		(SELECT SUM(GiaVeDonLe)
+		 FROM chitietdatve
+		 WHERE idVe = v.idVe) AS [Tiền vé],
+		DoAn.TienDoAn AS [Tiền đồ ăn]
+	FROM chitietdatve ct
+	JOIN ve v ON v.idVe = ct.idVe
+	OUTER APPLY (
+		SELECT SUM(vf.SoLuong * f.giaban) AS TienDoAn
+		FROM ve_food vf
+		JOIN Food f ON vf.idFood = f.idFood
+		WHERE vf.idVe = v.idVe
+	) AS DoAn
+	WHERE ct.idVe = @idVe;
 
-    -- 6. Lấy thông tin thanh toán
+
+    -- 7. Thanh toán
     SELECT 
         t.phuongthucthanhtoan,
         t.ngayThanhToan
     FROM ve v 
     JOIN thanhtoan t ON v.idVe = t.idVe
     WHERE v.idVe = @idVe;
-	--lấy thông tin của phòng chiếu
-	select distinct p.tenphong
-	from chitietdatve ct
-		join lichchieu l on l.idLichChieu = ct.idLichChieu
-		join phong p on p.idPhong = l.idPhong
-	where ct.idVe = @idVe
+
+    -- 8. Thông tin phòng
+    SELECT DISTINCT p.tenphong
+    FROM chitietdatve ct
+    JOIN lichchieu l ON l.idLichChieu = ct.idLichChieu
+    JOIN phong p ON p.idPhong = l.idPhong
+    WHERE ct.idVe = @idVe;
 END;
-EXEC sp_ChiTietDatVe 'V0001';
+
+EXEC sp_ChiTietDatVe 'V0013';
 select * from chongoi where idphong = 'R0008'
 select idLichChieu from lichchieu where idPhong = 'R0008' and idSuatChieu ='SC008' and ngaychieu ='2024-06-08'
-delete from ve where idVe = 'V0012'
+delete from ve where idVe = 'V0013'
 select * from chitietdatve
 select * from ve
+select * from thanhtoan
+select * from ve_food vf
+select * from Food
+/*update chitietdatve
+set trangthaive = N'Đã hủy'
+where idchitietve = 'CTV20'*/

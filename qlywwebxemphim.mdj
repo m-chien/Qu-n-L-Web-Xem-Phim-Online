@@ -20713,6 +20713,19 @@
 							"width": 145,
 							"height": 103,
 							"text": "tạo 1 trường idlichsu làm khóa chính riêng vì nếu như ngày hnay đi xem phim x mà ngày mai xem lại phim đó thì nó sẽ gây lỗi"
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAGXyfpgTnORfPw=",
+							"_parent": {
+								"$ref": "AAAAAAGWRFq/csWsbEA="
+							},
+							"font": "Arial;13;0",
+							"left": 1232,
+							"top": 1040,
+							"width": 225,
+							"height": 97,
+							"text": "tại sao lại cần tongtien ở bảng chitietdatve: vì giá chỗ ngồi sẽ khác nhau tùy ngày, nếu như thứ 7 chủ nhật thì giá sẽ khác, còn ngày trong tuần thì sẽ khác"
 						}
 					]
 				},

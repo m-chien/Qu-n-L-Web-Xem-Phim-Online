@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,4 +23,6 @@ public interface VeRepository extends JpaRepository< ve,String> {
             "GROUP BY p.tenphim, v.NgayDat, v.TongGiaTriDonHang, v.idUser, v.trangthai, p.url_poster, v.idVe",
             nativeQuery = true)
     List<LichSuVeResponse> findVe(@Param("Iduser")String idUser);
+
+    List<ve> findByTrangthaiAndNgayhethanBefore(String choThanhToan, LocalDateTime now);
 }

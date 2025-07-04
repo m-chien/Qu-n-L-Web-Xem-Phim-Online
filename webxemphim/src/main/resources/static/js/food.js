@@ -307,6 +307,7 @@ function increaseQuantity(itemId) {
 
   updateCart();
   renderFoodItems();
+  updateBookingFoodList();
 }
 
 // Decrease quantity
@@ -326,6 +327,7 @@ function decreaseQuantity(itemId) {
 
   updateCart();
   renderFoodItems();
+  updateBookingFoodList();
 }
 
 // Remove item from cart
@@ -335,6 +337,7 @@ function removeFromCart(itemId) {
   showNotification(`Đã xóa ${item.name} khỏi giỏ hàng`);
   updateCart();
   renderFoodItems();
+  updateBookingFoodList();
 }
 
 // Update cart display
@@ -391,7 +394,22 @@ function updateCart() {
   document.getElementById("food-total").textContent = formatCurrency(foodTotal);
   document.getElementById("total").textContent = formatCurrency(grandTotal);
 }
+function updateBookingFoodList() {
+  const foodList = cart.map((item) => ({
+    idfood: item.id,
+    soluong: item.quantity,
+  }));
+  const bookingDataJson = localStorage.getItem("bookingData");
+  let bookingData = bookingDataJson ? JSON.parse(bookingDataJson) : {};
 
+  const totalText = document.getElementById("total").textContent;
+  const totalNumber = parseInt(totalText.replace(/[^\d]/g, ""), 10);
+  bookingData.foodList = foodList;
+  bookingData.totalPrice = totalNumber;
+
+  localStorage.setItem("bookingData", JSON.stringify(bookingData));
+  console.log("📦 bookingData đã được cập nhật:", bookingData);
+}
 // Checkout function - UPDATED to show payment section
 function checkout() {
   if (cart.length === 0) {
@@ -400,18 +418,22 @@ function checkout() {
         "Bạn chưa chọn đồ ăn nào. Bạn có muốn tiếp tục thanh toán chỉ với vé xem phim không?"
       )
     ) {
-      showPaymentSection();
-      // Ẩn 2 nút
-      document.querySelector(".checkout-btn").style.display = "none";
-      document.querySelector(".skip-btn").style.display = "none";
-      // Cập nhật progress-line
-      const progressLine = document.querySelector(".progress-line");
-      if (progressLine) {
-        progressLine.style.width = "73%";
-      }
+      showPaymentSection(); // chỉ show nếu người dùng đồng ý
+    } else {
+      return; // thoát luôn nếu không muốn thanh toán
     }
   } else {
-    showPaymentSection();
+    showPaymentSection(); // nếu có đồ ăn thì show luôn
+  }
+
+  // Ẩn 2 nút
+  document.querySelector(".checkout-btn").style.display = "none";
+  document.querySelector(".skip-btn").style.display = "none";
+
+  // Cập nhật progress-line
+  const progressLine = document.querySelector(".progress-line");
+  if (progressLine) {
+    progressLine.style.width = "73%";
   }
 }
 
@@ -514,7 +536,7 @@ function updateProgressBar(activeStep) {
 }
 
 // NEW FUNCTION: Process payment
-function processPayment() {
+async function processPayment() {
   const selectedPayment = document.querySelector(
     'input[name="payment"]:checked'
   );
@@ -544,40 +566,144 @@ function processPayment() {
   };
 
   console.log("Processing payment with data:", orderData);
+  localStorage.setItem("orderData", JSON.stringify(orderData));
+
+  const token = sessionStorage.getItem("authToken");
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const bookingDataJson = localStorage.getItem("bookingData");
+  let bookingData = bookingDataJson ? JSON.parse(bookingDataJson) : {};
+  const bookingRequest = {
+    idPhim: bookingData.idPhim,
+    idPhong: bookingData.idPhong,
+    selectedSeats: bookingData.selectedSeats,
+    totalPrice: bookingData.totalPrice,
+    bookingDate: bookingData.bookingDate,
+    showTime: bookingData.showTime,
+    foodList: bookingData.foodList || [],
+    iduser: user.idUser,
+  };
+  console.log("Booking request data:", bookingRequest);
 
   // Show loading and process payment
   const proceedBtn = document.querySelector(".proceed-btn");
   const originalText = proceedBtn.innerHTML;
   proceedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
   proceedBtn.disabled = true;
+  try {
+    // Send booking request to API
+    const response = await fetch("http://localhost:8080/api/booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(bookingRequest),
+    });
 
-  // Simulate payment processing
-  setTimeout(() => {
-    alert(
-      `Thanh toán thành công!\n\nPhương thức: ${getPaymentMethodName(
-        selectedPayment.value
-      )}\nTổng tiền: ${formatCurrency(orderData.grandTotal)}`
+    const bookingResult = await response.json();
+    console.log("Booking API Response:", bookingResult);
+
+    if (!response.ok) {
+      let errorMessage = "Không thể lưu thông tin đặt vé";
+      if (response.status === 401) {
+        errorMessage = "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại";
+      } else if (response.status === 400) {
+        errorMessage = bookingResult.message || "Dữ liệu đặt vé không hợp lệ";
+      } else if (response.status === 500) {
+        errorMessage = "Lỗi server khi lưu đặt vé, vui lòng thử lại sau";
+      }
+      throw new Error(errorMessage);
+    }
+    const paymentRequest = {
+        idve: bookingResult.message,
+        amount: bookingData.totalPrice,
+        orderInfo: `Thanh toan ve xem phim ${
+          bookingData.movieTitle
+        } - ${bookingData.selectedSeats.join(", ")}`,
+        bankCode: selectedPayment.value === "" ? "" : selectedPayment.value, // Empty for VNPay gateway selection
+        locale: "vn",
+        orderType: "billpayment",
+      };
+    console.log("Payment request data:", paymentRequest);
+    const paymentResponse = await fetch(
+      "http://localhost:8080/api/payment/vnpay/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(paymentRequest),
+      }
     );
 
-    // Reset button
+    const paymentResult = await paymentResponse.json();
+    console.log("Payment API Response:", paymentResult);
+
+    if (
+      paymentResponse.ok &&
+      paymentResult.code === "00" &&
+      paymentResult.vnpayUrl
+    ) {
+      // Save payment response
+      localStorage.setItem("paymentResponse", JSON.stringify(paymentResult));
+
+      // Redirect to VNPay URL
+      window.location.href = paymentResult.vnpayUrl;
+    } else {
+      let errorMessage = "Không thể tạo liên kết thanh toán";
+      if (paymentResponse.status === 401) {
+        errorMessage = "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại";
+      } else if (paymentResponse.status === 400) {
+        errorMessage =
+          paymentResult.message || "Dữ liệu thanh toán không hợp lệ";
+      } else if (paymentResponse.status === 500) {
+        errorMessage = "Lỗi server khi tạo thanh toán, vui lòng thử lại sau";
+      } else {
+        errorMessage = paymentResult.message || `Lỗi ${paymentResponse.status}`;
+      }
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    console.error("Process payment error:", error);
+
+    // Show user-friendly error messages
+    if (error.name === "TypeError" && error.message.includes("fetch")) {
+      alert("Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng!");
+    } else {
+      alert(`Có lỗi xảy ra: ${error.message}`);
+    }
+
+    // Reset button on error
     proceedBtn.innerHTML = originalText;
     proceedBtn.disabled = false;
-
-    // Update progress to confirmation step
-    updateProgressBar(5);
-
-    // In real app, redirect to confirmation page
-    // window.location.href = '/html/confirmation.html';
-  }, 2000);
+  }
 }
+// // Simulate payment processing
+// setTimeout(() => {
+//   alert(
+//     `Thanh toán thành công!\n\nPhương thức: ${getPaymentMethodName(
+//       selectedPayment.value
+//     )}\nTổng tiền: ${formatCurrency(orderData.grandTotal)}`
+//   );
 
+//   // Reset button
+//   proceedBtn.innerHTML = originalText;
+//   proceedBtn.disabled = false;
+
+//   // Update progress to confirmation step
+//   updateProgressBar(5);
+
+//   // In real app, redirect to confirmation page
+//   // window.location.href = '/html/confirmation.html';
+// }, 2000);
 // Helper function to get payment method name
 function getPaymentMethodName(value) {
   const methods = {
-    momo: "Ví MoMo",
+    vnpay: "Ví MoMo",
     banking: "Internet Banking",
     card: "Thẻ Tín Dụng",
-    cash: "Thanh Toán Tại Quầy",
+    QR: "Thanh Toán QR",
   };
   return methods[value] || value;
 }

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Đơn Hàng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            /* padding-top will be adjusted by JS or dynamic content */
+        }
+
+        .confirmation-container {
+            background: #1a1a1a;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            margin-top: 30px; /* Adjusted to make space for the tick */
+            position: relative; /* Keep relative for inner positioning if needed */
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049); /* Default success green */
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative; /* Keep relative for potential internal elements */
+            border-top-left-radius: 20px; /* Match container border-radius */
+            border-top-right-radius: 20px; /* Match container border-radius */
+        }
+
+        .header.failed {
+            background: linear-gradient(135deg, #f44336, #d32f2f); /* Red for failed */
+        }
+
+        .tick-icon {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #4CAF50; /* Default green for success */
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+            z-index: 10;
+        }
+
+        .tick-icon.failed {
+            color: #f44336; /* Red for failed */
+        }
+
+
+        .header h1 {
+            margin-top: 20px;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 0px 30px 40px 30px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .id-ticket{
+            text-align: center;
+            padding: 20px;
+            color: #ff6b35;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .order-details {
+            margin-bottom: 30px;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #2d2d2d;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .detail-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-title::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            background-size: contain;
+        }
+
+        .movie-info .detail-title::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b35'%3E%3Cpath d='M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z'/%3E%3C/svg%3E");
+        }
+
+        .cinema-info .detail-title::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b35'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E");
+        }
+
+        .seat-info .detail-title::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b35'%3E%3Cpath d='M4 18v3h3v-3h10v3h3v-3h1v-2H3v2h1zm15-8h3v3h-3v-3zM2 10h3v3H2v-3zm15-2V4.5C17 3.12 15.88 2 14.5 2h-5C8.12 2 7 3.12 7 4.5V8H5v2h14V8h-2z'/%3E%3C/svg%3E");
+        }
+
+        .detail-info {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .detail-info strong {
+            color: #fff;
+        }
+
+        .food-items {
+            margin-top: 10px;
+        }
+
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .food-item:last-child {
+            border-bottom: none;
+        }
+
+        .total-section {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .annouce {
+            padding: 10px;
+            text-align: center;
+            color: #999;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total-row.grand-total {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .confirm-btn {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .confirm-btn:active {
+            transform: translateY(0);
+        }
+
+        .payment-method {
+            display: inline-block;
+            background: #4e2f24;
+            color: #ff6b35;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid #333;
+        }
+
+        @media (max-width: 600px) {
+            .confirmation-container {
+                margin: 10px;
+                margin-top: 50px; /* Ensure margin-top is maintained on smaller screens */
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tick-icon {
+                 /* Adjust for smaller screens if needed, relative to the document */
+                top: calc(50% - 200px); /* Example adjustment */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="tick-icon" id="tickIcon"></div>
+<div class="confirmation-container">
+    <div class="header" id="headerSection">
+        <h1 id="headerTitle">Thanh Toán Thành Công!</h1>
+        <p id="headerMessage">Cảm ơn bạn đã đặt vé. Chúc bạn xem phim vui vẻ!</p>
+    </div>
+
+    <div class="content">
+        <div class="id-ticket" id="id-ticket">Mã Vé: V0001</div>
+        <div class="order-details">
+            <div class="detail-section movie-info">
+                <div class="detail-title">Thông Tin Phim</div>
+                <div class="detail-info">
+                    <strong>Phim:</strong> <span id="movie-name">Đang tải...</span><br>
+                    <strong>Ngày giờ:</strong> <span id="date-time">Đang tải...</span><br>
+                    <strong>Phòng:</strong> <span id="room-name">Đang tải...</span>
+                </div>
+            </div>
+
+            <div class="detail-section cinema-info">
+                <div class="detail-title">Rạp Chiếu</div>
+                <div class="detail-info">
+                    <strong>Rạp:</strong> <span id="cinema-name">Đang tải...</span>
+                </div>
+            </div>
+
+            <div class="detail-section seat-info">
+                <div class="detail-title">Ghế & Combo</div>
+                <div class="detail-info">
+                    <strong>Ghế đã chọn:</strong> <span id="selected-seats">Đang tải...</span><br>
+                    <strong>Phương thức thanh toán:</strong> <span id="payment-method" class="payment-method">Đang tải...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-section">
+            <div class="total-row grand-total">
+                <span>Tổng cộng:</span>
+                <span id="grand-total">0 VNĐ</span>
+            </div>
+        </div>
+        <div class="annouce">
+            để xem chi tiết vui lòng vào phần lịch sử đặt vé. Xin cám ơn!
+        </div>
+        <button class="confirm-btn" onclick="goToHomePage()">Xác Nhận & Về Trang Chủ</button>
+    </div>
+</div>
+
+<script>
+    // Hàm format số tiền
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+
+    // Hàm hiển thị thông tin đơn hàng
+    function displayOrderInfo() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status'); // Trạng thái: success, failed, invalid_signature, error
+            const orderId = urlParams.get('orderId'); // Mã đơn hàng
+            const amount = urlParams.get('amount'); // Số tiền (đơn vị xu từ VNPAY)
+            const tickIcon = document.getElementById('tickIcon');
+            const headerSection = document.getElementById('headerSection');
+            const headerTitle = document.getElementById('headerTitle');
+            const headerMessage = document.getElementById('headerMessage');
+            const idticket = document.getElementById('id-ticket');
+
+            if (status === 'failed') {
+                tickIcon.textContent = "X";
+                tickIcon.classList.add('failed');
+                headerSection.classList.add('failed');
+                headerTitle.textContent = "Thanh Toán Thất Bại";
+                headerMessage.textContent = "Giao dịch thất bại!!";
+                // Optionally hide order details or show a different message for failed
+                document.querySelector('.order-details').style.display = 'none';
+                document.querySelector('.total-section').style.display = 'none';
+                document.querySelector('.annouce').style.display = 'none';
+            } else { // Default to success if status is not 'failed' or is 'success'
+                tickIcon.textContent = "✓";
+                // No need to add success classes as they are default in CSS
+            }
+
+            const orderData = JSON.parse(localStorage.getItem('orderData'));
+
+            if (orderData) {
+                document.getElementById('id-ticket').textContent = orderId || 'N/A'
+                document.getElementById('movie-name').textContent = orderData.movie;
+                document.getElementById('cinema-name').textContent = orderData.cinema;
+                document.getElementById('date-time').textContent = orderData.date;
+                document.getElementById('room-name').textContent = orderData.room;
+                document.getElementById('selected-seats').textContent = orderData.seat;
+                document.getElementById('payment-method').textContent = orderData.paymentMethod;
+                document.getElementById('grand-total').textContent = amount ? (parseInt(amount) / 100).toLocaleString('vi-VN') + ' VND' : 'N/A';
+            } else if (status !== 'failed') { // Only show alert if it's not a 'failed' status and data is missing
+                alert('Không tìm thấy thông tin đơn hàng!');
+                goToHomePage();
+            }
+        } catch (error) {
+            console.error('Lỗi khi đọc dữ liệu đơn hàng:', error);
+            if (status !== 'failed') { // Only show alert if it's not a 'failed' status and an error occurs
+                alert('Có lỗi xảy ra khi tải thông tin đơn hàng!');
+                goToHomePage();
+            }
+        }
+    }
+
+    // Hàm chuyển về trang chủ
+    function goToHomePage() {
+        window.location.href = 'trangchu.html';
+    }
+
+    // Gọi hàm hiển thị thông tin khi trang load
+    window.onload = function() {
+        displayOrderInfo();
+    };
+</script>
+</body>
+</html>

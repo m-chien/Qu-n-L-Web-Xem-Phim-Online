@@ -29,10 +29,12 @@ public interface ChoNgoiRepository extends JpaRepository<chongoi, String> {
             "                AND CONVERT(varchar, s.tgianchieu, 108) = CONVERT(varchar, :gioChieu, 108)\n" +
             "            GROUP BY l.idLichChieu\n" +
             "            ORDER BY COUNT(ct.idChoNgoi) ASC\n" +
-            "        )",nativeQuery = true)
+            "        ) and (c.TrangThaiVe = N'Đã đặt' or c.TrangThaiVe = N'Đã thanh toán')",nativeQuery = true)
     public List<chongoi> findChoNgoiDaDatTheoPhimSuatNgay(
             @Param("tenPhim") String tenPhim,
             @Param("ngayChieu") LocalDate ngayChieu,
             @Param("gioChieu") LocalTime gioChieu
     );
+    @Query(value = "select idLoaiGhe from chongoi where idChoNgoi = :idchongoi")
+    String findIdLoaiGhebyIdChoNgoi(@Param("idchongoi") String seat);
 }
