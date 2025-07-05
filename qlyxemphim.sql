@@ -861,6 +861,18 @@ select * from ve
 select * from thanhtoan
 select * from ve_food vf
 select * from Food
-/*update chitietdatve
-set trangthaive = N'Đã hủy'
-where idchitietve = 'CTV20'*/
+--update chỗ ngồi sau khi xem xong phim (lấy ra tất cả ghế ngồi có tình trạng đã thanh toán và có thời lượng + giờ chiếu > now)
+/*select ct.idChiTietVe,ct.idChoNgoi,ct.idLichChieu, p.thoiluong, s.tgianchieu, l.ngaychieu
+from chitietdatve ct
+	join lichchieu l on ct.idLichChieu = ct.idLichChieu
+	join phim p on p.idPhim = l.idPhim
+	join suatchieu s on s.idSuatChieu = l.idSuatChieu
+where TrangThaiVe = N'Đã thanh toán'*/
+--lấy ra phim trong danh sách tìm kiếm
+select p.idPhim,p.tenphim,p.url_poster,p.ngayphathanh,p.DaoDien,d.tendienvien,t.tentheloai
+from phim p
+	join theloai_phim tp on tp.idPhim = p.idPhim
+	join theloai t on t.idTheLoai = tp.idTheLoai
+	join dienvien_phim dp on dp.idPhim = p.idPhim
+	join dienvien d on d.idDienVien = dp.idDienVien
+where p.idPhim = 'P0001'

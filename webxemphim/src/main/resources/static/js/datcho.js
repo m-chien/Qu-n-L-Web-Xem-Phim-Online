@@ -501,6 +501,57 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "/html/trangchu.html";
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const login_button = document.querySelector(".btn-login");
+  const register_button = document.querySelector(".btn-register");
+  const account = document.querySelector(".user-menu");
+
+  if (login_button) {
+    login_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+
+  if (register_button) {
+    register_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+  if (account) {
+    account.addEventListener("click", () => {
+      window.location.href = "/html/taikhoan.html";
+    });
+  }
+});
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("sessionStorage content!", sessionStorage);
+  const token = sessionStorage.getItem("authToken");
+
+  if (token) {
+    document.querySelector(".btn-login").style.display = "none";
+    document.querySelector(".btn-register").style.display = "none";
+
+    document.querySelector(".user-menu").style.display = "flex";
+
+    // Hiện ảnh nếu có
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      if (user.avatar_url) {
+        document.getElementById("userAvatar").src = user.avatar_url;
+      }
+      if (user.hoten) {
+        document.querySelector("#name_user").innerText = user.hoten;
+      }
+    }
+  } else {
+    // Chưa đăng nhập
+    document.querySelector(".btn-login").style.display = "inline-block";
+    document.querySelector(".btn-register").style.display = "inline-block";
+
+    document.querySelector(".user-menu").style.display = "none";
+  }
+});
+
 // document.addEventListener("DOMContentLoaded", function () {
 //   const navBrand = document.querySelector(".nav-brand");
 

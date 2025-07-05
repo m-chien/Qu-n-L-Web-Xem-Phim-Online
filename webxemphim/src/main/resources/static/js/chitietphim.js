@@ -1,12 +1,47 @@
 // API Configuration - phải khớp với trangchu.js
 const API_BASE_URL = "http://localhost:8080/api";
 const MOVIES_ENDPOINT = `${API_BASE_URL}/movies`;
+const SCHEDULE_ENDPOINT = `${API_BASE_URL}/schedule/date`;
+const SHOWTIME_ENDPOINT = `${API_BASE_URL}/showtime`;
+const loadingContainer = document.getElementById("loading-container");
+const movieDetailSection = document.getElementById("movie-detail");
+const urlParams = new URLSearchParams(window.location.search);
+const movieId = urlParams.get("id");
+const cinemaSelect = document.getElementById("cinema-select");
+const dateSelect = document.getElementById("date-select");
+const showtimeSelect = document.getElementById("showtime-select");
+const bookButton = document.getElementById("btn-book-ticket");
+
+let currentMovieDetails = null;
+let availableDates = [];
+let availableShowtimes = [];
+
+// Modal Functions
+function showModal(modalId, message) {
+  const modal = document.getElementById(modalId);
+  const messageElement = modal.querySelector(".modal-body p");
+  messageElement.textContent = message;
+  modal.style.display = "block";
+}
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = "none";
+}
+// Format date for display (no longer need setMinDate since we're using select)
+function formatDateForDisplay(dateString) {
+  if (!dateString) return "Chưa có thông tin";
+  const date = new Date(dateString);
+  const options = {
+    weekday: "short",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return date.toLocaleDateString("vi-VN", options);
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const loadingContainer = document.getElementById("loading-container");
-  const movieDetailSection = document.getElementById("movie-detail");
-  const urlParams = new URLSearchParams(window.location.search);
-  const movieId = urlParams.get("id");
+  // Initialize user menu display
+  updateUserMenuDisplay();
 
   if (!movieId) {
     showError("Không tìm thấy ID phim.");
@@ -24,22 +59,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       const allMovies = await allMoviesResponse.json();
       const movie = allMovies.find((m) => m.idPhim === movieId);
       if (!movie) throw new Error("Không tìm thấy phim");
-
+      currentMovieDetails = movie;
       displayMovieDetails(movie);
     } else {
       const apiResponse = await response.json();
       console.log("API Response:", apiResponse);
 
       // Xử lý ApiResponse wrapper - lấy dữ liệu từ result
-      const movie = apiResponse.result || apiResponse;
-      displayMovieDetails(movie);
+      currentMovieDetails = apiResponse.result || apiResponse;
+      displayMovieDetails(currentMovieDetails);
     }
-
-    // Load rạp chiếu
-    await loadCinemas(movieId);
 
     // Load phim liên quan
     await loadRelatedMovies(movieId);
+
+    // Load initial cinema options and setup event listeners
+    setupBookingForm();
 
     // Hiển thị nội dung
     loadingContainer.style.display = "none";
@@ -207,180 +242,248 @@ function showError(message) {
   modal.style.display = "block";
 }
 
-async function loadCinemas(movieId) {
-  const selectCinema = document.getElementById("cinema-select");
-
+async function fetchScheduleDates(movieId) {
   try {
-    // Thử API rạp chiếu theo phim trước
-    let response;
-    try {
-      response = await fetch(`${API_BASE_URL}/phim/${movieId}/rap`);
-    } catch (error) {
-      // Nếu không có API này, dùng mock data
-      console.log("Sử dụng mock data cho rạp chiếu");
-      const mockCinemas = [
-        { id: 1, tenRap: "Galaxy Nguyễn Du", name: "Galaxy Nguyễn Du" },
-        { id: 2, tenRap: "Galaxy Đà Nẵng", name: "Galaxy Đà Nẵng" },
-        {
-          id: 3,
-          tenRap: "Galaxy Kinh Dương Vương",
-          name: "Galaxy Kinh Dương Vương",
-        },
-      ];
-
-      mockCinemas.forEach((rap) => {
-        const option = document.createElement("option");
-        option.value = rap.id;
-        option.textContent = rap.tenRap || rap.name;
-        selectCinema.appendChild(option);
-      });
-
-      setupCinemaEvents(movieId);
-      return;
+    const response = await fetch(`${SCHEDULE_ENDPOINT}/${movieId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const apiResponse = await response.json();
 
-    if (response && response.ok) {
-      const cinemas = await response.json();
-      cinemas.forEach((rap) => {
-        const option = document.createElement("option");
-        option.value = rap.id;
-        option.textContent = rap.tenRap || rap.name;
-        selectCinema.appendChild(option);
-      });
+    if (apiResponse.code === 1000 && apiResponse.result) {
+      return apiResponse.result; // Trả về mảng dates
+    } else {
+      throw new Error(apiResponse.message || "Không thể lấy ngày chiếu");
     }
-
-    setupCinemaEvents(movieId);
   } catch (error) {
-    console.error("Lỗi tải rạp:", error);
-    // Fallback to mock data
-    const mockCinemas = [
-      { id: 1, tenRap: "Galaxy Nguyễn Du" },
-      { id: 2, tenRap: "Galaxy Đà Nẵng" },
-      { id: 3, tenRap: "Galaxy Kinh Dương Vương" },
-    ];
-
-    mockCinemas.forEach((rap) => {
-      const option = document.createElement("option");
-      option.value = rap.id;
-      option.textContent = rap.tenRap;
-      selectCinema.appendChild(option);
-    });
-
-    setupCinemaEvents(movieId);
+    console.error("Error fetching schedule dates:", error);
+    showModal("error-modal", "Không thể tải ngày chiếu. Vui lòng thử lại sau.");
+    return [];
   }
 }
 
-function setupCinemaEvents(movieId) {
-  const selectCinema = document.getElementById("cinema-select");
-  const dateInput = document.getElementById("date-select");
-  const showtimeSelect = document.getElementById("showtime-select");
+async function fetchShowtimes(movieId, date) {
+  try {
+    const response = await fetch(`${SHOWTIME_ENDPOINT}/${movieId}/${date}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const apiResponse = await response.json();
 
-  // Set minimum date to today
-  const today = new Date().toISOString().split("T")[0];
-  dateInput.min = today;
-
-  selectCinema.addEventListener("change", async () => {
-    const selectedRapId = selectCinema.value;
-
-    dateInput.disabled = !selectedRapId;
-    showtimeSelect.innerHTML = '<option value="">Chọn ngày trước</option>';
-    showtimeSelect.disabled = true;
-    document.getElementById("btn-book-ticket").disabled = true;
-
-    if (!selectedRapId) return;
-
-    dateInput.addEventListener("change", async () => {
-      const selectedDate = dateInput.value;
-      if (!selectedDate) return;
-
-      try {
-        let response;
-        try {
-          response = await fetch(
-            `${API_BASE_URL}/lichchieu?phimId=${movieId}&rapId=${selectedRapId}&ngay=${selectedDate}`
-          );
-        } catch (error) {
-          // Mock showtime data if API not available
-          console.log("Sử dụng mock data cho suất chiếu");
-          const mockShowtimes = [
-            { id: 1, gioChieu: "10:00" },
-            { id: 2, gioChieu: "13:00" },
-            { id: 3, gioChieu: "16:00" },
-            { id: 4, gioChieu: "19:00" },
-            { id: 5, gioChieu: "22:00" },
-          ];
-
-          showtimeSelect.innerHTML =
-            '<option value="">Chọn suất chiếu</option>';
-          mockShowtimes.forEach((suat) => {
-            const option = document.createElement("option");
-            option.value = suat.id;
-            option.textContent = suat.gioChieu;
-            showtimeSelect.appendChild(option);
-          });
-
-          showtimeSelect.disabled = false;
-          setupBookingButton();
-          return;
-        }
-
-        if (response && response.ok) {
-          const showtimes = await response.json();
-
-          showtimeSelect.innerHTML =
-            '<option value="">Chọn suất chiếu</option>';
-          if (showtimes.length === 0) {
-            showtimeSelect.innerHTML = `<option value="">Không có suất chiếu</option>`;
-            showtimeSelect.disabled = true;
-            return;
-          }
-
-          showtimes.forEach((suat) => {
-            const option = document.createElement("option");
-            option.value = suat.id;
-            option.textContent = suat.gioChieu;
-            showtimeSelect.appendChild(option);
-          });
-
-          showtimeSelect.disabled = false;
-          setupBookingButton();
-        }
-      } catch (error) {
-        console.error("Lỗi lấy suất chiếu:", error);
-      }
-    });
-  });
+    if (apiResponse.code === 1000 && apiResponse.result) {
+      return apiResponse.result; // Trả về mảng showtimes
+    } else {
+      throw new Error(apiResponse.message || "Không thể lấy suất chiếu");
+    }
+  } catch (error) {
+    console.error("Error fetching showtimes:", error);
+    showModal("error-modal", "Không thể tải suất chiếu. Vui lòng thử lại sau.");
+    return [];
+  }
 }
 
-function setupBookingButton() {
-  const showtimeSelect = document.getElementById("showtime-select");
-  const bookButton = document.getElementById("btn-book-ticket");
+// Hàm lấy ngày chiếu
+async function loadDates(movieId) {
+  dateSelect.innerHTML = '<option value="">Đang tải ngày chiếu...</option>';
+  dateSelect.disabled = true;
 
-  showtimeSelect.addEventListener("change", () => {
-    bookButton.disabled = !showtimeSelect.value;
+  try {
+    availableDates = await fetchScheduleDates(movieId);
+
+    dateSelect.innerHTML = '<option value="">Chọn ngày</option>';
+
+    if (availableDates && availableDates.length > 0) {
+      availableDates.forEach((date) => {
+        const option = document.createElement("option");
+        option.value = date;
+        option.textContent = formatDateForDisplay(date);
+        dateSelect.appendChild(option);
+      });
+      dateSelect.disabled = false;
+    } else {
+      dateSelect.innerHTML = '<option value="">Không có lịch chiếu</option>';
+    }
+  } catch (error) {
+    console.error("Error loading dates:", error);
+    dateSelect.innerHTML = '<option value="">Lỗi khi tải ngày chiếu</option>';
+  }
+}
+
+// Hàm lấy suất chiếu
+async function loadShowtimes(movieId, date) {
+  showtimeSelect.innerHTML = '<option value="">Đang tải suất chiếu...</option>';
+  showtimeSelect.disabled = true;
+
+  try {
+    availableShowtimes = await fetchShowtimes(movieId, date);
+
+    showtimeSelect.innerHTML = '<option value="">Chọn suất</option>';
+
+    if (availableShowtimes && availableShowtimes.length > 0) {
+      // Group showtimes by cinema if the API returns cinema info
+      // Assuming the API returns an array of showtime objects
+      availableShowtimes.forEach((showtime) => {
+        const option = document.createElement("option");
+        // Adjust this based on your API response structure
+        option.value = showtime.id || showtime.time || showtime;
+        option.textContent = showtime.time || showtime.gioChieu || showtime;
+        showtimeSelect.appendChild(option);
+      });
+      showtimeSelect.disabled = false;
+    } else {
+      showtimeSelect.innerHTML =
+        '<option value="">Không có suất chiếu</option>';
+    }
+  } catch (error) {
+    console.error("Error loading showtimes:", error);
+    showtimeSelect.innerHTML =
+      '<option value="">Lỗi khi tải suất chiếu</option>';
+  }
+}
+
+// Form validation and enable/disable logic
+function validateBookingForm() {
+  const movieSelected = movieId !== "";
+  const cinemaSelected = cinemaSelect.value !== "";
+  const dateSelected = dateSelect.value !== "";
+  const showtimeSelected = showtimeSelect.value !== "";
+
+  bookButton.disabled = !(
+    movieSelected &&
+    cinemaSelected &&
+    dateSelected &&
+    showtimeSelected
+  );
+}
+
+// Setup booking form event listeners
+function setupBookingForm() {
+  // Đảm bảo elements tồn tại
+  if (!cinemaSelect || !dateSelect || !showtimeSelect || !bookButton) {
+    console.error("Missing required elements for booking form");
+    return;
+  }
+
+  // Tạo options cho cinema select
+  cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
+  cinemaSelect.disabled = false;
+
+  // Mock cinema data - replace with actual API call if you have cinema API
+  const cinemas = [
+    { id: 1, name: "Galaxy Nguyễn Du" },
+    { id: 2, name: "Galaxy Đà Nẵng" },
+    { id: 3, name: "Galaxy Kinh Dương Vương" },
+  ];
+
+  cinemas.forEach((cinema) => {
+    const option = document.createElement("option");
+    option.value = cinema.name; // Sử dụng tên rạp làm value
+    option.textContent = cinema.name;
+    cinemaSelect.appendChild(option);
   });
 
-  bookButton.addEventListener("click", () => {
-    const movieTitle = document.getElementById("movie-title").textContent;
-    const cinemaName =
-      document.getElementById("cinema-select").options[
-        document.getElementById("cinema-select").selectedIndex
-      ].text;
-    const selectedDate = document.getElementById("date-select").value;
-    const selectedTime =
-      document.getElementById("showtime-select").options[
-        document.getElementById("showtime-select").selectedIndex
-      ].text;
+  cinemaSelect.dispatchEvent(new Event("change"));
 
-    alert(
-      `Đặt vé thành công!\nPhim: ${movieTitle}\nRạp: ${cinemaName}\nNgày: ${selectedDate}\nSuất: ${selectedTime}`
+  // Event listeners
+  cinemaSelect.addEventListener("change", async function () {
+    console.log(
+      "Cinema changed to:",
+      this.value,
+      "Text:",
+      this.options[this.selectedIndex].text
     );
 
-    // Uncomment if you have booking page
-    // window.location.href = '/html/datve.html';
+    if (this.value && movieId) {
+      await loadDates(movieId);
+    } else {
+      dateSelect.innerHTML =
+        '<option value="">Vui lòng chọn rạp trước</option>';
+      dateSelect.disabled = true;
+      showtimeSelect.innerHTML =
+        '<option value="">Vui lòng chọn ngày trước</option>';
+      showtimeSelect.disabled = true;
+    }
+    validateBookingForm();
   });
+
+  dateSelect.addEventListener("change", async function () {
+    const selectedDate = this.value;
+    console.log("Date changed to:", selectedDate);
+
+    if (movieId && selectedDate) {
+      await loadShowtimes(movieId, selectedDate);
+    } else {
+      showtimeSelect.innerHTML =
+        '<option value="">Vui lòng chọn ngày trước</option>';
+      showtimeSelect.disabled = true;
+    }
+
+    validateBookingForm();
+  });
+
+  showtimeSelect.addEventListener("change", function () {
+    console.log("Showtime changed to:", this.value);
+    validateBookingForm();
+  });
+
+  bookButton.addEventListener("click", async function () {
+    console.log("Book button clicked!");
+
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      showModal(
+        "error-modal",
+        "Vui lòng đăng nhập trước khi thực hiện đặt phim"
+      );
+      return;
+    }
+
+    const selectedMovie = currentMovieDetails;
+    const selectedCinema = cinemaSelect.value; // Lấy value trực tiếp thay vì text
+    const selectedDate = dateSelect.value;
+    const selectedShowtime = showtimeSelect.value;
+
+    console.log("Booking data:", {
+      movie: selectedMovie?.tenphim || selectedMovie?.tenPhim,
+      cinema: selectedCinema,
+      date: selectedDate,
+      showtime: selectedShowtime,
+    });
+
+    if (selectedMovie && selectedCinema && selectedDate && selectedShowtime) {
+      // Chuẩn bị dữ liệu để chuyển sang trang booking
+      const movieDataForBooking = {
+        title: selectedMovie.tenphim || selectedMovie.tenPhim,
+        date: formatDateForDisplay(selectedDate),
+        time: selectedShowtime,
+        cinema: selectedCinema,
+        movieId: selectedMovie.idPhim,
+        movieDetails: selectedMovie,
+      };
+
+      // Lưu vào localStorage
+      localStorage.setItem(
+        "selectedMovieData",
+        JSON.stringify(movieDataForBooking)
+      );
+
+      console.log("Đã lưu dữ liệu phim vào localStorage:", movieDataForBooking);
+
+      // Chuyển hướng đến trang booking
+      window.location.href = "/html/datcho.html";
+    } else {
+      showModal(
+        "error-modal",
+        "Vui lòng chọn đầy đủ thông tin trước khi đặt vé!"
+      );
+    }
+  });
+
+  // Gọi validateBookingForm ban đầu
+  validateBookingForm();
 }
 
+// Hiện phim liên quan
 async function loadRelatedMovies(currentMovieId) {
   const container = document.getElementById("related-movies-grid");
   if (!container) return;
@@ -390,7 +493,8 @@ async function loadRelatedMovies(currentMovieId) {
     const response = await fetch(MOVIES_ENDPOINT);
     if (!response.ok) throw new Error("Không thể tải phim liên quan");
 
-    const allMovies = (await response.json()).result;
+    const apiResponse = await response.json();
+    const allMovies = apiResponse.result || apiResponse;
 
     // Lọc ra những phim khác (trừ phim hiện tại)
     const relatedMovies = allMovies
@@ -411,17 +515,21 @@ async function loadRelatedMovies(currentMovieId) {
         <div class="movie-poster">
           ${
             movie.url_anh
-              ? `<img src="${movie.url_anh}" alt="${movie.tenphim}" style="width: 100%; height: 300px; object-fit: cover;" />`
+              ? `<img src="${movie.url_anh}" alt="${
+                  movie.tenphim || movie.tenPhim
+                }" style="width: 100%; height: 300px; object-fit: cover;" />`
               : `<div class="poster-placeholder" style="height: 300px; display: flex; align-items: center; justify-content: center; background: #f0f0f0;">
                 <i class="fas fa-film"></i>
                </div>`
           }
         </div>
         <div class="movie-info">
-          <h4>${movie.tenphim}</h4>
-          <p>${movie.quocgia || "Chưa rõ"} • ${movie.gioihandotuoi || 0}</p>
+          <h4>${movie.tenphim || movie.tenPhim}</h4>
+          <p>${movie.quocgia || movie.quocGia || "Chưa rõ"} • ${
+        movie.gioihandotuoi || movie.doTuoi || 0
+      }</p>
         </div>
-        <div class ="xem_chi-tiet">
+        <div class="xem_chi-tiet">
           <a href="/html/chitietphim.html?id=${
             movie.idPhim
           }" class="btn-sm">Xem chi tiết</a>
@@ -437,8 +545,42 @@ async function loadRelatedMovies(currentMovieId) {
   }
 }
 
+// Update user menu display
+function updateUserMenuDisplay() {
+  console.log("sessionStorage content!", sessionStorage);
+  const token = sessionStorage.getItem("authToken");
+  const loginButton = document.querySelector(".btn-login");
+  const registerButton = document.querySelector(".btn-register");
+  const userMenu = document.querySelector(".user-menu");
+
+  if (token) {
+    if (loginButton) loginButton.style.display = "none";
+    if (registerButton) registerButton.style.display = "none";
+    if (userMenu) userMenu.style.display = "flex";
+
+    // Hiện ảnh nếu có
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      const userAvatar = document.getElementById("userAvatar");
+      const nameUser = document.querySelector("#name_user");
+
+      if (user.avatar_url && userAvatar) {
+        userAvatar.src = user.avatar_url;
+      }
+      if (user.hoten && nameUser) {
+        nameUser.innerText = user.hoten;
+      }
+    }
+  } else {
+    // Chưa đăng nhập
+    if (loginButton) loginButton.style.display = "inline-block";
+    if (registerButton) registerButton.style.display = "inline-block";
+    if (userMenu) userMenu.style.display = "none";
+  }
+}
+
 // Error modal handlers
-document.addEventListener("DOMContentLoaded", () => {
+function setupErrorModal() {
   const closeModal = document.querySelector(".close");
   const errorModal = document.getElementById("error-modal");
 
@@ -453,28 +595,50 @@ document.addEventListener("DOMContentLoaded", () => {
       errorModal.style.display = "none";
     }
   };
-});
-//đăng ký/đăng nhập
-document.addEventListener("DOMContentLoaded", () => {
+}
+
+// Đăng ký/đăng nhập
+function setupAuthButtons() {
   const login_button = document.querySelector(".btn-login");
   const register_button = document.querySelector(".btn-register");
+  const account = document.querySelector(".user-menu");
+
   if (login_button) {
     login_button.addEventListener("click", () => {
       window.location.href = "/html/dangnhap.html";
     });
   }
+
   if (register_button) {
     register_button.addEventListener("click", () => {
       window.location.href = "/html/dangnhap.html";
     });
   }
-});
-//cuộn xuống phần đặt phim
-const scrollButton = document.getElementById("btn-book-movie");
-const targetSection = document.getElementById("booking-section");
-scrollButton.addEventListener("click", () => {
-  targetSection.scrollIntoView({
-    behavior: "smooth", // Hiệu ứng cuộn mượt mà
-    block: "start", // Cuộn sao cho đầu phần tử đích hiển thị ở đầu viewport
-  });
+  if (account) {
+    account.addEventListener("click", () => {
+      window.location.href = "/html/taikhoan.html";
+    });
+  }
+}
+
+// Cuộn xuống phần đặt phim
+function setupScrollButton() {
+  const scrollButton = document.getElementById("btn-book-movie");
+  const targetSection = document.getElementById("booking-section");
+
+  if (scrollButton && targetSection) {
+    scrollButton.addEventListener("click", () => {
+      targetSection.scrollIntoView({
+        behavior: "smooth", // Hiệu ứng cuộn mượt mà
+        block: "start", // Cuộn sao cho đầu phần tử đích hiển thị ở đầu viewport
+      });
+    });
+  }
+}
+
+// Initialize all components when DOM is loaded
+document.addEventListener("DOMContentLoaded", function () {
+  setupErrorModal();
+  setupAuthButtons();
+  setupScrollButton();
 });

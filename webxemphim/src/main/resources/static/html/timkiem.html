@@ -4,331 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tìm Kiếm Phim Rạp Chiếu</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-        color: #e0e0e0;
-        min-height: 100vh;
-        line-height: 1.6;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 40px;
-        padding: 40px 0;
-        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      }
-
-      .header h1 {
-        font-size: 3rem;
-        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 15px;
-        text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-      }
-
-      .header p {
-        font-size: 1.2rem;
-        color: #b0b0b0;
-        opacity: 0.9;
-      }
-
-      .search-container {
-        background: rgba(26, 26, 26, 0.9);
-        border-radius: 20px;
-        padding: 40px;
-        margin-bottom: 40px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 107, 53, 0.2);
-      }
-
-      .search-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 25px;
-        margin-bottom: 30px;
-      }
-
-      .search-group {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .search-group label {
-        color: #ff6b35;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .search-input,
-      .search-select {
-        padding: 15px 20px;
-        border: 2px solid #333;
-        border-radius: 12px;
-        background: rgba(15, 15, 15, 0.8);
-        color: #e0e0e0;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        outline: none;
-      }
-
-      .search-input:focus,
-      .search-select:focus {
-        border-color: #ff6b35;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
-        transform: translateY(-2px);
-      }
-
-      .search-input::placeholder {
-        color: #666;
-      }
-
-      .search-select option {
-        background: #1a1a1a;
-        color: #e0e0e0;
-      }
-
-      .search-actions {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        padding: 15px 30px;
-        border: none;
-        border-radius: 25px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .btn-primary {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-        color: white;
-        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-      }
-
-      .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
-      }
-
-      .btn-secondary {
-        background: transparent;
-        color: #ff6b35;
-        border: 2px solid #ff6b35;
-      }
-
-      .btn-secondary:hover {
-        background: #ff6b35;
-        color: white;
-        transform: translateY(-3px);
-      }
-
-      .results-container {
-        background: rgba(26, 26, 26, 0.9);
-        border-radius: 20px;
-        padding: 40px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 107, 53, 0.2);
-      }
-
-      .results-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid rgba(255, 107, 53, 0.3);
-      }
-
-      .results-header h2 {
-        color: #ff6b35;
-        font-size: 2rem;
-      }
-
-      .results-count {
-        color: #b0b0b0;
-        font-size: 1.1rem;
-      }
-
-      .movie-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 25px;
-      }
-
-      .movie-card {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 107, 53, 0.1);
-        cursor: pointer;
-      }
-
-      .movie-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(255, 107, 53, 0.3);
-        border-color: rgba(255, 107, 53, 0.5);
-      }
-
-      .movie-poster {
-        width: 100%;
-        height: 200px;
-        background: linear-gradient(45deg, #333, #555);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 1.2rem;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .movie-poster::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-          45deg,
-          rgba(255, 107, 53, 0.1),
-          rgba(255, 140, 66, 0.1)
-        );
-      }
-
-      .movie-info {
-        padding: 20px;
-      }
-
-      .movie-title {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #ff6b35;
-        margin-bottom: 10px;
-        line-height: 1.3;
-      }
-
-      .movie-details {
-        color: #b0b0b0;
-        font-size: 0.95rem;
-        margin-bottom: 8px;
-      }
-
-      .movie-genre {
-        display: inline-block;
-        background: rgba(255, 107, 53, 0.2);
-        color: #ff6b35;
-        padding: 4px 12px;
-        border-radius: 15px;
-        font-size: 0.85rem;
-        margin: 5px 5px 0 0;
-        border: 1px solid rgba(255, 107, 53, 0.3);
-      }
-
-      .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        color: #888;
-      }
-
-      .no-results h3 {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-        color: #ff6b35;
-      }
-
-      .loading {
-        text-align: center;
-        padding: 40px;
-        font-size: 1.2rem;
-        color: #ff6b35;
-      }
-
-      .loading::after {
-        content: "";
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #ff6b35;
-        border-radius: 50%;
-        border-top-color: transparent;
-        animation: spin 1s linear infinite;
-        margin-left: 10px;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          padding: 15px;
-        }
-
-        .header h1 {
-          font-size: 2rem;
-        }
-
-        .search-container {
-          padding: 25px;
-        }
-
-        .search-grid {
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
-
-        .search-actions {
-          flex-direction: column;
-        }
-
-        .btn {
-          width: 100%;
-        }
-      }
-    </style>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/timkiem.css" />
   </head>
   <body>
+    <header class="header">
+      <nav class="navbar">
+        <a href="/html/trangchu.html" class="nav-brand">
+          <i class="fas fa-film"></i>
+          <span>ChienCINEMA</span>
+        </a>
+        <ul class="nav-menu">
+          <li>
+            <a href="/html/trangchu.html" class="nav-link">Trang chủ</a>
+          </li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li>
+            <a href="/html/timkiem.html" class="nav-link active">Khám Phá</a>
+          </li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="/html/donate.html" class="nav-link">Donate</a></li>
+        </ul>
+        <div class="auth-container">
+          <!-- Trạng thái chưa đăng nhập -->
+          <div class="nav-actions" id="nav-actions">
+            <button class="btn-login">Đăng nhập</button>
+            <button class="btn-register">Đăng ký</button>
+          </div>
+          <!-- Trạng thái đã đăng nhập -->
+          <div class="user-menu" id="user-menu" style="display: none">
+            <img
+              src="/images/user-circle (1).png"
+              alt="Avatar"
+              class="user-avatar"
+              id="userAvatar"
+            />
+            <p class="name_user" id="name_user">ChienCINEMA</p>
+          </div>
+        </div>
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
     <div class="container">
-      <div class="header">
-        <h1>🎬 Cinema Search</h1>
-        <p>Tìm kiếm phim yêu thích tại rạp chiếu gần bạn</p>
-      </div>
-
       <div class="search-container">
         <div class="search-grid">
           <div class="search-group">
@@ -345,16 +67,17 @@
             <label for="genre">Thể loại</label>
             <select id="genre" class="search-select">
               <option value="">Tất cả thể loại</option>
-              <option value="action">Hành động</option>
-              <option value="comedy">Hài kịch</option>
-              <option value="drama">Chính kịch</option>
-              <option value="horror">Kinh dị</option>
-              <option value="romance">Lãng mạn</option>
-              <option value="sci-fi">Khoa học viễn tưởng</option>
-              <option value="thriller">Ly kỳ</option>
-              <option value="animation">Hoạt hình</option>
-              <option value="adventure">Phiêu lưu</option>
-              <option value="fantasy">Giả tưởng</option>
+              <option value="TL001">Hành động</option>
+              <option value="TL002">Khoa học viễn tưởng</option>
+              <option value="TL003">Hài hước</option>
+              <option value="TL004">Hoạt hình</option>
+              <option value="TL005">Tâm lý</option>
+              <option value="TL006">Kinh dị</option>
+              <option value="TL007">Phiêu lưu</option>
+              <option value="TL008">Tình cảm</option>
+              <option value="TL009">Gia đình</option>
+              <option value="TL010">Chính kịch</option>
+              <option value="TL011">Giật gân</option>
             </select>
           </div>
 
@@ -362,13 +85,6 @@
             <label for="year">Năm sản xuất</label>
             <select id="year" class="search-select">
               <option value="">Tất cả năm</option>
-              <option value="2024">2024</option>
-              <option value="2023">2023</option>
-              <option value="2022">2022</option>
-              <option value="2021">2021</option>
-              <option value="2020">2020</option>
-              <option value="2019">2019</option>
-              <option value="2018">2018</option>
             </select>
           </div>
 
@@ -376,14 +92,27 @@
             <label for="country">Quốc gia</label>
             <select id="country" class="search-select">
               <option value="">Tất cả quốc gia</option>
-              <option value="us">Hoa Kỳ</option>
-              <option value="korea">Hàn Quốc</option>
-              <option value="japan">Nhật Bản</option>
+              <option value="uk">Anh</option>
+              <option value="australia">Úc</option>
+              <option value="brazil">Brazil</option>
+              <option value="canada">Canada</option>
               <option value="china">Trung Quốc</option>
+              <option value="germany">Đức</option>
+              <option value="france">Pháp</option>
+              <option value="korea">Hàn Quốc</option>
+              <option value="us">Hoa Kỳ</option>
+              <option value="india">Ấn Độ</option>
+              <option value="italy">Ý</option>
+              <option value="japan">Nhật Bản</option>
+              <option value="mexico">Mexico</option>
+              <option value="nam_phi">Nam Phi</option>
+              <option value="russia">Nga</option>
+              <option value="spain">Tây Ban Nha</option>
               <option value="thailand">Thái Lan</option>
               <option value="vietnam">Việt Nam</option>
-              <option value="france">Pháp</option>
-              <option value="uk">Anh</option>
+              <option value="middle_east">Trung Đông</option>
+              <option value="asia">Châu Á (khác)</option>
+              <option value="europe">Châu Âu (khác)</option>
             </select>
           </div>
 
@@ -437,204 +166,6 @@
       </div>
     </div>
 
-    <script>
-      // Dữ liệu mẫu phim
-      const sampleMovies = [
-        {
-          title: "Avengers: Endgame",
-          year: "2019",
-          genre: "action",
-          country: "us",
-          director: "Anthony Russo, Joe Russo",
-          actors: "Robert Downey Jr., Chris Evans, Mark Ruffalo",
-          genres: ["Hành động", "Sci-Fi", "Phiêu lưu"],
-        },
-        {
-          title: "Parasite",
-          year: "2019",
-          genre: "thriller",
-          country: "korea",
-          director: "Bong Joon-ho",
-          actors: "Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong",
-          genres: ["Thriller", "Chính kịch"],
-        },
-        {
-          title: "Spider-Man: No Way Home",
-          year: "2021",
-          genre: "action",
-          country: "us",
-          director: "Jon Watts",
-          actors: "Tom Holland, Zendaya, Benedict Cumberbatch",
-          genres: ["Hành động", "Phiêu lưu", "Sci-Fi"],
-        },
-        {
-          title: "Spirited Away",
-          year: "2001",
-          genre: "animation",
-          country: "japan",
-          director: "Hayao Miyazaki",
-          actors: "Rumi Hiiragi, Miyu Irino, Mari Natsuki",
-          genres: ["Hoạt hình", "Giả tưởng", "Gia đình"],
-        },
-        {
-          title: "The Dark Knight",
-          year: "2008",
-          genre: "action",
-          country: "us",
-          director: "Christopher Nolan",
-          actors: "Christian Bale, Heath Ledger, Aaron Eckhart",
-          genres: ["Hành động", "Tội phạm", "Chính kịch"],
-        },
-        {
-          title: "Your Name",
-          year: "2016",
-          genre: "animation",
-          country: "japan",
-          director: "Makoto Shinkai",
-          actors: "Ryunosuke Kamiki, Mone Kamishiraishi",
-          genres: ["Hoạt hình", "Lãng mạn", "Siêu nhiên"],
-        },
-        {
-          title: "Joker",
-          year: "2019",
-          genre: "drama",
-          country: "us",
-          director: "Todd Phillips",
-          actors: "Joaquin Phoenix, Robert De Niro",
-          genres: ["Chính kịch", "Tội phạm", "Thriller"],
-        },
-        {
-          title: "Train to Busan",
-          year: "2016",
-          genre: "horror",
-          country: "korea",
-          director: "Yeon Sang-ho",
-          actors: "Gong Yoo, Jung Yu-mi, Ma Dong-seok",
-          genres: ["Kinh dị", "Hành động", "Thriller"],
-        },
-      ];
-
-      function searchMovies() {
-        const keyword = document.getElementById("keyword").value.toLowerCase();
-        const genre = document.getElementById("genre").value;
-        const year = document.getElementById("year").value;
-        const country = document.getElementById("country").value;
-        const actor = document.getElementById("actor").value.toLowerCase();
-        const director = document
-          .getElementById("director")
-          .value.toLowerCase();
-
-        // Hiển thị loading
-        document.getElementById("movieResults").innerHTML =
-          '<div class="loading">Đang tìm kiếm...</div>';
-
-        // Simulate API delay
-        setTimeout(() => {
-          let filteredMovies = sampleMovies.filter((movie) => {
-            const matchesKeyword =
-              !keyword || movie.title.toLowerCase().includes(keyword);
-            const matchesGenre = !genre || movie.genre === genre;
-            const matchesYear = !year || movie.year === year;
-            const matchesCountry = !country || movie.country === country;
-            const matchesActor =
-              !actor || movie.actors.toLowerCase().includes(actor);
-            const matchesDirector =
-              !director || movie.director.toLowerCase().includes(director);
-
-            return (
-              matchesKeyword &&
-              matchesGenre &&
-              matchesYear &&
-              matchesCountry &&
-              matchesActor &&
-              matchesDirector
-            );
-          });
-
-          displayResults(filteredMovies);
-        }, 800);
-      }
-
-      function displayResults(movies) {
-        const resultsContainer = document.getElementById("movieResults");
-        const resultsCount = document.getElementById("resultsCount");
-
-        resultsCount.textContent = `${movies.length} phim được tìm thấy`;
-
-        if (movies.length === 0) {
-          resultsContainer.innerHTML = `
-                    <div class="no-results">
-                        <h3>Không tìm thấy phim nào</h3>
-                        <p>Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
-                    </div>
-                `;
-          return;
-        }
-
-        const moviesHTML = movies
-          .map(
-            (movie) => `
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        🎬 ${movie.title}
-                    </div>
-                    <div class="movie-info">
-                        <div class="movie-title">${movie.title}</div>
-                        <div class="movie-details">📅 Năm: ${movie.year}</div>
-                        <div class="movie-details">🎭 Đạo diễn: ${
-                          movie.director
-                        }</div>
-                        <div class="movie-details">⭐ Diễn viên: ${
-                          movie.actors
-                        }</div>
-                        <div class="movie-genres">
-                            ${movie.genres
-                              .map(
-                                (genre) =>
-                                  `<span class="movie-genre">${genre}</span>`
-                              )
-                              .join("")}
-                        </div>
-                    </div>
-                </div>
-            `
-          )
-          .join("");
-
-        resultsContainer.innerHTML = moviesHTML;
-      }
-
-      function clearSearch() {
-        document.getElementById("keyword").value = "";
-        document.getElementById("genre").value = "";
-        document.getElementById("year").value = "";
-        document.getElementById("country").value = "";
-        document.getElementById("actor").value = "";
-        document.getElementById("director").value = "";
-
-        document.getElementById("movieResults").innerHTML = `
-                <div class="no-results">
-                    <h3>Chưa có kết quả tìm kiếm</h3>
-                    <p>Vui lòng nhập thông tin tìm kiếm và nhấn nút "Tìm kiếm" để xem kết quả</p>
-                </div>
-            `;
-        document.getElementById("resultsCount").textContent =
-          "0 phim được tìm thấy";
-      }
-
-      // Thêm sự kiện Enter để tìm kiếm
-      document.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          searchMovies();
-        }
-      });
-
-      // Load một số phim mẫu khi trang được tải
-      window.addEventListener("load", function () {
-        setTimeout(() => {
-          displayResults(sampleMovies.slice(0, 4));
-        }, 1000);
-      });
-    </script>
+    <script src="/js/timkiem.js"></script>
   </body>
 </html>

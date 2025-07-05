@@ -11,26 +11,41 @@
     />
   </head>
   <body>
+    <!-- Header -->
     <header class="header">
       <nav class="navbar">
         <a href="/html/trangchu.html" class="nav-brand">
           <i class="fas fa-film"></i>
-          ChienCINEMA
+          <span>ChienCINEMA</span>
         </a>
-        <div class="nav-links">
-          <a href="/html/trangchu.html">Trang chủ</a>
-          <a href="#">Phim</a>
-          <a href="/html/timkiem.html">Khám Phá</a>
-          <a href="#">Khuyến mãi</a>
-          <a href="/html/donate.html">Donate</a>
+        <ul class="nav-menu">
+          <li>
+            <a href="/html/trangchu.html" class="nav-link active">Trang chủ</a>
+          </li>
+          <li><a href="#" class="nav-link">Phim</a></li>
+          <li><a href="/html/timkiem.html" class="nav-link">Khám Phá</a></li>
+          <li><a href="#" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="/html/donate.html" class="nav-link">Donate</a></li>
+        </ul>
+        <div class="auth-container">
+          <!-- Trạng thái chưa đăng nhập -->
+          <div class="nav-actions" id="nav-actions">
+            <button class="btn-login">Đăng nhập</button>
+            <button class="btn-register">Đăng ký</button>
+          </div>
+          <!-- Trạng thái đã đăng nhập -->
+          <div class="user-menu" id="user-menu" style="display: none">
+            <img
+              src="/images/user-circle (1).png"
+              alt="Avatar"
+              class="user-avatar"
+              id="userAvatar"
+            />
+            <p class="name_user" id="name_user">ChienCINEMA</p>
+          </div>
         </div>
-        <div class="user-menu">
-          <img
-            src="/images/user-circle (1).png"
-            alt="Avatar"
-            class="user-avatar"
-            id="user-avatar"
-          />
+        <div class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
         </div>
       </nav>
     </header>
@@ -69,12 +84,12 @@
             <img id="posterImage" src="" alt="Movie Poster" />
           </div>
           <div class="movie-details">
-            <h1 id="movieTitle">Avengers: Endgame</h1>
+            <h1 id="movieTitle">N/A</h1>
             <div class="movie-meta">
-              <span>📅 <span id="selectedDate">15/06/2025</span></span>
-              <span>🕒 <span id="selectedTime">19:30</span></span>
-              <span>🏛️ <span id="cinemaName">CineMax Vincom</span></span>
-              <span>🎬 <span id="roomName">Phòng 1</span></span>
+              <span>📅 <span id="selectedDate">N/A</span></span>
+              <span>🕒 <span id="selectedTime">N/A</span></span>
+              <span>🏛️ <span id="cinemaName">N/A</span></span>
+              <span>🎬 <span id="roomName">N/A</span></span>
             </div>
           </div>
         </div>

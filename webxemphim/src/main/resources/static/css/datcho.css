@@ -15,10 +15,8 @@ body {
 .header {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 1000;
 }
 
@@ -27,7 +25,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  margin: 0 auto;
+  min-height: 70px; /* Thêm min-height */
+  width: 100%; /* Đảm bảo full width */
 }
 
 .nav-brand {
@@ -39,6 +38,7 @@ body {
   color: #ff6b35;
   text-decoration: none;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .nav-brand:hover {
@@ -49,34 +49,124 @@ body {
   font-size: 2rem;
 }
 
-.nav-links {
+.nav-menu {
   display: flex;
+  list-style: none;
   gap: 2rem;
-  align-items: center;
 }
 
-.nav-links a {
+.nav-link {
   color: #fff;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: #ff6b35;
-}
-
-.user-menu {
+  transition: all 0.3s ease;
   position: relative;
 }
 
+.nav-link:hover,
+.nav-link.active {
+  color: #ff6b35;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #ff6b35;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* AUTH CONTAINER */
+.auth-container {
+  display: flex;
+  align-items: center;
+  min-width: 200px; /* Thêm min-width */
+}
+
+/* NAV ACTIONS - Trạng thái chưa đăng nhập */
+.nav-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-login,
+.btn-register {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-login {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #ff6b35;
+}
+
+.btn-login:hover {
+  background: #ff6b35;
+  color: #fff;
+}
+
+.btn-register {
+  background: #ff6b35;
+  color: #fff;
+}
+
+.btn-register:hover {
+  background: #e55a2b;
+  transform: translateY(-2px);
+}
+
+/* USER MENU - Trạng thái đã đăng nhập */
+.user-menu {
+  position: relative !important;
+  /*display: flex !important;*/
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  white-space: nowrap !important; /* Quan trọng */
+}
+
+.user-menu:hover {
+  background: rgba(255, 107, 53, 0.1);
+}
+
 .user-avatar {
-  width: 45px;
-  height: 45px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   border: 2px solid #ff6b35;
-  cursor: pointer;
   object-fit: cover;
+  flex-shrink: 0 !important; /* Không cho co lại */
+}
+
+.name_user {
+  color: #ff6b35 !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important; /* Không xuống hàng */
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .container {

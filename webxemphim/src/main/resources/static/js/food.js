@@ -615,15 +615,15 @@ async function processPayment() {
       throw new Error(errorMessage);
     }
     const paymentRequest = {
-        idve: bookingResult.message,
-        amount: bookingData.totalPrice,
-        orderInfo: `Thanh toan ve xem phim ${
-          bookingData.movieTitle
-        } - ${bookingData.selectedSeats.join(", ")}`,
-        bankCode: selectedPayment.value === "" ? "" : selectedPayment.value, // Empty for VNPay gateway selection
-        locale: "vn",
-        orderType: "billpayment",
-      };
+      idve: bookingResult.message,
+      amount: bookingData.totalPrice,
+      orderInfo: `Thanh toan ve xem phim ${
+        bookingData.movieTitle
+      } - ${bookingData.selectedSeats.join(", ")}`,
+      bankCode: selectedPayment.value === "" ? "" : selectedPayment.value, // Empty for VNPay gateway selection
+      locale: "vn",
+      orderType: "billpayment",
+    };
     console.log("Payment request data:", paymentRequest);
     const paymentResponse = await fetch(
       "http://localhost:8080/api/payment/vnpay/create",
@@ -1110,6 +1110,28 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".user-menu").style.display = "none";
     alert("Bạn chưa đăng nhập, vui lòng đăng nhập trước khi truy cập trang");
     window.location.href = "/html/trangchu.html";
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const login_button = document.querySelector(".btn-login");
+  const register_button = document.querySelector(".btn-register");
+  const account = document.querySelector(".user-menu");
+
+  if (login_button) {
+    login_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+
+  if (register_button) {
+    register_button.addEventListener("click", () => {
+      window.location.href = "/html/dangnhap.html";
+    });
+  }
+  if (account) {
+    account.addEventListener("click", () => {
+      window.location.href = "/html/taikhoan.html";
+    });
   }
 });
 // Thêm cleanup khi user rời khỏi trang

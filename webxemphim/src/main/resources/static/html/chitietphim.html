@@ -19,15 +19,30 @@
           <span>ChienCINEMA</span>
         </a>
         <ul class="nav-menu">
-          <li><a href="/html/trangchu.html" class="nav-link">Trang chủ</a></li>
-          <li><a href="#" class="nav-link active">Phim</a></li>
+          <li>
+            <a href="/html/trangchu.html" class="nav-link active">Trang chủ</a>
+          </li>
+          <li><a href="#" class="nav-link">Phim</a></li>
           <li><a href="/html/timkiem.html" class="nav-link">Khám Phá</a></li>
           <li><a href="#" class="nav-link">Khuyến mãi</a></li>
           <li><a href="/html/donate.html" class="nav-link">Donate</a></li>
         </ul>
-        <div class="nav-actions">
-          <button class="btn-login">Đăng nhập</button>
-          <button class="btn-register">Đăng ký</button>
+        <div class="auth-container">
+          <!-- Trạng thái chưa đăng nhập -->
+          <div class="nav-actions" id="nav-actions">
+            <button class="btn-login">Đăng nhập</button>
+            <button class="btn-register">Đăng ký</button>
+          </div>
+          <!-- Trạng thái đã đăng nhập -->
+          <div class="user-menu" id="user-menu" style="display: none">
+            <img
+              src="/images/user-circle (1).png"
+              alt="Avatar"
+              class="user-avatar"
+              id="userAvatar"
+            />
+            <p class="name_user" id="name_user">ChienCINEMA</p>
+          </div>
         </div>
         <div class="mobile-menu-toggle">
           <i class="fas fa-bars"></i>
@@ -185,12 +200,16 @@
             <div class="form-group">
               <label>Chọn rạp</label>
               <select id="cinema-select">
-                <option value="">Chọn rạp chiếu</option>
+                <option value="">Galaxy Nguyễn Du</option>
+                <option value="">Galaxy Đà Nẵng</option>
+                <option value="">Galaxy Kinh Dương Vương</option>
               </select>
             </div>
             <div class="form-group">
               <label>Chọn ngày</label>
-              <input type="date" id="date-select" />
+              <select id="date-select" disabled>
+                <option value="">Vui lòng chọn rạp trước</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Chọn suất chiếu</label>
@@ -217,17 +236,20 @@
     </main>
 
     <!-- Error Modal -->
-    <div id="error-modal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Thông báo lỗi</h3>
-        <p id="error-message"></p>
-        <button
-          class="btn-back-home"
-          onclick="window.location.href='/html/trangchu.html'"
-        >
-          Về trang chủ
-        </button>
+    <div class="modal" id="error-modal">
+      <div class="modal-content error">
+        <div class="modal-header">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Lỗi!</h3>
+        </div>
+        <div class="modal-body">
+          <p id="errorMessage">Có lỗi xảy ra!</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal" onclick="closeModal('error-modal')">
+            Đóng
+          </button>
+        </div>
       </div>
     </div>
 
