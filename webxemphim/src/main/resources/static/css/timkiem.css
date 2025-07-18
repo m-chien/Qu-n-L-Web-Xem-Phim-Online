@@ -324,7 +324,7 @@ body {
 
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
   gap: 25px;
 }
 
@@ -343,9 +343,17 @@ body {
   border-color: rgba(255, 107, 53, 0.5);
 }
 
+.movie-poster img {
+  max-width: 100%; /* Ảnh sẽ chiếm tối đa 80% chiều rộng của khung poster */
+  max-height: 150%; /* Ảnh sẽ chiếm tối đa 80% chiều cao của khung poster */
+  object-fit: contain; /* Đảm bảo ảnh co giãn mà không bị cắt xén và giữ tỷ lệ khung hình */
+  display: block; /* Loại bỏ khoảng trắng thừa bên dưới ảnh (nếu có) */ /* Căn giữa ảnh trong khung nếu ảnh nhỏ hơn khung */
+}
+
+/* Giữ nguyên CSS của .movie-poster hoặc điều chỉnh nếu cần */
 .movie-poster {
-  width: 100%;
-  height: 200px;
+  width: 100%; /* Hoặc một giá trị cố định nếu bạn muốn khung nhỏ hơn */
+  height: 350px; /* Giữ nguyên chiều cao khung, nhưng ảnh bên trong sẽ nhỏ hơn */
   background: linear-gradient(45deg, #333, #555);
   display: flex;
   align-items: center;
@@ -461,4 +469,127 @@ body {
   .btn {
     width: 100%;
   }
+}
+.pagination {
+  margin-top: 25px;
+  text-align: center;
+}
+.page-btn {
+  font-size: 18px;
+  border-radius: 15px;
+  margin: 0 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid #ff6b35;
+  background: rgba(255, 107, 53, 0.2);
+  color: white;
+}
+.page-btn.active {
+  background-color: #ff6b35;
+  font-weight: bold;
+}
+/* Footer */
+.footer {
+  background: #0a0a0a;
+  border-top: 1px solid #333;
+  padding: 3rem 5rem;
+}
+
+.footer-content {
+  padding: 0px 120px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section h4 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff6b35;
+  margin-bottom: 1rem;
+}
+
+.footer-brand i {
+  font-size: 2rem;
+}
+
+.footer-section p {
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+  color: #999;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #ff6b35;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #333;
+  color: #fff;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background: #ff6b35;
+  transform: translateY(-3px);
+}
+
+.contact-info p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #ccc;
+}
+
+.contact-info i {
+  color: #ff6b35;
+  width: 20px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+}
+
+.footer-bottom p {
+  color: #666;
+  font-size: 0.9rem;
 }

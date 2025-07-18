@@ -1,78 +1,9 @@
-// Dữ liệu mẫu phim
-const sampleMovies = [
-  {
-    title: "Avengers: Endgame",
-    year: "2019",
-    genre: "action",
-    country: "us",
-    director: "Anthony Russo, Joe Russo",
-    actors: "Robert Downey Jr., Chris Evans, Mark Ruffalo",
-    genres: ["Hành động", "Sci-Fi", "Phiêu lưu"],
-  },
-  {
-    title: "Parasite",
-    year: "2019",
-    genre: "thriller",
-    country: "korea",
-    director: "Bong Joon-ho",
-    actors: "Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong",
-    genres: ["Thriller", "Chính kịch"],
-  },
-  {
-    title: "Spider-Man: No Way Home",
-    year: "2021",
-    genre: "action",
-    country: "us",
-    director: "Jon Watts",
-    actors: "Tom Holland, Zendaya, Benedict Cumberbatch",
-    genres: ["Hành động", "Phiêu lưu", "Sci-Fi"],
-  },
-  {
-    title: "Spirited Away",
-    year: "2001",
-    genre: "animation",
-    country: "japan",
-    director: "Hayao Miyazaki",
-    actors: "Rumi Hiiragi, Miyu Irino, Mari Natsuki",
-    genres: ["Hoạt hình", "Giả tưởng", "Gia đình"],
-  },
-  {
-    title: "The Dark Knight",
-    year: "2008",
-    genre: "action",
-    country: "us",
-    director: "Christopher Nolan",
-    actors: "Christian Bale, Heath Ledger, Aaron Eckhart",
-    genres: ["Hành động", "Tội phạm", "Chính kịch"],
-  },
-  {
-    title: "Your Name",
-    year: "2016",
-    genre: "animation",
-    country: "japan",
-    director: "Makoto Shinkai",
-    actors: "Ryunosuke Kamiki, Mone Kamishiraishi",
-    genres: ["Hoạt hình", "Lãng mạn", "Siêu nhiên"],
-  },
-  {
-    title: "Joker",
-    year: "2019",
-    genre: "drama",
-    country: "us",
-    director: "Todd Phillips",
-    actors: "Joaquin Phoenix, Robert De Niro",
-    genres: ["Chính kịch", "Tội phạm", "Thriller"],
-  },
-  {
-    title: "Train to Busan",
-    year: "2016",
-    genre: "horror",
-    country: "korea",
-    director: "Yeon Sang-ho",
-    actors: "Gong Yoo, Jung Yu-mi, Ma Dong-seok",
-    genres: ["Kinh dị", "Hành động", "Thriller"],
-  },
-];
+function loadinf() {
+  const page = 1;
+  const limit = 10;
+  searchMovies(1, limit);
+}
+//hiển thị năm từ now to 2000
 document.addEventListener("DOMContentLoaded", () => {
   const yearSelect = document.getElementById("year");
 
@@ -86,87 +17,136 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 //tìm kiếm
-function searchMovies() {
-  const keyword = document.getElementById("keyword").value.toLowerCase();
-  const genre = document.getElementById("genre").value;
-  const year = document.getElementById("year").value;
-  const country = document.getElementById("country").value;
-  const actor = document.getElementById("actor").value.toLowerCase();
-  const director = document.getElementById("director").value.toLowerCase();
+async function searchMovies(page = 1) {
+  try {
+    const movieGrid = document.querySelector(".movie-grid");
+    if (movieGrid) {
+      movieGrid.style.gridTemplateColumns =
+        "repeat(auto-fill, minmax(300px, 1fr))";
+    }
+    const token = sessionStorage.getItem("authToken");
+    const userJson = JSON.parse(sessionStorage.getItem("user"));
+    const user = userJson ? JSON.parse(userJson) : null;
+    const keyword = document.getElementById("keyword").value.toLowerCase();
+    const genre = document.getElementById("genre").value;
+    const year = document.getElementById("year").value;
+    const country = document.getElementById("country").value;
+    const actor = document.getElementById("actor").value.toLowerCase();
+    const director = document.getElementById("director").value.toLowerCase();
+    const searchMovies = {
+      tenPhim: keyword,
+      theLoai: genre,
+      nam: year,
+      daodien: director,
+      dienvien: actor,
+      quocGia: country,
+      iduser: user?.idUser || "",
+    };
 
-  // Hiển thị loading
-  document.getElementById("movieResults").innerHTML =
-    '<div class="loading">Đang tìm kiếm...</div>';
+    // Hiển thị loading
+    document.getElementById("movieResults").innerHTML =
+      '<div class="loading">Đang tìm kiếm...</div>';
 
-  // Simulate API delay
-  setTimeout(() => {
-    let filteredMovies = sampleMovies.filter((movie) => {
-      const matchesKeyword =
-        !keyword || movie.title.toLowerCase().includes(keyword);
-      const matchesGenre = !genre || movie.genre === genre;
-      const matchesYear = !year || movie.year === year;
-      const matchesCountry = !country || movie.country === country;
-      const matchesActor = !actor || movie.actors.toLowerCase().includes(actor);
-      const matchesDirector =
-        !director || movie.director.toLowerCase().includes(director);
+    const headers = {
+      "Content-Type": "application/json",
+    };
 
-      return (
-        matchesKeyword &&
-        matchesGenre &&
-        matchesYear &&
-        matchesCountry &&
-        matchesActor &&
-        matchesDirector
-      );
+    // Nếu có token thì thêm Authorization header
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(
+      `http://localhost:8080/api/movies/search/${page}`,
+      {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(searchMovies),
+      }
+    );
+
+    if (response.ok) {
+      const searchResult = await response.json();
+      console.log("search API Response:", searchResult);
+
+      setTimeout(() => {
+        const filteredMovies = searchResult.result.dataList;
+        const currentPage = searchResult.result.currentPage;
+        const totalPages = searchResult.result.totalPages;
+        const totalItems = searchResult.result.totalItems;
+        displayResults(filteredMovies, totalItems);
+        renderPagination(currentPage, totalPages);
+      }, 800);
+    } else {
+      const errorText = await response.text(); // fallback: đọc lỗi dạng text
+      console.error("Server error:", errorText);
+      return;
+    }
+  } catch (error) {
+    console.error("Error loading movies:", error);
+  }
+}
+function renderPagination(currentPage, totalPages) {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = ""; // Xóa phân trang cũ
+
+  if (totalPages <= 1) return; // Không cần phân trang nếu chỉ có 1 trang
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.classList.add("page-btn");
+    if (i === currentPage) {
+      btn.classList.add("active");
+    }
+    btn.addEventListener("click", () => {
+      searchMovies(i); // Gọi lại searchMovies với trang mới
     });
-
-    displayResults(filteredMovies);
-  }, 800);
+    pagination.appendChild(btn);
+  }
 }
 
-function displayResults(movies) {
+function displayResults(movies, totalItems) {
   const resultsContainer = document.getElementById("movieResults");
   const resultsCount = document.getElementById("resultsCount");
 
-  resultsCount.textContent = `${movies.length} phim được tìm thấy`;
+  resultsCount.textContent = `${totalItems} phim được tìm thấy`;
 
   if (movies.length === 0) {
     resultsContainer.innerHTML = `
-                    <div class="no-results">
-                        <h3>Không tìm thấy phim nào</h3>
-                        <p>Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
-                    </div>
-                `;
+      <div class="no-results">
+        <h3>Không tìm thấy phim nào</h3>
+        <p>Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
+      </div>`;
     return;
   }
 
   const moviesHTML = movies
     .map(
       (movie) => `
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        🎬 ${movie.title}
-                    </div>
-                    <div class="movie-info">
-                        <div class="movie-title">${movie.title}</div>
-                        <div class="movie-details">📅 Năm: ${movie.year}</div>
-                        <div class="movie-details">🎭 Đạo diễn: ${
-                          movie.director
-                        }</div>
-                        <div class="movie-details">⭐ Diễn viên: ${
-                          movie.actors
-                        }</div>
-                        <div class="movie-genres">
-                            ${movie.genres
-                              .map(
-                                (genre) =>
-                                  `<span class="movie-genre">${genre}</span>`
-                              )
-                              .join("")}
-                        </div>
-                    </div>
-                </div>
-            `
+      <div class="movie-card" onclick="window.location.href='/html/chitietphim.html?id=${
+        movie.idPhim
+      }'" style="cursor: pointer;">
+        <div class="movie-poster">
+          <img src="http://localhost:8080${movie.urlPoster}" alt="${
+        movie.tenPhim
+      }" />
+        </div>
+        <div class="movie-info">
+          <div class="movie-title">${movie.tenPhim}</div>
+          <div class="movie-details">📅 Năm: ${movie.ngayPhatHanh}</div>
+          <div class="movie-details">🎭 Đạo diễn: ${movie.daoDien}</div>
+          <div class="movie-details">⭐ Diễn viên: ${(
+            movie.tenDienVien || []
+          ).join(", ")}</div>
+          <div class="movie-genres">
+            ${(movie.tenTheLoai || [])
+              .map((genre) => `<span class="movie-genre">${genre}</span>`)
+              .join("")}
+          </div>
+        </div>
+      </div>
+    `
     )
     .join("");
 
@@ -187,20 +167,18 @@ function clearSearch() {
                 </div>
             `;
   document.getElementById("resultsCount").textContent = "0 phim được tìm thấy";
+  const movieGrid = document.querySelector(".movie-grid");
+  if (movieGrid) {
+    movieGrid.style.gridTemplateColumns =
+      "repeat(auto-fill, minmax(1000px, 1fr))";
+  }
 }
 
 // Thêm sự kiện Enter để tìm kiếm
 document.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
-    searchMovies();
+    searchMovies(1);
   }
-});
-
-// Load một số phim mẫu khi trang được tải
-window.addEventListener("load", function () {
-  setTimeout(() => {
-    displayResults(sampleMovies.slice(0, 4));
-  }, 1000);
 });
 document.addEventListener("DOMContentLoaded", () => {
   const login_button = document.querySelector(".btn-login");

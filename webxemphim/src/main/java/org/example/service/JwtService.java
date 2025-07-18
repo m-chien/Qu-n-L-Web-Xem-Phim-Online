@@ -5,9 +5,13 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.example.dto.request.IntroSpectRequest;
 import org.example.dto.request.IntroSpectResponse;
+import org.example.exception.UnauthorizedException;
+import org.example.model.nguoidung;
+import org.example.repository.nguoidungRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +22,13 @@ import java.util.Date;
 
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     @NonFinal
     @Value("${jwt.secretKey}")
     private String secretKey;
     private final long expirationMs = 3600000;
+    private final nguoidungRepository userRepository;
 
     public IntroSpectResponse introspect(IntroSpectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
@@ -77,5 +83,28 @@ public class JwtService {
         } catch (Exception e) {
             throw new RuntimeException("Không thể lấy thông tin user từ token");
         }
+    }
+    public Boolean check(String token, String iduser) throws ParseException, JOSEException {
+        // giải mã đoạn token được gửi về
+        IntroSpectRequest introSpectRequest = IntroSpectRequest.builder()
+                .token(token)
+                .build();
+
+        IntroSpectResponse introSpectResponse = introspect(introSpectRequest);
+        //giải mã xong, kiểm tra nếu còn hạn thì làm tiếp không thì sai
+        if (!introSpectResponse.isValid()) {
+            throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn");
+        }
+        //giải mã token ra để lấy email
+        String userEmail = extractemail(token);
+
+        // tìm người dùng từ email đã giải mã
+        nguoidung tokenUser = userRepository.findByEmail(userEmail);
+
+        // kiểm tra xem c đúng là người dùng này cập nhật thông tin của mình hay của người khác
+        if (!tokenUser.getIdUser().equals(iduser)) {
+            throw new RuntimeException("Bạn không có quyền truy cập thông tin của người dùng khác trên ứng dụng của mình");
+        }
+        return true;
     }
 }

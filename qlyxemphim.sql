@@ -347,7 +347,39 @@ INSERT INTO Phim (idPhim, tenphim, DaoDien, thoiluong, ngayphathanh, gioihandotu
 ('P0015', N'Dính "Thính" Là Yêu', N'Kang Yi Kwan', 92, '2025-06-06', N'T13', N'Hàn Quốc', 123440, N'Đang chiếu', '/images/dinhthingialove.jpg', N'Hài tâm lý lãng mạn Hàn Quốc về tình yêu và “thính”.'),
 ('P0016', N'Doraemon: Nobita''s Art World Tales', N'Yukiyo Teramoto', 100, '2025-05-23', N'P', N'Nhật Bản', 5000000, N'Đang chiếu', '/images/doraemon_artworld.jpg', N'Chuyến phiêu lưu vào thế giới hội họa của Nobita và Doraemon.'),
 ('P0017', N'Mission: Impossible – The Final Reckoning', N'Christopher McQuarrie', 169, '2025-05-23', N'T16', N'Mỹ', 2607023, N'Đang chiếu', '/images/mi_final_reckoning.jpg', N'Thám hiểm những pha hành động nghẹt thở trong phần cuối cùng của chuỗi Mission Impossible.'),
-('P0018', N'Lilo & Stitch (Live‑Action)', N'Dean Fleischer Camp', 108, '2025-05-23', N'P', N'Mỹ', 1200324, N'Đang chiếu', '/images/lilo_stitch_live.jpg', N'Phiên bản chân thực đầy cảm xúc của tác phẩm gốc, đề cao ý nghĩa gia đình và “ohana”.');
+('P0018', N'Lilo & Stitch (Live‑Action)', N'Dean Fleischer Camp', 108, '2025-05-23', N'P', N'Mỹ', 1200324, N'Đang chiếu', '/images/lilo_stitch_live.jpg', N'Phiên bản chân thực đầy cảm xúc của tác phẩm gốc, đề cao ý nghĩa gia đình và “ohana”.'),
+('P0019', N'Thiên Thần Hộ Mệnh', N'Victor Vũ', 120, '2021-04-30', N'T16', N'Việt Nam', 950000, N'Đã chiếu', '/images/thienthanhomenh.jpg', N'Câu chuyện bí ẩn về thế giới của những người nổi tiếng và búp bê ma thuật.'),
+('P0020', N'Ròm', N'Trần Thanh Huy', 79, '2020-09-25', N'T18', N'Việt Nam', 700000, N'Đã chiếu', '/images/rom.jpg', N'Cuộc sống mưu sinh khắc nghiệt của cậu bé bán vé số.'),
+('P0021', N'Parasite', N'Bong Joon-ho', 132, '2019-05-30', N'T18', N'Hàn Quốc', 5000000, N'Đã chiếu', '/images/parasite.jpg', N'Gia đình nghèo tìm cách thâm nhập vào gia đình giàu có.'),
+('P0022', N'Train to Busan', N'Yeon Sang-ho', 118, '2016-07-20', N'T16', N'Hàn Quốc', 3500000, N'Đã chiếu', '/images/traintobusan.jpg', N'Cuộc chiến sinh tồn trên chuyến tàu đầy zombie.'),
+('P0023', N'Your Name.', N'Makoto Shinkai', 107, '2016-08-26', N'P', N'Nhật Bản', 4000000, N'Đã chiếu', '/images/yourname.jpg', N'Hai học sinh hoán đổi thân xác một cách bí ẩn.'),
+('P0024', N'Spirited Away', N'Hayao Miyazaki', 125, '2001-07-20', N'P', N'Nhật Bản', 6000000, N'Đã chiếu', '/images/spiritedaway.jpg', N'Cô bé Chihiro lạc vào thế giới linh hồn kỳ ảo.'),
+('P0025', N'Avengers: Endgame', N'Anthony Russo, Joe Russo', 181, '2019-04-26', N'T13', N'Mỹ', 8000000, N'Đã chiếu', '/images/endgame.jpg', N'Trận chiến cuối cùng của các siêu anh hùng chống lại Thanos.'),
+('P0026', N'Avatar: The Way of Water', N'James Cameron', 192, '2022-12-16', N'T13', N'Mỹ', 7000000, N'Đã chiếu', '/images/avatar2.jpg', N'Gia đình Sully đối mặt với hiểm nguy mới ở Pandora.'),
+('P0027', N'Top Gun: Maverick', N'Joseph Kosinski', 130, '2022-05-27', N'T13', N'Mỹ', 6500000, N'Đã chiếu', '/images/topgunmaverick.jpg', N'Pete Mitchell đối mặt với quá khứ và thử thách mới.'),
+('P0028', N'Joker', N'Todd Phillips', 122, '2019-10-04', N'T18', N'Mỹ', 4800000, N'Đã chiếu', '/images/joker.jpg', N'Sự trỗi dậy của tên tội phạm khét tiếng Joker.'),
+('P0029', N'Interstellar', N'Christopher Nolan', 169, '2014-11-07', N'T13', N'Mỹ', 5500000, N'Đã chiếu', '/images/interstellar.jpg', N'Hành trình vượt không gian để tìm kiếm hành tinh mới cho nhân loại.'),
+('P0030', N'Inception', N'Christopher Nolan', 148, '2010-07-16', N'T13', N'Mỹ', 4700000, N'Đã chiếu', '/images/inception.jpg', N'Đi sâu vào giấc mơ để đánh cắp thông tin.'),
+('P0031', N'The Matrix', N'Lana Wachowski, Lilly Wachowski', 136, '1999-03-31', N'T16', N'Mỹ', 5200000, N'Đã chiếu', '/images/matrix.jpg', N'Neo khám phá ra sự thật về thế giới ảo.'),
+('P0032', N'Pulp Fiction', N'Quentin Tarantino', 154, '1994-10-14', N'T18', N'Mỹ', 3800000, N'Đã chiếu', '/images/pulpfiction.jpg', N'Những câu chuyện đan xen của thế giới ngầm.'),
+('P0033', N'Forrest Gump', N'Robert Zemeckis', 142, '1994-07-06', N'T13', N'Mỹ', 6000000, N'Đã chiếu', '/images/forrestgump.jpg', N'Cuộc đời phi thường của một người đàn ông đơn giản.'),
+('P0034', N'The Shawshank Redemption', N'Frank Darabont', 142, '1994-09-23', N'T16', N'Mỹ', 7000000, N'Đã chiếu', '/images/shawshank.jpg', N'Hy vọng và sự kiên trì trong tù ngục.'),
+('P0035', N'The Godfather', N'Francis Ford Coppola', 175, '1972-03-24', N'T18', N'Mỹ', 6500000, N'Đã chiếu', '/images/godfather.jpg', N'Câu chuyện về gia đình mafia Corleone.'),
+('P0036', N'Lật Mặt 8: Săn Tiền', N'Lý Hải', 130, '2025-04-25', N'T16', N'Việt Nam', 0, N'Sắp chiếu', '/images/latmat8.jpg', N'Cuộc truy tìm kho báu đầy kịch tính.'),
+('P0037', N'Con Nhót Mót Chồng', N'Vũ Ngọc Đãng', 100, '2023-04-28', N'T13', N'Việt Nam', 1100000, N'Đã chiếu', '/images/connhotmotchong.jpg', N'Câu chuyện tình yêu và gia đình ấm áp.'),
+('P0038', N'Bỗng Dưng Trúng Số', N'Park Gyu-tae', 113, '2022-09-23', N'T13', N'Hàn Quốc', 1500000, N'Đã chiếu', '/images/bongdungtrungso.jpg', N'Hài hước về tấm vé số định mệnh xuyên biên giới.'),
+('P0039', N'Minions 3', N'Kyle Balda', 90, '2025-07-11', N'P', N'Mỹ', 0, N'Sắp chiếu', '/images/minions3.jpg', N'Những chú Minions trở lại với cuộc phiêu lưu mới đầy hài hước.'),
+('P0040', N'Frozen 3', N'Jennifer Lee', 105, '2025-11-26', N'P', N'Mỹ', 0, N'Sắp chiếu', '/images/frozen3.jpg', N'Elsa và Anna tiếp tục hành trình khám phá thế giới phép thuật.'),
+('P0041', N'Avatar 3', N'James Cameron', 190, '2025-12-19', N'T13', N'Mỹ', 0, N'Sắp chiếu', '/images/avatar3.jpg', N'Phần tiếp theo của thế giới Pandora.'),
+('P0042', N'Spider-Man: Beyond the Spider-Verse', N'Joaquim Dos Santos, Kemp Powers', 140, '2026-03-27', N'T13', N'Mỹ', 0, N'Sắp chiếu', '/images/spiderman_beyond.jpg', N'Miles Morales tiếp tục cuộc phiêu lưu đa vũ trụ.'),
+('P0043', N'The Batman - Part II', N'Matt Reeves', 160, '2026-10-02', N'T16', N'Mỹ', 0, N'Sắp chiếu', '/images/thebatman2.jpg', N'Batman đối mặt với những thử thách mới tại Gotham.'),
+('P0044', N'Chuyện Ma Gần Nhà 2', N'Trần Hữu Tấn', 95, '2025-08-08', N'T18', N'Việt Nam', 0, N'Sắp chiếu', '/images/chuyenmagannha2.jpg', N'Những câu chuyện kinh dị đô thị tiếp tục ám ảnh.'),
+('P0045', N'Đất Rừng Phương Nam 2', N'Nguyễn Quang Dũng', 120, '2025-09-05', N'P', N'Việt Nam', 0, N'Sắp chiếu', '/images/datrungphuongnam2.jpg', N'Cuộc phiêu lưu mới của bé An tại miền Tây sông nước.'),
+('P0046', N'Kẻ Ăn Hồn 2', N'Trần Hữu Tấn', 100, '2025-10-31', N'T16', N'Việt Nam', 0, N'Sắp chiếu', '/images/keanhon2.jpg', N'Phần tiếp theo của câu chuyện kinh dị dân gian.'),
+('P0047', N'The Lord of the Rings: The War of the Rohirrim', N'Kenji Kamiyama', 150, '2025-12-12', N'T13', N'Mỹ', 0, N'Sắp chiếu', '/images/lotr_rohirrim.jpg', N'Phim hoạt hình tiền truyện của Chúa tể những chiếc nhẫn.'),
+('P0048', N'Superman: Legacy', N'James Gunn', 150, '2025-07-11', N'T13', N'Mỹ', 0, N'Sắp chiếu', '/images/superman_legacy.jpg', N'Khởi đầu mới cho Người Đàn Ông Thép trong vũ trụ DC.'),
+('P0049', N'Fast X: Part 2', N'Louis Leterrier', 140, '2026-04-04', N'T13', N'Mỹ', 0, N'Sắp chiếu', '/images/fastx2.jpg', N'Phần cuối cùng của saga Fast & Furious.'),
+('P0050', N'How to Train Your Dragon 4', N'Dean DeBlois', 100, '2026-06-12', N'P', N'Mỹ', 0, N'Sắp chiếu', '/images/httyd4.jpg', N'Hiccup và Toothless trong cuộc phiêu lưu cuối cùng.');
 set dateformat ymd
 -- 11. Bảng danhgia
 INSERT INTO danhgia (idDanhGia, idUser, idPhim, diemdanhgia, ngaydanhgia, binhluan) VALUES
@@ -376,7 +408,56 @@ INSERT INTO dienvien  VALUES
 ('DV010', N'Quốc Anh', '1996-08-08', N'Việt Nam', N'Diễn viên trẻ.'),
 ('DV011', N'Bae Doona', '1979-10-11', N'Hàn Quốc', N'Diễn viên nổi tiếng quốc tế.'),
 ('DV012', N'Son Seok Koo', '1983-02-07', N'Hàn Quốc', N'Diễn viên đang lên với nhiều vai diễn ấn tượng.'),
-('DV013', N'Chang Ki Ha', '1982-02-20', N'Hàn Quốc', N'Ca sĩ, diễn viên, và MC truyền hình.');
+('DV013', N'Chang Ki Ha', '1982-02-20', N'Hàn Quốc', N'Ca sĩ, diễn viên, và MC truyền hình.'),
+('DV014', N'Tom Cruise', '1962-07-03', N'Mỹ', N'Ngôi sao hành động huyền thoại, nổi tiếng với loạt phim Mission: Impossible.'),
+('DV015', N'Rebecca Ferguson', '1983-10-19', N'Thụy Điển', N'Diễn viên tài năng, thường xuyên xuất hiện trong các phim hành động lớn.'),
+('DV016', N'Dwayne "The Rock" Johnson', '1972-05-02', N'Mỹ', N'Ngôi sao hành động hàng đầu, nổi tiếng với các vai diễn cơ bắp.'),
+('DV017', N'Jason Statham', '1967-07-26', N'Anh', N'Diễn viên phim hành động với phong cách mạnh mẽ.'),
+('DV018', N'Gal Gadot', '1985-04-30', N'Israel', N'Nổi tiếng với vai Wonder Woman.'),
+('DV019', N'Vin Diesel', '1967-07-18', N'Mỹ', N'Ngôi sao chính của loạt phim Fast & Furious.'),
+('DV020', N'Margot Robbie', '1990-07-02', N'Australia', N'Nữ diễn viên tài năng, nổi tiếng với vai Harley Quinn.'),
+('DV021', N'Leonardo DiCaprio', '1974-11-11', N'Mỹ', N'Diễn viên gạo cội, từng đoạt giải Oscar.'),
+('DV022', N'Cillian Murphy', '1976-05-25', N'Ireland', N'Nổi tiếng với các vai diễn sâu sắc trong phim của Christopher Nolan.'),
+('DV023', N'Emma Stone', '1988-11-06', N'Mỹ', N'Nữ diễn viên tài năng, từng đoạt giải Oscar.'),
+('DV024', N'Chris Pratt', '1979-06-21', N'Mỹ', N'Diễn viên hài hành động, nổi tiếng với Guardians of the Galaxy.'),
+('DV025', N'Scarlett Johansson', '1984-11-22', N'Mỹ', N'Nữ diễn viên đa tài, nổi tiếng với vai Black Widow.'),
+('DV026', N'Thanh Hiền', '1975-03-12', N'Việt Nam', N'Diễn viên kỳ cựu, nổi tiếng với các vai diễn mẹ hiền.'),
+('DV027', N'Trương Minh Cường', '1980-06-15', N'Việt Nam', N'Diễn viên điện ảnh và truyền hình.'),
+('DV028', N'Đinh Y Nhung', '1985-04-22', N'Việt Nam', N'Nữ diễn viên chính xuất sắc Liên hoan phim Việt Nam.'),
+('DV029', N'Quách Ngọc Tuyên', '1988-11-08', N'Việt Nam', N'Diễn viên hài nổi tiếng.'),
+('DV030', N'Trâm Anh', '1995-09-18', N'Việt Nam', N'Diễn viên trẻ đa tài.'),
+('DV031', N'Trần Kim Hải', '1982-07-25', N'Việt Nam', N'Diễn viên điện ảnh với nhiều vai diễn ấn tượng.'),
+('DV032', N'Austin Butler', '1991-08-17', N'Mỹ', N'Diễn viên trẻ tài năng, nổi tiếng với vai Elvis.'),
+('DV033', N'Florence Pugh', '1996-01-03', N'Anh', N'Nữ diễn viên được đề cử Oscar.'),
+('DV034', N'Christopher Walken', '1943-03-31', N'Mỹ', N'Diễn viên gạo cội đoạt giải Oscar.'),
+('DV035', N'Javier Bardem', '1969-03-01', N'Tây Ban Nha', N'Diễn viên đoạt giải Oscar.'),
+('DV036', N'Josh Brolin', '1968-02-12', N'Mỹ', N'Diễn viên kỳ cựu với nhiều vai diễn đa dạng.'),
+('DV037', N'Dave Bautista', '1969-01-18', N'Mỹ', N'Cựu đô vật chuyển sang diễn xuất.'),
+('DV038', N'Stellan Skarsgård', '1951-06-13', N'Thụy Điển', N'Diễn viên kỳ cựu quốc tế.'),
+('DV039', N'Charlotte Rampling', '1946-02-05', N'Anh', N'Nữ diễn viên danh tiếng.'),
+('DV040', N'Rebecca Hall', '1982-05-03', N'Anh', N'Nữ diễn viên tài năng.'),
+('DV041', N'Brian Cox', '1946-06-01', N'Scotland', N'Diễn viên kỳ cựu nổi tiếng.'),
+('DV042', N'Dan Stevens', '1982-10-10', N'Anh', N'Diễn viên điện ảnh và truyền hình.'),
+('DV043', N'Jack Black', '1969-08-28', N'Mỹ', N'Diễn viên hài và lồng tiếng nổi tiếng.'),
+('DV044', N'Awkwafina', '1988-06-02', N'Mỹ', N'Diễn viên hài và rapper.'),
+('DV045', N'Viola Davis', '1965-08-11', N'Mỹ', N'Nữ diễn viên đoạt giải Oscar.'),
+('DV046', N'Trần Nghĩa', '1990-03-15', N'Việt Nam', N'Diễn viên trẻ tài năng.'),
+('DV047', N'Phan Thị Mơ', '1990-04-06', N'Việt Nam', N'Hoa hậu, diễn viên.'),
+('DV048', N'Sương Đặng', '1998-01-20', N'Việt Nam', N'Diễn viên trẻ.'),
+('DV049', N'Robert Downey Jr.', '1965-04-04', N'Mỹ', N'Diễn viên nổi tiếng với vai Iron Man.'),
+('DV050', N'Chris Evans', '1981-06-13', N'Mỹ', N'Diễn viên nổi tiếng với vai Captain America.'),
+('DV051', N'Mark Ruffalo', '1967-11-22', N'Mỹ', N'Diễn viên nổi tiếng với vai Hulk.'),
+('DV052', N'Chris Hemsworth', '1983-08-11', N'Australia', N'Diễn viên nổi tiếng với vai Thor.'),
+('DV053', N'Jeremy Renner', '1971-01-07', N'Mỹ', N'Diễn viên nổi tiếng với vai Hawkeye.'),
+('DV054', N'Song Kang-ho', '1967-01-17', N'Hàn Quốc', N'Diễn viên hàng đầu Hàn Quốc.'),
+('DV055', N'Lee Sun-kyun', '1975-03-02', N'Hàn Quốc', N'Diễn viên tài năng đã qua đời.'),
+('DV056', N'Cho Yeo-jeong', '1981-02-10', N'Hàn Quốc', N'Nữ diễn viên tài năng.'),
+('DV057', N'Choi Woo-shik', '1990-03-26', N'Hàn Quốc', N'Diễn viên trẻ tài năng.'),
+('DV058', N'Ryunosuke Kamiki', '1993-05-19', N'Nhật Bản', N'Diễn viên lồng tiếng tài năng.'),
+('DV059', N'Mone Kamishiraishi', '1998-01-27', N'Nhật Bản', N'Nữ diễn viên lồng tiếng.'),
+('DV060', N'Gong Yoo', '1979-07-10', N'Hàn Quốc', N'Diễn viên hàng đầu Hàn Quốc.'),
+('DV061', N'Jung Yu-mi', '1983-01-18', N'Hàn Quốc', N'Nữ diễn viên tài năng.'),
+('DV062', N'Ma Dong-seok', '1971-03-01', N'Hàn Quốc', N'Diễn viên hành động nổi tiếng.');
 -- 4. Bảng theloai
 INSERT INTO TheLoai VALUES
 ('TL001', N'Hành động'),
@@ -390,14 +471,24 @@ INSERT INTO TheLoai VALUES
 ('TL009', N'Gia đình'),
 ('TL010', N'Chính kịch'),
 ('TL011', N'Giật gân');
-
 -- 12. Bảng dienvien_phim
 INSERT INTO DienVien_Phim (idDienVien, idPhim) VALUES
-('DV001', 'P0008'), ('DV002', 'P0008'), ('DV003', 'P0003'), ('DV004', 'P0003'),
-('DV005', 'P0001'), ('DV006', 'P0010'), ('DV007', 'P0006'), ('DV008', 'P0009'),
-('DV009', 'P0005'), ('DV010', 'P0002'), ('DV011', 'P0015'), ('DV012', 'P0015'),
-('DV013', 'P0015');
-
+('DV001', 'P0008'),('DV002', 'P0008'),('DV003', 'P0003'),('DV004', 'P0003'),
+('DV005', 'P0001'),('DV006', 'P0010'),('DV007', 'P0006'),('DV008', 'P0009'),
+('DV009', 'P0005'),('DV010', 'P0002'),('DV011', 'P0015'),('DV012', 'P0015'),
+('DV013', 'P0015'),('DV026', 'P0001'),('DV027', 'P0001'),('DV028', 'P0001'),
+('DV029', 'P0001'),('DV030', 'P0001'),('DV031', 'P0001'),('DV032', 'P0003'), 
+('DV033', 'P0003'),('DV034', 'P0003'),('DV035', 'P0003'),('DV036', 'P0003'),
+('DV037', 'P0003'),('DV038', 'P0003'),('DV039', 'P0003'),('DV040', 'P0004'),
+('DV041', 'P0004'),('DV042', 'P0004'),('DV043', 'P0005'),('DV044', 'P0005'),
+('DV045', 'P0005'),('DV046', 'P0009'),('DV047', 'P0009'),('DV048', 'P0009'), 
+('DV049', 'P0025'),('DV050', 'P0025'),('DV051', 'P0025'),('DV052', 'P0025'),
+('DV053', 'P0025'),('DV054', 'P0021'),('DV055', 'P0021'),('DV056', 'P0021'),
+('DV057', 'P0021'),('DV058', 'P0023'),('DV059', 'P0023'),
+('DV060', 'P0022'),('DV061', 'P0022'),('DV062', 'P0022'),('DV023', 'P0006'),
+('DV024', 'P0006'),('DV014', 'P0017'),('DV015', 'P0017'),('DV016', 'P0049'),
+('DV017', 'P0049'),('DV018', 'P0049'),('DV019', 'P0049'),('DV025', 'P0026'), 
+('DV014', 'P0027'),('DV021', 'P0028'),('DV022', 'P0029'),('DV009', 'P0018'); 
 -- 13. Bảng theloai_phim
 INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
 ('TL001', 'P0001'), ('TL009', 'P0001'), ('TL005', 'P0002'), ('TL010', 'P0002'),
@@ -407,7 +498,30 @@ INSERT INTO TheLoai_Phim (idTheLoai, idPhim) VALUES
 ('TL008', 'P0009'), ('TL003', 'P0010'), ('TL009', 'P0010'), ('TL010', 'P0010'),
 ('TL003', 'P0015'), ('TL008', 'P0015'), ('TL006', 'P0011'), ('TL006', 'P0012'),
 ('TL001', 'P0013'), ('TL005', 'P0014'), ('TL011', 'P0014'), ('TL004', 'P0016'),
-('TL001', 'P0017'), ('TL001', 'P0018'), ('TL003', 'P0018');
+('TL001', 'P0017'), ('TL001', 'P0018'), ('TL003', 'P0018'), ('TL006', 'P0019'),
+('TL005', 'P0019'), ('TL011', 'P0019'), ('TL010', 'P0020'), ('TL005', 'P0020'),
+('TL010', 'P0021'), ('TL005', 'P0021'), ('TL011', 'P0021'), ('TL006', 'P0022'),
+('TL001', 'P0022'), ('TL011', 'P0022'), ('TL004', 'P0023'), ('TL008', 'P0023'),
+('TL007', 'P0023'), ('TL004', 'P0024'), ('TL007', 'P0024'), ('TL009', 'P0024'),
+('TL001', 'P0025'), ('TL002', 'P0025'), ('TL007', 'P0025'), ('TL002', 'P0026'),
+('TL007', 'P0026'), ('TL001', 'P0026'), ('TL001', 'P0027'), ('TL007', 'P0027'),
+('TL010', 'P0027'), ('TL010', 'P0028'), ('TL005', 'P0028'), ('TL011', 'P0028'),
+('TL002', 'P0029'), ('TL010', 'P0029'), ('TL007', 'P0029'), ('TL002', 'P0030'),
+('TL001', 'P0030'), ('TL011', 'P0030'), ('TL002', 'P0031'), ('TL001', 'P0031'),
+('TL007', 'P0031'), ('TL010', 'P0032'), ('TL001', 'P0032'), ('TL011', 'P0032'),
+('TL010', 'P0033'), ('TL008', 'P0033'), ('TL005', 'P0033'), ('TL010', 'P0034'),
+('TL005', 'P0034'), ('TL010', 'P0035'), ('TL001', 'P0035'), ('TL011', 'P0035'),
+('TL001', 'P0036'), ('TL007', 'P0036'), ('TL003', 'P0036'), ('TL003', 'P0037'),
+('TL008', 'P0037'), ('TL009', 'P0037'), ('TL003', 'P0038'), ('TL008', 'P0038'),
+('TL010', 'P0038'), ('TL004', 'P0039'), ('TL003', 'P0039'), ('TL009', 'P0039'),
+('TL004', 'P0040'), ('TL007', 'P0040'), ('TL009', 'P0040'), ('TL002', 'P0041'),
+('TL007', 'P0041'), ('TL001', 'P0041'), ('TL004', 'P0042'), ('TL001', 'P0042'),
+('TL007', 'P0042'), ('TL001', 'P0043'), ('TL010', 'P0043'), ('TL011', 'P0043'),
+('TL006', 'P0044'), ('TL011', 'P0044'), ('TL007', 'P0045'), ('TL009', 'P0045'),
+('TL010', 'P0045'), ('TL006', 'P0046'), ('TL011', 'P0046'), ('TL004', 'P0047'),
+('TL007', 'P0047'), ('TL001', 'P0047'), ('TL001', 'P0048'), ('TL002', 'P0048'),
+('TL007', 'P0048'), ('TL001', 'P0049'), ('TL007', 'P0049'), ('TL011', 'P0049'),
+('TL004', 'P0050'), ('TL007', 'P0050'), ('TL009', 'P0050');
 set dateformat ymd
 -- 16. Bảng ve (DonHangVe)
 INSERT INTO Ve (idVe, idUser, NgayDat, TongGiaTriDonHang, trangthai,ngayhethan) VALUES
@@ -562,7 +676,11 @@ INSERT INTO LichChieu (idLichChieu, idPhim, idSuatChieu, idPhong, ngaychieu) VAL
 ('LC028', 'P0003', 'SC009', 'R0009', '2024-07-05'),
 ('LC029', 'P0004', 'SC010', 'R0010', '2024-07-05'),
 ('LC030', 'P0005', 'SC001', 'R0001', '2024-07-10'),
-('LC031', 'P0001', 'SC003', 'R0002', '2024-06-07');
+('LC031', 'P0001', 'SC003', 'R0002', '2024-06-07'),
+('LC032', 'P0022', 'SC001', 'R0001', '2025-10-14'),
+('LC033', 'P0022', 'SC003', 'R0002', '2025-10-15'),
+('LC034', 'P0028', 'SC005', 'R0003', '2025-07-08'),
+('LC035', 'P0028', 'SC006', 'R0002', '2025-07-09');
 -- 19. Bảng chitietdatve
 INSERT INTO ChiTietDatVe (idChiTietVe, idVe, idLichChieu, idChoNgoi, GiaVeDonLe, TrangThaiVe) VALUES
 ('CTV01', 'V0001', 'LC001', 'CG0001', 90000, N'Đã đặt'),
@@ -856,6 +974,7 @@ EXEC sp_ChiTietDatVe 'V0013';
 select * from chongoi where idphong = 'R0008'
 select idLichChieu from lichchieu where idPhong = 'R0008' and idSuatChieu ='SC008' and ngaychieu ='2024-06-08'
 delete from ve where idVe = 'V0013'
+select * from lichchieu
 select * from chitietdatve
 select * from ve
 select * from thanhtoan
@@ -869,10 +988,22 @@ from chitietdatve ct
 	join suatchieu s on s.idSuatChieu = l.idSuatChieu
 where TrangThaiVe = N'Đã thanh toán'*/
 --lấy ra phim trong danh sách tìm kiếm
-select p.idPhim,p.tenphim,p.url_poster,p.ngayphathanh,p.DaoDien,d.tendienvien,t.tentheloai
+select p.idPhim,p.tenphim,p.url_poster,p.ngayphathanh,p.DaoDien,p.quocgia,d.tendienvien,t.tentheloai
 from phim p
 	join theloai_phim tp on tp.idPhim = p.idPhim
 	join theloai t on t.idTheLoai = tp.idTheLoai
 	join dienvien_phim dp on dp.idPhim = p.idPhim
 	join dienvien d on d.idDienVien = dp.idDienVien
-where p.idPhim = 'P0001'
+where p.quocgia like N'mỹ%'
+SELECT DISTINCT p.idPhim
+from phim p
+	join theloai_phim tp on tp.idPhim = p.idPhim
+	join theloai t on t.idTheLoai = tp.idTheLoai
+	join dienvien_phim dp on dp.idPhim = p.idPhim
+	join dienvien d on d.idDienVien = dp.idDienVien
+WHERE quocgia like N'mỹ%'
+ORDER BY p.idPhim
+OFFSET 0 ROWS
+FETCH NEXT 10 ROWS ONLY
+
+select * from phim where trangthai = N'Đang chiếu'

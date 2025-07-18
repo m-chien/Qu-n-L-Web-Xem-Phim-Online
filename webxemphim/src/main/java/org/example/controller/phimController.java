@@ -1,20 +1,26 @@
 package org.example.controller;
 
-import org.example.dto.request.ApiResponse;
-import org.example.dto.request.PhimDetailRequest;
+import com.nimbusds.jose.JOSEException;
+import lombok.RequiredArgsConstructor;
+import org.example.dto.Searching.FindingMoviesResponse;
+import org.example.dto.Searching.FindingRequest;
+import org.example.dto.Searching.FindingResponse;
+import org.example.dto.Searching.FlatMovieRows;
+import org.example.dto.request.*;
 import org.example.exception.AppException;
 import org.example.exception.ErrorCode;
 import org.example.model.phim;
 import org.example.service.DienVienService;
+import org.example.service.JwtService;
 import org.example.service.TheLoaiService;
 import org.example.service.phimService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/movies")
 public class phimController {
@@ -22,12 +28,7 @@ public class phimController {
     private final phimService phimService;
     private final DienVienService dienVienService;
     private final TheLoaiService theLoaiService;
-
-    public phimController(org.example.service.phimService phimService, DienVienService dienVienService, TheLoaiService theLoaiService) {
-        this.phimService = phimService;
-        this.dienVienService = dienVienService;
-        this.theLoaiService = theLoaiService;
-    }
+    private final JwtService jwtService;
 
     @GetMapping
     public ApiResponse<List<phim>> getAllPhim() {
@@ -93,5 +94,46 @@ public class phimController {
         phimApiResponse.setResult(phimService.updatephim(idphim,phim1));
         phimApiResponse.setMessage("update thành công!");
         return phimApiResponse;
+    }
+    //tìm kiếm
+    @PostMapping("/search/{page}")
+    public ResponseEntity<ApiResponse<FindingResponse>> searchMovies(
+            @PathVariable int page,
+            @RequestBody FindingRequest request,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) throws ParseException, JOSEException {
+
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        if (request.getIduser() != null && !request.getIduser().isEmpty()) {
+            if (token == null || !jwtService.check(token, request.getIduser())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                        ApiResponse.<FindingResponse>builder()
+                                .code(401)
+                                .message("Token không hợp lệ hoặc hết hạn")
+                                .build()
+                );
+            }
+        }
+        int limit = 6;
+        int offset = (page - 1) * limit;
+        List<String> idList = phimService.findMoviesDynamic(request, limit, offset);
+        List<FlatMovieRows> flatMovies = phimService.findfilm(idList);
+        List<FindingMoviesResponse> movieList = phimService.findListfilm(flatMovies);
+        int totalItems = phimService.countfilm(request);
+        int totalPages = (int) Math.ceil((double) totalItems / limit);
+        return ResponseEntity.ok(ApiResponse.<FindingResponse>builder()
+                .code(1000)
+                .message("Lấy thành công dữ liệu")
+                .result(FindingResponse.builder()
+                        .currentPage(page)
+                        .limit(limit)
+                        .totalItems(totalItems)
+                        .totalPages(totalPages)
+                        .DataList(movieList)
+                        .build())
+                .build());
     }
 }
